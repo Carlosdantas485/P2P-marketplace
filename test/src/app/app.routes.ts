@@ -6,7 +6,6 @@ import { InventoryComponent } from './components/inventory/inventory.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { DepositComponent } from './components/deposit/deposit.component';
 import { WishlistComponent } from './components/wishlist/wishlist.component';
-import { HistoryComponent } from './components/history/history.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -18,6 +17,5 @@ export const routes: Routes = [
   { path: 'inventory', component: InventoryComponent, canActivate: [authGuard] },
   { path: 'deposit', component: DepositComponent, canActivate: [authGuard] },
   { path: 'wishlist', component: WishlistComponent, canActivate: [authGuard] },
-  { path: 'history', component: HistoryComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '/home' }
 ];
