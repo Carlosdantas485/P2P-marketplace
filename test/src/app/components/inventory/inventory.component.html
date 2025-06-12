@@ -1,0 +1,37 @@
+<div class="container">
+  <div class="inventory-container">
+    <h1>Meu Inventário</h1>
+    
+    <div *ngIf="loading" class="loading">Carregando...</div>
+    
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div class="skins-grid" *ngIf="!loading && !error">
+      <div class="skin-card" *ngFor="let skin of skins">
+        <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
+        <div class="skin-info">
+          <h3>{{ skin.nome }}</h3>
+          <p class="float">Float: {{ skin.float }}</p>
+          <p class="price">Preço: R${{ skin.preco }}</p>
+          <p class="description">{{ skin.descricao }}</p>
+          
+          <div class="skin-actions">
+            <button 
+              class="toggle-sale-button" 
+              (click)="toggleSale(skin)"
+              [class.active]="skin.venda"
+            >
+              {{ skin.venda ? 'À Venda' : 'Colocar à Venda' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-skins" *ngIf="skins.length === 0 && !loading">
+      <p>Você não possui skins no momento.</p>
+    </div>
+  </div>
+</div>

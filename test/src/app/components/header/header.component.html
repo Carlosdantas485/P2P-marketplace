@@ -1,0 +1,18 @@
+<nav class="navbar">
+  <div class="logo">
+    <a routerLink="/home" class="logo-link">Skin Market</a>
+  </div>
+  <div class="nav-links">
+    <a routerLink="/home" routerLinkActive="active">Home</a>
+    <a routerLink="/market" routerLinkActive="active">Mercado</a>
+    <a routerLink="/inventory" routerLinkActive="active">Inventário</a>
+    <a routerLink="/account" routerLinkActive="active">Conta</a>
+  </div>
+  <div class="user-actions">
+    <a routerLink="/account" class="user-profile">
+      <img *ngIf="profileImage" [src]="profileImage || 'assets/default-avatar.png'" alt="Perfil" class="profile-image">
+      <span>{{ username }}</span>
+    </a>
+    <button (click)="logout()" class="logout-button">Sair</button>
+  </div>
+</nav>

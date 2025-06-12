@@ -1,0 +1,125 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "RelampagoCarlinh0s1",
+      "email": "carlosdantas485@gmail.com",
+      "password": "$2a$10$sOQGunTcbyf0DRMbwM0M7udlLvaXolD0sDYqhJdgoGM7gz4oK6N.e",
+      "foto": "https://i.pinimg.com/474x/4b/2e/d6/4b2ed61e4b7b0733727c7cd35892df20.jpg",
+      "saldo": 298.31,
+      "nivel": 1,
+      "vendas": 2,
+      "historicoTransferencias": [
+        {
+          "tipo": "VENDA",
+          "skinId": "1",
+          "skinNome": "AWP Dragon Lore",
+          "preco": 1500,
+          "data": "2025-06-08T04:34:39.954Z",
+          "para": "2"
+        },
+        {
+          "tipo": "VENDA",
+          "skinId": "2",
+          "skinNome": "M4A1-S Cyrex",
+          "preco": 2000,
+          "data": "2025-06-08T04:35:07.019Z",
+          "para": "2"
+        },
+        {
+          "tipo": "COMPRA",
+          "skinId": "3",
+          "skinNome": "Dragon Lore",
+          "preco": 100,
+          "data": "2025-06-08T04:38:29.595Z",
+          "para": "2"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "username": "SkinHunter",
+      "email": "skinhunter@gmail.com",
+      "password": "$2a$10$gcJ3W0X1Jd0UglWmUdfKj.qac3hsUAYGec5UHXDGHC/aQVGlB/ejy",
+      "foto": "https://i.pinimg.com/474x/4b/2e/d6/4b2ed61e4b7b0733727c7cd35892df20.jpg",
+      "saldo": 10000,
+      "nivel": 2,
+      "vendas": 0,
+      "historicoTransferencias": []
+    },
+    {
+      "id": "438a9c1a-37c8-4f63-9716-087e4540b0f4",
+      "username": "macaco",
+      "email": "admin@exemplo.com",
+      "password": "$2a$10$o/vb3mhjjAZMbIzHqx152eZ.9AmSSqJuelxuFp02fWH5MRHT4c3v6",
+      "foto": "",
+      "saldo": 0,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [],
+      "inventory": []
+    },
+    {
+      "id": "eb055e4d-bb9c-4ce7-a68c-234f70c3d5d3",
+      "username": "Carlos Alberto Dantas Filho",
+      "email": "dglz@email.com",
+      "password": "$2a$10$r1vjutTuYWBelpYdTZCkSeAetdWHmxG1IvNwHUWN48jpyr7.nl/Bm",
+      "foto": "",
+      "saldo": 0,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [],
+      "inventory": []
+    }
+  ],
+  "skins": [
+    {
+      "id": "1",
+      "nome": "AWP Dragon Lore",
+      "preco": 1500,
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf3qr3czxb49KzgL-KmsjwPKvBmm5D19V5i_rEprP5gVO8v106MG6lddWQJ1Q2aVDY-1nsk-zvh8C87Z6bn3Zg6XYltn7YmUawgR1OcKUx0vnkFGDN",
+      "descricao": "AWP com padrão de dragão lendário",
+      "float": 0.02,
+      "venda": true,
+      "ownerId": "1",
+      "created_at": "2025-06-08T04:34:39.954Z",
+      "updated_at": "2025-06-08T04:34:39.954Z"
+    },
+    {
+      "id": "2",
+      "nome": "M4A1-S Cyrex",
+      "preco": 2000,
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf3qr3czxb49KzgL-KmsjwPKvBmm5D19V5i_rEprP5gVO8v106MG6lddWQJ1Q2aVDY-1nsk-zvh8C87Z6bn3Zg6XYltn7YmUawgR1OcKUx0vnkFGDN",
+      "descricao": "M4A1-S com padrão cibernético único",
+      "float": 0.01,
+      "venda": false,
+      "ownerId": "1",
+      "created_at": "2025-06-08T04:35:07.019Z",
+      "updated_at": "2025-06-08T04:35:07.019Z"
+    },
+    {
+      "id": "3",
+      "nome": "USP-S Neo-Noir",
+      "preco": 1000,
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf3qr3czxb49KzgL-KmsjwPKvBmm5D19V5i_rEprP5gVO8v106MG6lddWQJ1Q2aVDY-1nsk-zvh8C87Z6bn3Zg6XYltn7YmUawgR1OcKUx0vnkFGDN",
+      "descricao": "USP-S com padrão noir elegante",
+      "float": 0.03,
+      "venda": true,
+      "ownerId": "2",
+      "created_at": "2025-06-08T04:38:29.595Z",
+      "updated_at": "2025-06-08T04:38:29.595Z"
+    },
+    {
+      "id": "4",
+      "nome": "Glock-18 Fade",
+      "preco": 500,
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf3qr3czxb49KzgL-KmsjwPKvBmm5D19V5i_rEprP5gVO8v106MG6lddWQJ1Q2aVDY-1nsk-zvh8C87Z6bn3Zg6XYltn7YmUawgR1OcKUx0vnkFGDN",
+      "descricao": "Glock-18 com padrão degradê colorido",
+      "float": 0.04,
+      "venda": true,
+      "ownerId": "2",
+      "created_at": "2025-06-08T04:40:00.000Z",
+      "updated_at": "2025-06-08T04:40:00.000Z"
+    }
+  ]
+}

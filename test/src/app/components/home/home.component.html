@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="home-container">
+    <h1>Skin Marketplace</h1>
+    
+    <div *ngIf="loading" class="loading">Loading...</div>
+    
+    <div *ngIf="error" class="error-message">
+      <p>Error loading skins. Please try again later.</p>
+    </div>
+
+    <div class="skins-grid" *ngIf="!loading && !error">
+      <div class="skin-card" *ngFor="let skin of skins">
+        <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
+        <div class="skin-info">
+          <h3>{{ skin.nome }}</h3>
+          <p class="float">Float: {{ skin.float }}</p>
+          <p class="price">${{ skin.preco }}</p>
+          <button class="buy-button" [disabled]="!skin.venda">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

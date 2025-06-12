@@ -1,0 +1,70 @@
+<div class="account-container">
+  <h2>Minha Conta</h2>
+  
+  <!-- Account Info Section -->
+  <div *ngIf="user" class="account-info">
+    <div class="user-profile">
+      <img *ngIf="user.foto" [src]="user.foto" [alt]="user.username" class="profile-image">
+      <div class="user-details">
+        <p><strong>Usuário:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Nível:</strong> {{ user.nivel }}</p>
+        <p><strong>Saldo:</strong> R$ {{ user.saldo | number:'1.2-2' }}</p>
+        <p><strong>Vendas:</strong> {{ user.vendas }}</p>
+      </div>
+    </div>
+    
+    <!-- Account Actions -->
+    <div class="account-actions">
+      <button class="btn-primary" (click)="editAccount()">Editar Conta</button>
+      <button class="btn-danger" (click)="deleteAccount()">Excluir Conta</button>
+      <button class="btn-secondary" (click)="onLogout()">Sair</button>
+    </div>
+  </div>
+  
+  <!-- Edit Form -->
+  <div class="edit-form" *ngIf="showEditForm">
+    <h3>Editar Conta</h3>
+    <div class="form-group">
+      <label>Usuário</label>
+      <input type="text" [(ngModel)]="editForm.username" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="editForm.email" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Foto</label>
+      <input type="text" [(ngModel)]="editForm.foto" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Senha Atual</label>
+      <input type="password" [(ngModel)]="editForm.currentPassword" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Nova Senha</label>
+      <input type="password" [(ngModel)]="editForm.newPassword" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Confirmar Nova Senha</label>
+      <input type="password" [(ngModel)]="editForm.confirmPassword" class="form-input">
+    </div>
+    <div class="form-actions">
+      <button class="btn-secondary" (click)="cancelEdit()">Cancelar</button>
+      <button class="btn-primary" (click)="updateAccount()" [disabled]="loading">
+        {{ loading ? 'Atualizando...' : 'Salvar' }}
+      </button>
+    </div>
+    <div class="error-message" *ngIf="error">{{ error }}</div>
+  </div>
+  
+  <!-- Loading State -->
+  <div *ngIf="!user && !error" class="loading-message">
+    <p>Carregando informações...</p>
+  </div>
+  
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+</div>
