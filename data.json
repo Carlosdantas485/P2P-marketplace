@@ -36,7 +36,7 @@
       "email": "admin@exemplo.com",
       "password": "$2a$10$8hGr23uxAjSpLXnVEgEY2OAeDDjD67.vFAq2KgVq9Xsh.NLTG3y66",
       "foto": "https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png",
-      "saldo": 9800,
+      "saldo": 9900,
       "nivel": 1,
       "vendas": 0,
       "historicoTransferencias": [
@@ -60,12 +60,47 @@
           "price": 100,
           "sellerUsername": "Carlos Alberto Dantas Filho",
           "date": "2025-06-12T18:04:28.757Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "buyerUsername": "DGLZ",
+          "date": "2025-06-12T18:20:16.431Z"
         }
       ],
       "inventory": [],
       "wishlist": [
         1749750489323.8545
       ]
+    },
+    {
+      "id": "3eb58994-9f96-4fb7-afa0-1939ef817b2e",
+      "username": "DGLZ",
+      "email": "dglz@email.com",
+      "password": "$2a$10$HMw3tLaGmYijnQbjrZqiOOzOR1NePLw84n8cAbZpNj28yzxSEP4Aa",
+      "foto": "https://i.pinimg.com/474x/4b/2e/d6/4b2ed61e4b7b0733727c7cd35892df20.jpg",
+      "saldo": 9900,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [
+        {
+          "type": "deposito",
+          "amount": 10000,
+          "date": "2025-06-12T18:19:47.586Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-12T18:20:16.431Z"
+        }
+      ],
+      "inventory": [],
+      "wishlist": []
     }
   ],
   "skins": [
@@ -84,26 +119,26 @@
     {
       "id": "1749750489323.8545",
       "ownerId": "e745e679-ef2a-4936-ae64-d95f0639108a",
-      "nome": "car",
-      "descricao": "qweqw",
+      "nome": "Luva xpto",
+      "descricao": "gloves\n",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
       "float": 1,
       "venda": true,
       "preco": 100,
       "created_at": "2025-06-12T17:48:09.323Z",
-      "updated_at": "2025-06-12T17:48:25.540Z"
+      "updated_at": "2025-06-12T18:24:44.143Z"
     },
     {
       "id": "1749750497321.524",
-      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
+      "ownerId": "3eb58994-9f96-4fb7-afa0-1939ef817b2e",
       "nome": "DGLZ",
       "descricao": "1231231",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
       "float": 1,
       "venda": true,
-      "preco": 100,
+      "preco": 2000,
       "created_at": "2025-06-12T17:48:17.321Z",
-      "updated_at": "2025-06-12T18:04:45.087Z"
+      "updated_at": "2025-06-12T18:20:26.141Z"
     }
   ],
   "history": [],

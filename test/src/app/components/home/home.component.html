@@ -8,8 +8,13 @@
       <p>Error loading skins. Please try again later.</p>
     </div>
 
+    <!-- Campo de filtro por nome -->
+    <div class="filter-bar">
+      <input type="text" placeholder="Filtrar por nome" [(ngModel)]="filterText" />
+      <button (click)="applyFilter()">Buscar</button>
+    </div>
     <div class="skins-grid" *ngIf="!loading && !error">
-      <div class="skin-card" *ngFor="let skin of skins">
+      <div class="skin-card" *ngFor="let skin of filteredSkins">
         <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
         <div class="skin-info">
           <h3>{{ skin.nome }}</h3>

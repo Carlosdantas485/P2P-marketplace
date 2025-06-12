@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { switchMap, catchError, tap } from 'rxjs/operators';
@@ -9,11 +10,14 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css']
+
 })
 export class InventoryComponent implements OnInit {
+  filterText: string = ''; // Campo do filtro de nome
+
   inventory$: Observable<Item[]>;
   private inventorySubject = new BehaviorSubject<void>(undefined);
 
@@ -47,6 +51,12 @@ export class InventoryComponent implements OnInit {
         } else {
           return of([]);
         }
+      }),
+      // Aplica o filtro pelo nome
+      switchMap((items: Item[]) => {
+        if (!this.filterText) return of(items);
+        const filtered = items.filter(item => item.nome.toLowerCase().includes(this.filterText.toLowerCase()));
+        return of(filtered);
       })
     );
   }
@@ -57,6 +67,10 @@ export class InventoryComponent implements OnInit {
 
   loadInventory(): void {
     this.inventorySubject.next();
+  }
+
+  onFilterChange(): void {
+    this.loadInventory();
   }
 
   openAddForm(): void {

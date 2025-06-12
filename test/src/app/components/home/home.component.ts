@@ -21,7 +21,18 @@ import { Subscription } from 'rxjs';
   ]
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  filterText: string = '';
+  appliedFilter: string = '';
+
   skins: Skin[] = [];
+  get filteredSkins(): Skin[] {
+    if (!this.appliedFilter) return this.skins;
+    return this.skins.filter(skin => skin.nome.toLowerCase().includes(this.appliedFilter.toLowerCase()));
+  }
+
+  applyFilter() {
+    this.appliedFilter = this.filterText;
+  }
   loading = true;
   error = false;
   private apiUrl = 'http://localhost:3000/skins';
