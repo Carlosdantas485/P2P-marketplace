@@ -1,18 +1,40 @@
 <div class="history-container">
   <h2>Histórico de Transações</h2>
 
+  <div class="totals-summary">
+    <div class="total-box deposits">
+      <h4>Total Depósitos</h4>
+      <p>R$ {{ totalDepositos.toFixed(2) }}</p>
+    </div>
+    <div class="total-box sales">
+      <h4>Total Vendas</h4>
+      <p>R$ {{ totalVendas.toFixed(2) }}</p>
+    </div>
+    <div class="total-box purchases">
+      <h4>Total Compras</h4>
+      <p>R$ {{ totalCompras.toFixed(2) }}</p>
+    </div>
+  </div>
+
+  <div class="filter-controls">
+    <button (click)="applyFilter('all')" [class.active]="filterType === 'all'">Todos</button>
+    <button (click)="applyFilter('compra')" [class.active]="filterType === 'compra'">Compras</button>
+    <button (click)="applyFilter('venda')" [class.active]="filterType === 'venda'">Vendas</button>
+    <button (click)="applyFilter('deposito')" [class.active]="filterType === 'deposito'">Depósitos</button>
+  </div>
+
   <div *ngIf="loading" class="loading-spinner"></div>
 
   <div *ngIf="error" class="error-message">
     {{ error }}
   </div>
 
-  <div *ngIf="!loading && !error && history.length === 0" class="empty-history">
+  <div *ngIf="!loading && !error && filteredHistory.length === 0" class="empty-history">
     <p>Nenhuma transação encontrada.</p>
   </div>
 
-  <div *ngIf="!loading && !error && history.length > 0" class="history-list">
-    <div *ngFor="let item of history" class="history-item" [ngSwitch]="item.type">
+  <div *ngIf="!loading && !error && filteredHistory.length > 0" class="history-list">
+    <div *ngFor="let item of filteredHistory" class="history-item" [ngSwitch]="item.type">
       <div *ngSwitchCase="'compra'" class="transaction-details purchase">
         <p><strong>Compra:</strong> {{ item.skinName }}</p>
         <p><strong>Vendedor:</strong> {{ item.sellerUsername }}</p>

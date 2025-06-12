@@ -1,7 +1,67 @@
 .history-container {
   padding: 2rem;
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.totals-summary {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.total-box {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  flex-grow: 1;
+  border-left: 5px solid;
+}
+
+.total-box.deposits { border-color: #5bc0de; }
+.total-box.sales { border-color: #5cb85c; }
+.total-box.purchases { border-color: #d9534f; }
+
+.total-box h4 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.total-box p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0;
+  color: #555;
+}
+
+.filter-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.filter-controls button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.filter-controls button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.filter-controls button:hover:not(.active) {
+  background-color: #e9ecef;
 }
 
 .history-list {
