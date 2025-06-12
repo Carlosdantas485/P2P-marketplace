@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 import { Observable } from 'rxjs';
 
@@ -15,14 +15,19 @@ import { Observable } from 'rxjs';
     RouterLinkActive
   ]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   user$: Observable<User | null>;
 
-  constructor(public authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
     this.user$ = this.authService.currentUser;
+  }
+
+  ngOnInit(): void {
   }
 
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/home']);
   }
 }
+

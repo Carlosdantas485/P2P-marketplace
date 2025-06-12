@@ -43,18 +43,18 @@ export class RegisterComponent {
       id: Date.now().toString(),
       username: this.name,
       email: this.email,
+      password: this.password,
       foto: '',
       saldo: 0,
       nivel: 1,
       vendas: 0,
-      token: '', // Optional token field
       historicoTransferencias: []
     };
 
     this.authService.register(newUser)
       .subscribe({
         next: () => {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/login']);
         },
         error: (err) => {
           this.error = err.message || 'Erro ao registrar usuário';

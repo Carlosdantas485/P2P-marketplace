@@ -75,6 +75,32 @@
       "vendas": 0,
       "historicoTransferencias": [],
       "inventory": []
+    },
+    {
+      "id": "a1b394e8-99c4-4cae-9184-ea46cdd8ebff",
+      "username": "macaco",
+      "email": "canalredtrick@gmail.com",
+      "password": "$2a$10$jc9LQqIYhQ55XLPVPaBmH.I6szADJfQIUiPPUHl79eXIfMQRy6VSu",
+      "foto": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "saldo": 0,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [],
+      "inventory": [],
+      "wishlist": []
+    },
+    {
+      "id": "c5f3effa-2a51-453c-9351-17ff5020bf6d",
+      "username": "eita",
+      "email": "123@email.com",
+      "password": "$2a$10$wKNsqds7NqsL2QiA0hRm0O5duAMjQ1xGkP72JfAlNIc6ewJP5a/lm",
+      "foto": "https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png",
+      "saldo": 0,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [],
+      "inventory": [],
+      "wishlist": []
     }
   ],
   "skins": [

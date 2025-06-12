@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="deposit-container">
+    <h2>Depositar Saldo</h2>
+    <div *ngIf="user$ | async as user">
+      <p>Saldo Atual: {{ user.saldo | currency:'BRL':'symbol':'1.2-2' }}</p>
+    </div>
+    <form (ngSubmit)="onDeposit()">
+      <div class="form-group">
+        <label for="amount">Valor do Depósito:</label>
+        <input type="number" id="amount" [(ngModel)]="amount" name="amount" required min="1">
+      </div>
+      <button type="submit">Depositar</button>
+    </form>
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+    <div *ngIf="success" class="success-message">
+      {{ success }}
+    </div>
+  </div>
+</div>
