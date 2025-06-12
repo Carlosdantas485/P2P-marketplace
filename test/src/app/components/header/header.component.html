@@ -5,18 +5,18 @@
   <div class="nav-links">
     <a routerLink="/home" routerLinkActive="active">Home</a>
     <a routerLink="/inventory" routerLinkActive="active">Inventário</a>
-    <a routerLink="/account" routerLinkActive="active" *ngIf="user$ | async as user">Conta</a>
+    <a routerLink="/account" routerLinkActive="active" *ngIf="currentUser">Conta</a>
   </div>
   <div class="user-actions">
-    <ng-container *ngIf="!(user$ | async)">
+    <ng-container *ngIf="!currentUser">
             <a routerLink="/login">Login</a>
       <a routerLink="/register">Registrar</a>
     </ng-container>
-    <div *ngIf="user$ | async as user" class="user-info">
+    <div *ngIf="currentUser" class="user-info">
       <a routerLink="/account" class="user-profile">
-        <img [src]="user.foto || 'assets/default-avatar.png'" alt="Perfil" class="profile-image">
-        <span class="username">{{ user.username }}</span>
-        <span class="balance">{{ user.saldo | currency:'BRL':'symbol':'1.2-2' }}</span>
+        <img [src]="currentUser.foto || 'assets/default-avatar.png'" alt="Perfil" class="profile-image">
+        <span class="username">{{ currentUser.username }}</span>
+        <span class="balance">{{ currentUser.saldo | currency:'BRL':'symbol':'1.2-2' }}</span>
       </a>
             <a routerLink="/deposit" class="deposit-button">Depositar</a>
       <button class="logout-button" (click)="logout()">Sair</button>

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 // Interface aligned with the backend 'skin' model
 export interface Item {
@@ -22,7 +24,7 @@ export interface Item {
 export class InventoryService {
   private apiUrl = 'http://localhost:3000';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   // Fetch all items for a specific user
   getUserInventory(userId: string): Observable<Item[]> {
@@ -53,5 +55,22 @@ export class InventoryService {
   // Remove an item from sale
   unlistFromSale(itemId: string): Observable<Item> {
     return this.http.patch<Item>(`${this.apiUrl}/skins/${itemId}`, { venda: false, preco: 0 });
+  }
+
+  // Purchase an item
+  purchase(skinId: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/buy`, { skinId }).pipe(
+      tap(response => {
+        if (response && response.user) {
+          const currentUser = this.authService.currentUserValue;
+          const updatedUser = { ...currentUser, ...response.user };
+          if (currentUser && currentUser.token) {
+            updatedUser.token = currentUser.token;
+          }
+          this.authService.updateCurrentUser(updatedUser);
+          console.log('[InventoryService] User data updated after purchase.', updatedUser);
+        }
+      })
+    );
   }
 }

@@ -28,24 +28,23 @@ export class DepositComponent implements OnInit {
   onDeposit(): void {
     this.error = '';
     this.success = '';
+    console.log(`[DepositComponent] Attempting to deposit: ${this.amount}`);
 
     if (this.amount <= 0) {
       this.error = 'O valor do depósito deve ser positivo.';
       return;
     }
 
-    const currentUser = this.authService.currentUserValue;
-    if (currentUser) {
-      const newBalance = currentUser.saldo + this.amount;
-      this.authService.updateAccount({ saldo: newBalance }).subscribe({
-        next: () => {
-          this.success = 'Depósito realizado com sucesso!';
-          this.amount = 0;
-        },
-        error: (err) => {
-          this.error = err.message || 'Erro ao realizar o depósito.';
-        }
-      });
-    }
+    this.authService.deposit(this.amount).subscribe({
+      next: (response) => {
+        console.log('[DepositComponent] Deposit successful. Server response:', response);
+        this.success = response.message;
+        this.amount = 0;
+      },
+      error: (err) => {
+        console.error('[DepositComponent] Deposit failed. Server error:', err);
+        this.error = err.message || 'Erro ao realizar o depósito.';
+      }
+    });
   }
 }

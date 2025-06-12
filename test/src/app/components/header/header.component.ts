@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -15,14 +15,23 @@ import { Observable } from 'rxjs';
     RouterLinkActive
   ]
 })
-export class HeaderComponent implements OnInit {
-  user$: Observable<User | null>;
+export class HeaderComponent implements OnInit, OnDestroy {
+  currentUser: User | null = null;
+  private userSubscription: Subscription | undefined;
 
-  constructor(private authService: AuthService, private router: Router) {
-    this.user$ = this.authService.currentUser;
-  }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
+    this.userSubscription = this.authService.currentUser.subscribe(user => {
+      this.currentUser = user;
+      console.log('[HeaderComponent] Current user data updated:', this.currentUser);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   logout(): void {
@@ -30,4 +39,3 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 }
-

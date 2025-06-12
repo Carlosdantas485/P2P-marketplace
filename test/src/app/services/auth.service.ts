@@ -114,6 +114,28 @@ export class AuthService {
       );
   }
 
+  deposit(amount: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/deposit`, { amount }).pipe(
+      tap(response => {
+        if (response && response.user) {
+          const currentUser = this.currentUserValue;
+          // The user object from the backend doesn't have the token, so we merge it
+          // with the existing user data to preserve the token.
+          const updatedUser = { ...currentUser, ...response.user };
+          if (currentUser && currentUser.token) {
+            updatedUser.token = currentUser.token;
+          }
+          this.updateCurrentUser(updatedUser);
+          console.log('[AuthService] User data updated after deposit.', updatedUser);
+        }
+      }),
+      catchError((error: any) => {
+          console.error('Deposit error:', error);
+          return throwError(() => new Error(error.error?.message || 'Erro ao realizar o depósito.'));
+      })
+    );
+  }
+
   updateAccount(partialUserData: Partial<User>): Observable<unknown> {
     const currentUser = this.currentUserValue;
     if (!currentUser || !currentUser.id) {

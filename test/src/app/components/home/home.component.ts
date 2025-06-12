@@ -1,17 +1,11 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../services/auth.service';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { AuthService, User } from '../../services/auth.service';
 import { WishlistService } from '../../services/wishlist.service';
-import { Item as Skin } from '../../services/inventory.service'; // Renomeando para evitar conflito
-import { Observable } from 'rxjs';
-import { NgIf } from '@angular/common';
-import { NgFor } from '@angular/common';
-import { NgClass } from '@angular/common';
-
-
+import { InventoryService, Item as Skin } from '../../services/inventory.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -26,27 +20,71 @@ import { NgClass } from '@angular/common';
     NgFor
   ]
 })
-export class HomeComponent {
-
+export class HomeComponent implements OnInit, OnDestroy {
   skins: Skin[] = [];
   loading = true;
   error = false;
   private apiUrl = 'http://localhost:3000/skins';
-  currentUserId: string | null = null;
+  currentUser: User | null = null;
+  private userSubscription: Subscription | undefined;
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
-    private wishlistService: WishlistService
-  ) {
-    this.currentUserId = this.authService.currentUserValue?.id ?? null;
+    private wishlistService: WishlistService,
+    private inventoryService: InventoryService,
+    private authService: AuthService
+  ) { }
+
+  ngOnInit(): void {
     this.loadSkins();
+    this.userSubscription = this.authService.currentUser.subscribe(user => {
+      this.currentUser = user;
+      console.log('[HomeComponent] Current user data updated:', this.currentUser);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   addToWishlist(skinId: string): void {
     this.wishlistService.addToWishlist(skinId).subscribe({
       next: () => alert('Item adicionado à sua lista de desejos!'),
-      error: (err) => alert(`Erro: ${err.error.message}`)
+      error: (err: any) => alert(`Erro: ${err.error?.message || 'Ocorreu um erro.'}`)
+    });
+  }
+
+  buySkin(skin: Skin): void {
+    if (!this.currentUser) {
+      alert('Você precisa estar logado para comprar. Redirecionando para o login.');
+      // Optionally, redirect to login
+      // this.router.navigate(['/login']);
+      return;
+    }
+
+    if (typeof skin.preco === 'undefined') {
+      console.error('Skin price is undefined.', skin);
+      alert('Este item não pode ser comprado pois não tem um preço definido.');
+      return;
+    }
+
+    if (this.currentUser.saldo < skin.preco) {
+      alert('Saldo insuficiente para realizar esta compra.');
+      return;
+    }
+
+    this.inventoryService.purchase(skin.id).subscribe({
+      next: (response) => {
+        console.log('[HomeComponent] Purchase successful response:', response);
+        alert('Compra realizada com sucesso!');
+        this.loadSkins(); // Reload skins to remove the purchased one from the list
+      },
+      error: (error) => {
+        console.error('[HomeComponent] Purchase failed:', error);
+        alert(`Falha na compra: ${error.error?.message || 'Erro desconhecido.'}`);
+      }
     });
   }
 
@@ -57,7 +95,7 @@ export class HomeComponent {
           this.skins = response;
           this.loading = false;
         },
-        error: (err: any) => { // Changed error handling type to any
+        error: (err: any) => {
           console.error('Error loading skins:', err);
           this.error = true;
           this.loading = false;

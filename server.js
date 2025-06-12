@@ -36,11 +36,14 @@ const readData = () => {
     }
 };
 
-const saveData = (data) => {
+const DB_PATH = path.join(__dirname, 'data.json');
+
+const saveData = async (data) => {
     try {
-        fs.writeFileSync(path.join(__dirname, 'data.json'), JSON.stringify(data, null, 2));
+        await fs.promises.writeFile(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
+        console.log('--- saveData: Successfully wrote to db.json ---');
     } catch (error) {
-        console.error('Erro ao salvar data.json:', error);
+        console.error("--- saveData: ERROR writing to db.json ---", error);
     }
 };
 
@@ -321,6 +324,45 @@ app.patch('/skins/:skinId', authenticateToken, async (req, res) => {
     }
 });
 
+// Rota para depositar saldo (requer autenticação)
+app.post('/deposit', authenticateToken, async (req, res) => {
+    console.log('--- DEPOSIT REQUEST RECEIVED ---');
+    try {
+        const { amount } = req.body;
+        const userId = req.user.id;
+        console.log(`User ID from token: ${userId}, Amount: ${amount}`);
+
+        if (typeof amount !== 'number' || amount <= 0) {
+            console.log('Validation failed: Invalid amount.');
+            return res.status(400).json({ message: 'O valor do depósito deve ser um número positivo.' });
+        }
+
+        const data = readData();
+        const userIndex = data.users.findIndex(u => u.id === userId);
+
+        if (userIndex === -1) {
+            console.log(`User with ID ${userId} not found in database.`);
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+
+        console.log(`User balance BEFORE deposit: ${data.users[userIndex].saldo}`);
+        data.users[userIndex].saldo += amount;
+        console.log(`User balance AFTER deposit: ${data.users[userIndex].saldo}`);
+        
+        await saveData(data);
+
+        console.log('Deposit successful. Sending updated user data.');
+        res.json({ 
+            message: 'Depósito realizado com sucesso',
+            user: { ...data.users[userIndex], password: undefined } 
+        });
+
+    } catch (error) {
+        console.error('--- ERROR PROCESSING DEPOSIT ---', error);
+        res.status(500).json({ message: 'Erro interno ao processar o depósito.' });
+    }
+});
+
 // Rota para listar histórico (requer autenticação)
 app.get('/history', authenticateToken, (req, res) => {
     try {
@@ -355,61 +397,66 @@ app.get('/inventory/:userId', authenticateToken, (req, res) => {
 
 // Rota para comprar skin (requer autenticação)
 app.post('/buy', authenticateToken, async (req, res) => {
+    console.log('--- BUY REQUEST (OWNERSHIP ONLY) ---');
+    const { skinId } = req.body;
+    const buyerId = req.user.id;
+
     try {
-        const { skinId } = req.body;
         const data = readData();
-        const buyer = data.users.find(u => u.id === req.user.id);
-        const skin = data.skins.find(s => s.id === skinId);
-        
-        if (!skin || !skin.venda) {
-            return res.status(404).json({ message: 'Skin não encontrada ou não está à venda' });
+
+        // --- 1. Find Entities ---
+        const buyerIndex = data.users.findIndex(u => u.id === buyerId);
+        const skinIndex = data.skins.findIndex(s => s.id === skinId);
+
+        // --- 2. Validation ---
+        if (buyerIndex === -1) {
+            return res.status(404).json({ message: 'Comprador não encontrado.' });
+        }
+        if (skinIndex === -1) {
+            return res.status(404).json({ message: 'Skin não encontrada.' });
         }
 
-        const seller = data.users.find(u => u.id === skin.idDono);
-        if (!seller) {
-            return res.status(404).json({ message: 'Vendedor não encontrado' });
-        }
+        const buyer = data.users[buyerIndex];
+        const skin = data.skins[skinIndex];
+        const sellerIndex = data.users.findIndex(u => u.id === skin.ownerId);
 
+        if (sellerIndex === -1) {
+            return res.status(404).json({ message: 'Vendedor da skin não foi encontrado.' });
+        }
+        if (!skin.venda) {
+            return res.status(400).json({ message: 'Esta skin não está à venda.' });
+        }
+        if (skin.ownerId === buyer.id) {
+            return res.status(400).json({ message: 'Você não pode comprar sua própria skin.' });
+        }
         if (buyer.saldo < skin.preco) {
-            return res.status(400).json({ message: 'Saldo insuficiente' });
+            return res.status(400).json({ message: 'Saldo insuficiente para realizar a compra.' });
         }
 
-        // Realizar transação
-        buyer.saldo -= skin.preco;
-        seller.saldo += skin.preco;
-        seller.vendas++;
-
-        // Atualizar inventário
-        skin.venda = false;
-        seller.inventory = seller.inventory.filter(id => id !== skin.id);
-        buyer.inventory.push(skin.id);
-
-        // Registrar histórico
-        const now = new Date().toISOString();
-        buyer.historicoTransferencias.push({
-            tipo: "COMPRA",
-            skinId: skin.id,
-            skinNome: skin.nome,
-            preco: skin.preco,
-            data: now,
-            de: seller.id
-        });
-
-        seller.historicoTransferencias.push({
-            tipo: "VENDA",
-            skinId: skin.id,
-            skinNome: skin.nome,
-            preco: skin.preco,
-            data: now,
-            para: buyer.id
-        });
-
-        skin.idDono = buyer.id;
+        // --- 3. Execute Transaction (Balances & Ownership) ---
         
-        saveData(data);
-        res.json({ message: 'Compra realizada com sucesso' });
+        // Update balances
+        data.users[buyerIndex].saldo -= skin.preco;
+        data.users[sellerIndex].saldo += skin.preco;
+
+        // Update skin ownership and status
+        data.skins[skinIndex].ownerId = buyer.id;
+        data.skins[skinIndex].venda = false;
+
+        // --- 4. Save and Respond ---
+        await saveData(data);
+        console.log(`Purchase successful: User ${buyer.id} bought skin ${skin.id}.`);
+
+        // Return the updated buyer object to sync frontend state
+        const updatedBuyer = data.users[buyerIndex];
+        res.json({ 
+            message: 'Compra realizada com sucesso!',
+            user: { ...updatedBuyer, password: undefined } 
+        });
+
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao realizar compra' });
+        console.error('--- ERROR PROCESSING PURCHASE ---', error);
+        res.status(500).json({ message: 'Ocorreu um erro interno ao processar a compra.' });
     }
 });
 
