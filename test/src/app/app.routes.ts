@@ -7,11 +7,11 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'account', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'inventory', component: InventoryComponent, canActivate: [authGuard] },
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/home' }
 ];

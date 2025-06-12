@@ -1,37 +1,67 @@
-<div class="container">
-  <div class="inventory-container">
-    <h1>Meu Inventário</h1>
-    
-    <div *ngIf="loading" class="loading">Carregando...</div>
-    
-    <div *ngIf="error" class="error-message">
-      {{ error }}
+<div class="inventory-container">
+  <div class="toolbar">
+    <button class="add-button" (click)="openAddForm()">Adicionar Novo Item</button>
+  </div>
+
+  <!-- Formulário Modal para Adicionar/Editar Item -->
+  <div *ngIf="showForm" class="form-overlay" (click)="closeForm()">
+    <div class="item-form-container" (click)="$event.stopPropagation()">
+      <h2>{{ isEditing ? 'Editar Item' : 'Adicionar Novo Item' }}</h2>
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="nome">Nome do Item</label>
+          <input id="nome" formControlName="nome" required>
+        </div>
+        <div class="form-group">
+          <label for="descricao">Descrição</label>
+          <textarea id="descricao" formControlName="descricao" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="imagem">URL da Imagem</label>
+          <input id="imagem" formControlName="imagem" required>
+        </div>
+        <div class="form-group">
+          <label for="float">Float</label>
+          <input id="float" type="number" formControlName="float" required>
+        </div>
+        <div class="form-actions">
+          <button type="button" (click)="closeForm()">Cancelar</button>
+          <button type="submit" [disabled]="itemForm.invalid">{{ isEditing ? 'Salvar Alterações' : 'Adicionar' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Grid de Itens do Inventário -->
+  <div class="items-grid" *ngIf="inventory$ | async as items; else loading">
+    <div *ngIf="items.length === 0" class="no-items">
+      Você ainda não possui itens no inventário.
     </div>
 
-    <div class="skins-grid" *ngIf="!loading && !error">
-      <div class="skin-card" *ngFor="let skin of skins">
-        <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
-        <div class="skin-info">
-          <h3>{{ skin.nome }}</h3>
-          <p class="float">Float: {{ skin.float }}</p>
-          <p class="price">Preço: R${{ skin.preco }}</p>
-          <p class="description">{{ skin.descricao }}</p>
-          
-          <div class="skin-actions">
-            <button 
-              class="toggle-sale-button" 
-              (click)="toggleSale(skin)"
-              [class.active]="skin.venda"
-            >
-              {{ skin.venda ? 'À Venda' : 'Colocar à Venda' }}
-            </button>
-          </div>
+    <div class="item-card" *ngFor="let item of items">
+      <img [src]="item.imagem" alt="{{ item.nome }}" class="item-image">
+      <div class="item-details">
+        <h3 class="item-name">{{ item.nome }}</h3>
+        <p class="item-description">{{ item.descricao }}</p>
+        <p class="item-float">Float: {{ item.float | number:'1.4-4' }}</p>
+        
+        <div *ngIf="item.venda" class="item-status for-sale">
+          À Venda: {{ item.preco | currency:'BRL' }}
+        </div>
+
+        <div class="item-actions">
+          <button class="edit-btn" (click)="openEditForm(item)">Editar</button>
+          <button class="sell-btn" (click)="toggleSale(item)">
+            {{ item.venda ? 'Remover da Venda' : 'Vender' }}
+          </button>
+          <button class="delete-btn" (click)="deleteItem(item.id)">Deletar</button>
         </div>
       </div>
     </div>
-
-    <div class="no-skins" *ngIf="skins.length === 0 && !loading">
-      <p>Você não possui skins no momento.</p>
-    </div>
   </div>
+
+  <ng-template #loading>
+    <div class="loading">Carregando inventário...</div>
+  </ng-template>
 </div>
+

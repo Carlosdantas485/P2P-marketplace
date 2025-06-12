@@ -15,7 +15,10 @@
           <h3>{{ skin.nome }}</h3>
           <p class="float">Float: {{ skin.float }}</p>
           <p class="price">${{ skin.preco }}</p>
-          <button class="buy-button" [disabled]="!skin.venda">Buy Now</button>
+          <button class="buy-button" [disabled]="!skin.venda || skin.ownerId === currentUserId">Comprar</button>
+          <button class="wishlist-button" (click)="addToWishlist(skin.id)" [disabled]="!skin.venda || skin.ownerId === currentUserId">
+            &#x2764;
+          </button>
         </div>
       </div>
     </div>

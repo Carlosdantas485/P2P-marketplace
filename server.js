@@ -69,7 +69,8 @@ app.post('/register', async (req, res) => {
             nivel: 1,
             vendas: 0,
             historicoTransferencias: [],
-            inventory: []
+            inventory: [],
+            wishlist: []
         };
 
         data.users.push(newUser);
@@ -172,28 +173,149 @@ app.get('/skins/:ownerId', (req, res) => {
     }
 });
 
+// Rota para criar uma nova skin
+app.post('/skins', authenticateToken, (req, res) => {
+    try {
+        const data = readData();
+        const { nome, descricao, imagem, float } = req.body;
+
+        if (!nome || !descricao || !imagem) {
+            return res.status(400).json({ message: 'Nome, descrição e URL da imagem são obrigatórios.' });
+        }
+
+        const newSkin = {
+            id: String(Date.now() + Math.random()), // Simple unique ID
+            ownerId: req.user.id,
+            nome,
+            descricao,
+            imagem,
+            float: float || 0,
+            venda: false,
+            preco: 0,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+
+        data.skins.push(newSkin);
+        saveData(data);
+        res.status(201).json(newSkin);
+    } catch (error) {
+        console.error('Erro ao criar skin:', error);
+        res.status(500).json({ message: 'Erro ao criar a skin.' });
+    }
+});
+
+// Rota para atualizar uma skin (editar nome, descrição, etc.)
+app.put('/skins/:skinId', authenticateToken, (req, res) => {
+    try {
+        const { skinId } = req.params;
+        const { nome, descricao, imagem, float } = req.body;
+        const data = readData();
+        
+        const skinIndex = data.skins.findIndex(s => s.id === skinId);
+        if (skinIndex === -1) {
+            return res.status(404).json({ message: 'Skin não encontrada' });
+        }
+
+        if (data.skins[skinIndex].ownerId !== req.user.id) {
+            return res.status(403).json({ message: 'Não autorizado a editar esta skin.' });
+        }
+
+        data.skins[skinIndex] = {
+             ...data.skins[skinIndex],
+             nome: nome || data.skins[skinIndex].nome,
+             descricao: descricao || data.skins[skinIndex].descricao,
+             imagem: imagem || data.skins[skinIndex].imagem,
+             float: float || data.skins[skinIndex].float,
+             updated_at: new Date().toISOString()
+        };
+        saveData(data);
+        res.json(data.skins[skinIndex]);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar a skin.' });
+    }
+});
+
+// Rota para deletar uma skin
+// Rota para adicionar item à wishlist
+app.post('/api/wishlist', authenticateToken, (req, res) => {
+    try {
+        const { skinId } = req.body;
+        const userId = req.user.id;
+        const data = readData();
+
+        const userIndex = data.users.findIndex(u => u.id === userId);
+        if (userIndex === -1) {
+            return res.status(404).json({ message: 'Usuário não encontrado' });
+        }
+
+        if (!data.users[userIndex].wishlist) {
+            data.users[userIndex].wishlist = [];
+        }
+
+        if (data.users[userIndex].wishlist.includes(skinId)) {
+            return res.status(400).json({ message: 'Item já está na sua lista de desejos.' });
+        }
+
+        data.users[userIndex].wishlist.push(skinId);
+        saveData(data);
+
+        res.status(200).json({ message: 'Item adicionado à lista de desejos com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao adicionar à wishlist:', error);
+        res.status(500).json({ message: 'Erro ao adicionar item à lista de desejos.' });
+    }
+});
+
+app.delete('/skins/:skinId', authenticateToken, (req, res) => {
+    try {
+        const { skinId } = req.params;
+        const data = readData();
+        
+        const skinIndex = data.skins.findIndex(s => s.id === skinId);
+        if (skinIndex === -1) {
+            return res.status(404).json({ message: 'Skin não encontrada' });
+        }
+
+        if (data.skins[skinIndex].ownerId !== req.user.id) {
+            return res.status(403).json({ message: 'Não autorizado a deletar esta skin.' });
+        }
+
+        data.skins.splice(skinIndex, 1);
+        saveData(data);
+        res.status(204).send(); // No Content
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao deletar a skin.' });
+    }
+});
+
 // Rota para atualizar status de venda da skin
 app.patch('/skins/:skinId', authenticateToken, async (req, res) => {
     try {
         const { skinId } = req.params;
-        const { venda } = req.body;
+        const { venda, preco } = req.body; // Extrair venda e preco
         const data = readData();
         
-        const skin = data.skins.find(s => s.id === skinId);
-        if (!skin) {
+        const skinIndex = data.skins.findIndex(s => s.id === skinId);
+        if (skinIndex === -1) {
             return res.status(404).json({ message: 'Skin não encontrada' });
         }
 
         // Verificar se o usuário é o dono da skin
-        if (skin.ownerId !== req.user.id) {
+        if (data.skins[skinIndex].ownerId !== req.user.id) {
             return res.status(403).json({ message: 'Não autorizado' });
         }
 
-        skin.venda = venda;
-        skin.updated_at = new Date().toISOString();
+        // Atualizar os campos
+        data.skins[skinIndex].venda = venda;
+        if (preco !== undefined) { // Apenas atualiza o preço se for fornecido
+            data.skins[skinIndex].preco = preco;
+        }
+        data.skins[skinIndex].updated_at = new Date().toISOString();
         
         saveData(data);
-        res.json({ message: 'Status de venda atualizado com sucesso' });
+        // Retorna a skin atualizada
+        res.json(data.skins[skinIndex]);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao atualizar status de venda' });
     }
