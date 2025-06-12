@@ -49,8 +49,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  addToWishlist(skinId: string): void {
-    this.wishlistService.addToWishlist(skinId).subscribe({
+  addToWishlist(skinId: any): void {
+    const numericSkinId = Number(skinId);
+    this.wishlistService.addToWishlist(numericSkinId).subscribe({
       next: () => alert('Item adicionado à sua lista de desejos!'),
       error: (err: any) => alert(`Erro: ${err.error?.message || 'Ocorreu um erro.'}`)
     });

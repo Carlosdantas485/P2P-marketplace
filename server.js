@@ -73,7 +73,7 @@ app.post('/register', async (req, res) => {
             vendas: 0,
             historicoTransferencias: [],
             inventory: [],
-            wishlist: []
+            wishlist: [] // Initialize wishlist
         };
 
         data.users.push(newUser);
@@ -241,34 +241,7 @@ app.put('/skins/:skinId', authenticateToken, (req, res) => {
 
 // Rota para deletar uma skin
 // Rota para adicionar item à wishlist
-app.post('/api/wishlist', authenticateToken, (req, res) => {
-    try {
-        const { skinId } = req.body;
-        const userId = req.user.id;
-        const data = readData();
 
-        const userIndex = data.users.findIndex(u => u.id === userId);
-        if (userIndex === -1) {
-            return res.status(404).json({ message: 'Usuário não encontrado' });
-        }
-
-        if (!data.users[userIndex].wishlist) {
-            data.users[userIndex].wishlist = [];
-        }
-
-        if (data.users[userIndex].wishlist.includes(skinId)) {
-            return res.status(400).json({ message: 'Item já está na sua lista de desejos.' });
-        }
-
-        data.users[userIndex].wishlist.push(skinId);
-        saveData(data);
-
-        res.status(200).json({ message: 'Item adicionado à lista de desejos com sucesso.' });
-    } catch (error) {
-        console.error('Erro ao adicionar à wishlist:', error);
-        res.status(500).json({ message: 'Erro ao adicionar item à lista de desejos.' });
-    }
-});
 
 app.delete('/skins/:skinId', authenticateToken, (req, res) => {
     try {
@@ -406,7 +379,7 @@ app.post('/buy', authenticateToken, async (req, res) => {
 
         // --- 1. Find Entities ---
         const buyerIndex = data.users.findIndex(u => u.id === buyerId);
-        const skinIndex = data.skins.findIndex(s => s.id === skinId);
+        const skinIndex = data.skins.findIndex(s => s.id == skinId); // Use loose equality
 
         // --- 2. Validation ---
         if (buyerIndex === -1) {
@@ -457,6 +430,93 @@ app.post('/buy', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('--- ERROR PROCESSING PURCHASE ---', error);
         res.status(500).json({ message: 'Ocorreu um erro interno ao processar a compra.' });
+    }
+});
+
+// --- Wishlist API Endpoints ---
+
+// Get user's wishlist
+app.get('/api/wishlist', authenticateToken, (req, res) => {
+    try {
+        const userId = req.user.id;
+        const data = readData();
+        const user = data.users.find(u => u.id == userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuário não encontrado' });
+        }
+
+        const wishlistSkins = (user.wishlist || []).map(skinId => {
+            return data.skins.find(s => s.id == skinId);
+        }).filter(Boolean); // filter out nulls if a skin is not found
+
+        res.status(200).json(wishlistSkins);
+    } catch (error) {
+        console.error('Erro ao buscar a wishlist:', error);
+        res.status(500).json({ message: 'Erro ao buscar a lista de desejos.' });
+    }
+});
+
+// Add item to wishlist
+app.post('/api/wishlist', authenticateToken, async (req, res) => {
+    try {
+        const { skinId } = req.body;
+        const userId = req.user.id;
+        const data = readData();
+
+        const userIndex = data.users.findIndex(u => u.id == userId);
+        if (userIndex === -1) {
+            return res.status(404).json({ message: 'Usuário não encontrado' });
+        }
+
+        const skinExists = data.skins.some(s => s.id == skinId);
+        if (!skinExists) {
+            return res.status(404).json({ message: 'Skin não encontrada.' });
+        }
+
+        const user = data.users[userIndex];
+        if (!user.wishlist) {
+            user.wishlist = [];
+        }
+
+        if (user.wishlist.some(id => id == skinId)) {
+            return res.status(400).json({ message: 'Item já está na sua lista de desejos.' });
+        }
+
+        user.wishlist.push(skinId);
+        await saveData(data);
+
+        res.status(200).json({ message: 'Item adicionado à lista de desejos com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao adicionar à wishlist:', error);
+        res.status(500).json({ message: 'Erro ao adicionar item à lista de desejos.' });
+    }
+});
+
+// Remove item from wishlist
+app.delete('/api/wishlist/:skinId', authenticateToken, async (req, res) => {
+    try {
+        const { skinId } = req.params;
+        const userId = req.user.id;
+        const data = readData();
+
+        const userIndex = data.users.findIndex(u => u.id == userId);
+        if (userIndex === -1) {
+            return res.status(404).json({ message: 'Usuário não encontrado' });
+        }
+
+        const user = data.users[userIndex];
+        if (!user.wishlist || !user.wishlist.some(id => id == skinId)) {
+            return res.status(404).json({ message: 'Item não encontrado na lista de desejos.' });
+        }
+
+        user.wishlist = user.wishlist.filter(id => id != skinId);
+        await saveData(data);
+
+        res.status(200).json({ message: 'Item removido da lista de desejos com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao remover da wishlist:', error);
+        res.status(500).json({ message: 'Erro ao remover item da lista de desejos.' });
     }
 });
 

@@ -1,0 +1,18 @@
+<div class="wishlist-container">
+  <h1>Minha Lista de Desejos</h1>
+  <div *ngIf="loading" class="loading">Carregando...</div>
+  <div *ngIf="!loading && wishlist.length === 0" class="empty-wishlist">
+    <p>Sua lista de desejos está vazia.</p>
+    <a routerLink="/home">Explore o Marketplace</a>
+  </div>
+  <div class="skins-grid" *ngIf="!loading && wishlist.length > 0">
+    <div class="skin-card" *ngFor="let skin of wishlist">
+      <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
+      <div class="skin-info">
+        <h3>{{ skin.nome }}</h3>
+        <p class="price">R$ {{ skin.preco | number:'1.2-2' }}</p>
+        <button class="remove-button" (click)="removeFromWishlist(skin.id)">Remover</button>
+      </div>
+    </div>
+  </div>
+</div>
