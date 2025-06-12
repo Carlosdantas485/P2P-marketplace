@@ -43,14 +43,64 @@
 
     <div class="transaction-history">
       <h3>Histórico de Transações</h3>
-      <div *ngIf="user.historicoTransferencias && user.historicoTransferencias.length > 0; else noHistory">
-        <ul>
-          <li *ngFor="let transacao of user.historicoTransferencias">
-            <span>{{ transacao.tipo }}: {{ transacao.skinNome }}</span>
-            <span>R$ {{ transacao.preco | number:'1.2-2' }}</span>
-            <span>{{ transacao.data | date:'dd/MM/yyyy' }}</span>
-          </li>
-        </ul>
+
+      <div class="totals-summary">
+        <div class="total-box saldo">
+          <h4>Saldo Atual</h4>
+          <p>R$ {{ user.saldo | number:'1.2-2' }}</p>
+        </div>
+        <div class="total-box sales">
+          <h4>Total Vendas</h4>
+          <p>R$ {{ totalVendas | number:'1.2-2' }}</p>
+        </div>
+        <div class="total-box purchases">
+          <h4>Total Compras</h4>
+          <p>-R$ {{ totalCompras | number:'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <div class="filter-controls">
+        <button (click)="applyFilter('all')" [class.active]="filterType === 'all'">Todos</button>
+        <button (click)="applyFilter('compra')" [class.active]="filterType === 'compra'">Compras</button>
+        <button (click)="applyFilter('venda')" [class.active]="filterType === 'venda'">Vendas</button>
+      </div>
+
+
+      <div *ngIf="filteredHistory.length > 0; else noHistory">
+        <div class="history-list">
+          <div *ngFor="let item of filteredHistory" class="history-item" [ngClass]="{
+            'purchase': item.type === 'compra',
+            'sale': item.type === 'venda'
+          }">
+            <div class="history-type">
+              <span *ngIf="item.type === 'compra'" class="icon">🛒</span>
+              <span *ngIf="item.type === 'venda'" class="icon">💰</span>
+              <span class="label">
+                <ng-container [ngSwitch]="item.type">
+                  <span *ngSwitchCase="'compra'">Compra</span>
+                  <span *ngSwitchCase="'venda'">Venda</span>
+                </ng-container>
+              </span>
+            </div>
+            <div class="history-main">
+              <div *ngIf="item.skinName"><b>Skin:</b> {{ item.skinName }}</div>
+              <div *ngIf="item.type === 'compra'"><b>De:</b> {{ item.sellerUsername }}</div>
+              <div *ngIf="item.type === 'venda'"><b>Para:</b> {{ item.buyerUsername }}</div>
+            </div>
+            <div class="history-value" [ngClass]="{
+              'negative': item.type === 'compra',
+              'positive': item.type === 'venda'
+            }">
+              <ng-container [ngSwitch]="item.type">
+                <span *ngSwitchCase="'compra'">-R$ {{ item.price | number:'1.2-2' }}</span>
+                <span *ngSwitchCase="'venda'">R$ {{ item.price | number:'1.2-2' }}</span>
+              </ng-container>
+            </div>
+            <div class="history-date">
+              <b>Data:</b> {{ item.date | date:'dd/MM/yyyy HH:mm' }}
+            </div>
+          </div>
+        </div>
       </div>
       <ng-template #noHistory>
         <p>Nenhuma transação encontrada.</p>

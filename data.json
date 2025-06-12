@@ -6,7 +6,7 @@
       "email": "carlosdantas485@gmail.com",
       "password": "$2a$10$LWsPL.Ex61taRP68tmMYOuxuz1ul6scmIXzHnky5bMRSynZNyC/zC",
       "foto": "https://i.pinimg.com/474x/4b/2e/d6/4b2ed61e4b7b0733727c7cd35892df20.jpg",
-      "saldo": 100,
+      "saldo": 200,
       "nivel": 1,
       "vendas": 0,
       "historicoTransferencias": [
@@ -17,6 +17,14 @@
           "price": 100,
           "buyerUsername": "Admin",
           "date": "2025-06-12T17:52:36.317Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "date": "2025-06-12T18:04:28.757Z"
         }
       ],
       "inventory": [],
@@ -28,7 +36,7 @@
       "email": "admin@exemplo.com",
       "password": "$2a$10$8hGr23uxAjSpLXnVEgEY2OAeDDjD67.vFAq2KgVq9Xsh.NLTG3y66",
       "foto": "https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png",
-      "saldo": 9900,
+      "saldo": 9800,
       "nivel": 1,
       "vendas": 0,
       "historicoTransferencias": [
@@ -44,6 +52,14 @@
           "price": 100,
           "sellerUsername": "Carlos Alberto Dantas Filho",
           "date": "2025-06-12T17:52:36.317Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-12T18:04:28.757Z"
         }
       ],
       "inventory": [],
@@ -53,7 +69,7 @@
   "skins": [
     {
       "id": "1749750481187.7375",
-      "ownerId": "e745e679-ef2a-4936-ae64-d95f0639108a",
+      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
       "nome": "AWP",
       "descricao": "Dragon Lore",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
@@ -61,7 +77,7 @@
       "venda": true,
       "preco": 100,
       "created_at": "2025-06-12T17:48:01.187Z",
-      "updated_at": "2025-06-12T17:48:28.105Z"
+      "updated_at": "2025-06-12T18:04:49.026Z"
     },
     {
       "id": "1749750489323.8545",
@@ -82,10 +98,10 @@
       "descricao": "1231231",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
       "float": 1,
-      "venda": false,
+      "venda": true,
       "preco": 100,
       "created_at": "2025-06-12T17:48:17.321Z",
-      "updated_at": "2025-06-12T17:48:22.817Z"
+      "updated_at": "2025-06-12T18:04:45.087Z"
     }
   ],
   "history": [],

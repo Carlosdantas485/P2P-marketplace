@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
 import { Observable } from 'rxjs';
+import { HistoryService } from '../../services/history.service';
 
 @Component({
   selector: 'app-profile',
@@ -16,9 +17,18 @@ export class ProfileComponent {
   isEditing = false;
   editProfileForm: FormGroup;
 
+  // Histórico
+  history: any[] = [];
+  filteredHistory: any[] = [];
+  filterType: string = 'all';
+  total: number = 0;
+  totalCompras: number = 0;
+  totalVendas: number = 0;
+
   constructor(
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private historyService: HistoryService
   ) {
     this.user$ = this.authService.currentUser;
     this.editProfileForm = this.fb.group({
@@ -26,6 +36,33 @@ export class ProfileComponent {
       email: ['', [Validators.required, Validators.email]],
       foto: ['']
     });
+    // Carregar histórico ao inicializar
+    this.historyService.getHistory().subscribe((data) => {
+      this.history = data.filter(item => item.type === 'compra' || item.type === 'venda').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      this.calculateFixedTotals();
+      this.applyFilter('all');
+    });
+  }
+
+  calculateFixedTotals(): void {
+    this.totalCompras = this.history.filter(item => item.type === 'compra').reduce((sum, item) => sum + (item.price || 0), 0);
+    this.totalVendas = this.history.filter(item => item.type === 'venda').reduce((sum, item) => sum + (item.price || 0), 0);
+  }
+
+  applyFilter(type: string): void {
+    this.filterType = type;
+    if (type === 'all') {
+      this.filteredHistory = this.history;
+    } else {
+      this.filteredHistory = this.history.filter(item => item.type === type);
+    }
+    this.calculateTotal();
+  }
+
+  calculateTotal(): void {
+    if (this.filterType === 'compra' || this.filterType === 'venda') {
+      this.total = this.filteredHistory.reduce((sum, item) => sum + (item.price || 0), 0);
+    }
   }
 
   toggleEdit(): void {
