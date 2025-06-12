@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 export interface User {
@@ -114,26 +114,30 @@ export class AuthService {
       );
   }
 
-  updateAccount(userData: Partial<User>): Observable<{ success: boolean, message?: string }> {
+  updateAccount(partialUserData: Partial<User>): Observable<unknown> {
     const currentUser = this.currentUserValue;
-    if (!currentUser) {
-      return throwError(() => new Error('Nenhum usuário logado'));
+    if (!currentUser || !currentUser.id) {
+      console.error('Update Account Error: No current user or user ID.');
+      return throwError(() => new Error('Nenhum usuário logado ou ID do usuário ausente.'));
     }
 
-    return this.http.put<{ success: boolean, message?: string }>(`${this.apiUrl}/users/${currentUser.id}`, userData)
+    console.log('--- Starting Account Update ---');
+    console.log('Current User (before merge):', JSON.parse(JSON.stringify(currentUser)));
+    console.log('Partial User Data from form:', JSON.parse(JSON.stringify(partialUserData)));
+
+    const updatedData = { ...currentUser, ...partialUserData };
+
+    console.log('Updated User Data (after merge):', JSON.parse(JSON.stringify(updatedData)));
+
+    return this.http.put(`${this.apiUrl}/users/${currentUser.id}`, updatedData)
       .pipe(
-        map((response: { success: boolean, message?: string }) => {
-          if (response.success) {
-            const currentUser = this.currentUserValue;
-            if (currentUser) {
-              const updatedUser = { ...currentUser, ...userData };
-              this.updateCurrentUser(updatedUser);
-            }
-          }
-          return response;
+        tap(() => {
+          console.log('HTTP PUT successful. Updating current user in service.');
+          this.updateCurrentUser(updatedData);
+          console.log('--- Account Update Finished ---');
         }),
         catchError((error: any) => {
-          console.error('Account update error:', error);
+          console.error('Account update HTTP error:', error);
           return throwError(() => new Error('Erro ao atualizar conta'));
         })
       );

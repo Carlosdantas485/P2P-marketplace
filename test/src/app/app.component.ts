@@ -14,9 +14,13 @@ import { HeaderComponent } from './components/header/header.component';
     FormsModule,
     HeaderComponent
   ],
-  templateUrl: './app.html'
+  template: `
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+  `,
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  protected title = 'test-app';
+  title = 'P2P-marketplace';
   constructor(private authService: AuthService) {}
 }

@@ -1,0 +1,62 @@
+.profile-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+}
+
+.profile-header h2 {
+  margin: 10px 0 5px;
+  font-size: 24px;
+}
+
+.profile-header p {
+  margin: 0;
+  color: #666;
+}
+
+.profile-details, .transaction-history {
+  margin-bottom: 20px;
+}
+
+.profile-details h3, .transaction-history h3 {
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.profile-details p {
+  margin: 5px 0;
+}
+
+.transaction-history ul {
+  list-style: none;
+  padding: 0;
+}
+
+.transaction-history li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.transaction-history li:last-child {
+  border-bottom: none;
+}

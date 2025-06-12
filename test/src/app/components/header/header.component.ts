@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, User } from '../../services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -15,24 +16,13 @@ import { AuthService } from '../../services/auth.service';
   ]
 })
 export class HeaderComponent {
-  username: string = 'Usuário';
-  profileImage: string | null = null;
+  user$: Observable<User | null>;
 
-  constructor(private authService: AuthService) {
-    this.authService.currentUser.subscribe(user => {
-      if (user) {
-        this.username = user.username;
-        this.profileImage = user.foto || null;
-      } else {
-        this.username = 'Usuário';
-        this.profileImage = null;
-      }
-    });
+  constructor(public authService: AuthService) {
+    this.user$ = this.authService.currentUser;
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
-    this.username = 'Usuário';
-    this.profileImage = null;
   }
 }
