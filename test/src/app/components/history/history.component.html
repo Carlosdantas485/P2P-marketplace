@@ -1,0 +1,35 @@
+<div class="history-container">
+  <h2>Histórico de Transações</h2>
+
+  <div *ngIf="loading" class="loading-spinner"></div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && history.length === 0" class="empty-history">
+    <p>Nenhuma transação encontrada.</p>
+  </div>
+
+  <div *ngIf="!loading && !error && history.length > 0" class="history-list">
+    <div *ngFor="let item of history" class="history-item" [ngSwitch]="item.type">
+      <div *ngSwitchCase="'compra'" class="transaction-details purchase">
+        <p><strong>Compra:</strong> {{ item.skinName }}</p>
+        <p><strong>Vendedor:</strong> {{ item.sellerUsername }}</p>
+        <p><strong>Preço:</strong> R$ {{ item.price.toFixed(2) }}</p>
+        <p><strong>Data:</strong> {{ item.date | date:'short' }}</p>
+      </div>
+      <div *ngSwitchCase="'venda'" class="transaction-details sale">
+        <p><strong>Venda:</strong> {{ item.skinName }}</p>
+        <p><strong>Comprador:</strong> {{ item.buyerUsername }}</p>
+        <p><strong>Preço:</strong> R$ {{ item.price.toFixed(2) }}</p>
+        <p><strong>Data:</strong> {{ item.date | date:'short' }}</p>
+      </div>
+      <div *ngSwitchCase="'deposito'" class="transaction-details deposit">
+        <p><strong>Depósito</strong></p>
+        <p><strong>Valor:</strong> R$ {{ item.amount.toFixed(2) }}</p>
+        <p><strong>Data:</strong> {{ item.date | date:'short' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

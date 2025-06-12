@@ -321,6 +321,17 @@ app.post('/deposit', authenticateToken, async (req, res) => {
         console.log(`User balance BEFORE deposit: ${data.users[userIndex].saldo}`);
         data.users[userIndex].saldo += amount;
         console.log(`User balance AFTER deposit: ${data.users[userIndex].saldo}`);
+
+        // Add to transaction history
+        const depositRecord = {
+            type: 'deposito',
+            amount: amount,
+            date: new Date().toISOString()
+        };
+        if (!data.users[userIndex].historicoTransferencias) {
+            data.users[userIndex].historicoTransferencias = [];
+        }
+        data.users[userIndex].historicoTransferencias.push(depositRecord);
         
         await saveData(data);
 
@@ -337,15 +348,21 @@ app.post('/deposit', authenticateToken, async (req, res) => {
 });
 
 // Rota para listar histórico (requer autenticação)
-app.get('/history', authenticateToken, (req, res) => {
+app.get('/api/history', authenticateToken, (req, res) => {
     try {
         const data = readData();
         const user = data.users.find(u => u.id === req.user.id);
+
         if (!user) {
             return res.status(404).json({ message: 'Usuário não encontrado' });
         }
-        res.json(user.historicoTransferencias);
+
+        // Sort history by date, descending
+        const sortedHistory = (user.historicoTransferencias || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        res.json(sortedHistory);
     } catch (error) {
+        console.error('Error fetching history:', error);
         res.status(500).json({ message: 'Erro ao listar histórico' });
     }
 });
@@ -416,7 +433,39 @@ app.post('/buy', authenticateToken, async (req, res) => {
         data.skins[skinIndex].ownerId = buyer.id;
         data.skins[skinIndex].venda = false;
 
-        // --- 4. Save and Respond ---
+        // --- 4. Record Transaction History ---
+        const seller = data.users[sellerIndex];
+        const transactionDate = new Date().toISOString();
+
+        // For Buyer
+        const purchaseRecord = {
+            type: 'compra',
+            skinId: skin.id,
+            skinName: skin.nome,
+            price: skin.preco,
+            sellerUsername: seller.username,
+            date: transactionDate
+        };
+        if (!buyer.historicoTransferencias) {
+            buyer.historicoTransferencias = [];
+        }
+        buyer.historicoTransferencias.push(purchaseRecord);
+
+        // For Seller
+        const saleRecord = {
+            type: 'venda',
+            skinId: skin.id,
+            skinName: skin.nome,
+            price: skin.preco,
+            buyerUsername: buyer.username,
+            date: transactionDate
+        };
+        if (!seller.historicoTransferencias) {
+            seller.historicoTransferencias = [];
+        }
+        seller.historicoTransferencias.push(saleRecord);
+
+        // --- 5. Save and Respond ---
         await saveData(data);
         console.log(`Purchase successful: User ${buyer.id} bought skin ${skin.id}.`);
 
