@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { InventoryService } from '../../services/inventory.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-confirm-payment',
@@ -17,14 +18,23 @@ export class ConfirmPaymentComponent implements OnInit {
   loading = false;
   successMsg = '';
   errorMsg = '';
-  metodoPagamento: 'saldo' | 'cartao' | 'pix' = 'saldo';
+  metodoPagamento: 'saldo' | 'cartao' | 'pix' | 'boleto' = 'saldo';
   cartaoInfo = { numero: '', validade: '', cvv: '' };
   pixCopiaCola = '00020126360014BR.GOV.BCB.PIX0114+5599999999995204000053039865405100.005802BR5920NOME DO RECEBEDOR6009SAO PAULO62070503***6304B14F';
+  boletoLinhaDigitavel = '34191.79001 01043.510047 91020.150008 6 89470026000';
+
+  onMetodoPagamentoChange(metodo: 'saldo' | 'cartao' | 'pix' | 'boleto') {
+    this.metodoPagamento = metodo;
+    if (metodo !== 'cartao') {
+      this.cartaoInfo = { numero: '', validade: '', cvv: '' };
+    }
+  }
 
   constructor(
     private router: Router,
     private inventoryService: InventoryService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -62,11 +72,23 @@ export class ConfirmPaymentComponent implements OnInit {
       this.loading = false;
       return;
     }
+    if (this.metodoPagamento === 'boleto') {
+      // Simulação: mostrar mensagem e não processar a compra até o usuário pagar o boleto
+      this.successMsg = 'Use a linha digitável abaixo para pagar o boleto no seu banco. Após o pagamento, clique novamente em Confirmar Compra.';
+      this.loading = false;
+      return;
+    }
 
     let comprasEfetuadas = 0;
     let erroOcorrido = false;
+    const compradorId = this.authService.currentUserValue?.id;
+    if (!compradorId) {
+      this.errorMsg = 'Você precisa estar logado para comprar.';
+      this.loading = false;
+      return;
+    }
     for (const item of this.items) {
-      this.inventoryService.purchase(item.id).subscribe({
+      this.inventoryService.purchase(item.id, compradorId).subscribe({
         next: () => {
           // Após a compra, remover da wishlist
           this.wishlistService.removeFromWishlist(item.id).subscribe({
@@ -80,7 +102,7 @@ export class ConfirmPaymentComponent implements OnInit {
           if (comprasEfetuadas === this.items.length && !erroOcorrido) {
             this.successMsg = 'Compra realizada com sucesso!';
             this.loading = false;
-            setTimeout(() => this.router.navigate(['/wishlist']), 1500);
+            setTimeout(() => this.router.navigate(['/']), 1500);
           }
         },
         error: (err) => {

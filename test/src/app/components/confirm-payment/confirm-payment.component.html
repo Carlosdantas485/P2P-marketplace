@@ -1,50 +1,73 @@
-<div class="confirm-payment-container">
+<div class="confirm-container split-layout">
   <h2>Confirmação de Compra</h2>
-  <div *ngIf="items.length === 0">
-    <p>Nenhum item selecionado para compra.</p>
-  </div>
-  <div *ngIf="items.length > 0">
-    <h3>Itens da sua lista de desejos:</h3>
-    <ul>
-      <li *ngFor="let item of items">
-        <img [src]="item.imagem" [alt]="item.nome" class="item-img">
-        <span class="item-nome">{{ item.nome }}</span>
-        <span class="item-price">R$ {{ item.preco | number:'1.2-2' }}</span>
-      </li>
-    </ul>
-    <div class="total-confirm">
-      <strong>Total a pagar:</strong> <span class="total-price">R$ {{ total | number:'1.2-2' }}</span>
-    </div>
+  <div class="split-content">
+    <!-- Esquerda: itens -->
+    <div class="split-left">
+      <div *ngIf="items.length === 0">
+        <p>Nenhum item selecionado para compra.</p>
+      </div>
+      <div *ngIf="items.length > 0">
+        <div class="item-list">
+          <div class="item" *ngFor="let item of items">
+            <img [src]="item.imagem" [alt]="item.nome" class="item-image">
+            <div class="item-info">
+              <div><strong>{{ item.nome }}</strong></div>
+              <div>Preço: R$ {{ item.preco | number:'1.2-2' }}</div>
+            </div>
+          </div>
+        </div>
 
-    <div class="payment-methods">
-      <label>
-        <input type="radio" name="metodoPagamento" value="saldo" [(ngModel)]="metodoPagamento"> Usar saldo
-      </label>
-      <label>
-        <input type="radio" name="metodoPagamento" value="cartao" [(ngModel)]="metodoPagamento"> Cartão de crédito
-      </label>
-      <label>
-        <input type="radio" name="metodoPagamento" value="pix" [(ngModel)]="metodoPagamento"> Pix
-      </label>
+      </div>
     </div>
-
-    <div class="cartao-form" *ngIf="metodoPagamento === 'cartao'">
-      <input type="text" placeholder="Número do cartão" [(ngModel)]="cartaoInfo.numero" maxlength="19">
-      <input type="text" placeholder="Validade (MM/AA)" [(ngModel)]="cartaoInfo.validade" maxlength="5">
-      <input type="text" placeholder="CVV" [(ngModel)]="cartaoInfo.cvv" maxlength="4">
+    <!-- Direita: pagamento -->
+    <div class="split-right">
+      <div class="total-confirm">
+        <strong>Total a pagar:</strong> <span class="total-price">R$ {{ total | number:'1.2-2' }}</span>
+      </div>
+      <div class="payment-methods">
+        <label>
+          <input type="radio" name="metodoPagamento" value="saldo" [checked]="metodoPagamento === 'saldo'" (change)="onMetodoPagamentoChange('saldo')"> Usar saldo
+        </label>
+        <label>
+          <input type="radio" name="metodoPagamento" value="cartao" [checked]="metodoPagamento === 'cartao'" (change)="onMetodoPagamentoChange('cartao')"> Cartão de crédito
+        </label>
+        <label>
+          <input type="radio" name="metodoPagamento" value="pix" [checked]="metodoPagamento === 'pix'" (change)="onMetodoPagamentoChange('pix')"> Pix
+        </label>
+        <label>
+          <input type="radio" name="metodoPagamento" value="boleto" [checked]="metodoPagamento === 'boleto'" (change)="onMetodoPagamentoChange('boleto')"> Boleto
+        </label>
+      </div>
+      <div class="cartao-form" *ngIf="metodoPagamento === 'cartao'">
+        <label for="numero-cartao">Número do cartão</label>
+        <input id="numero-cartao" type="text" placeholder="0000 0000 0000 0000" [(ngModel)]="cartaoInfo.numero" maxlength="19" autocomplete="cc-number">
+        <div style="display:flex; gap:10px; margin-top:8px;">
+          <div style="flex:1;">
+            <label for="validade-cartao">Validade</label>
+            <input id="validade-cartao" type="text" placeholder="MM/AA" [(ngModel)]="cartaoInfo.validade" maxlength="5" autocomplete="cc-exp">
+          </div>
+          <div style="flex:1;">
+            <label for="cvv-cartao">CVV</label>
+            <input id="cvv-cartao" type="text" placeholder="CVV" [(ngModel)]="cartaoInfo.cvv" maxlength="4" autocomplete="cc-csc">
+          </div>
+        </div>
+      </div>
+      <div class="pix-info" *ngIf="metodoPagamento === 'pix'">
+        <p><strong>Copia e Cola Pix:</strong></p>
+        <textarea readonly rows="2" style="width:100%">{{ pixCopiaCola }}</textarea>
+        <small>Copie o código acima e pague no seu app bancário.</small>
+      </div>
+      <div class="boleto-info" *ngIf="metodoPagamento === 'boleto'">
+        <p><strong>Linha Digitável do Boleto:</strong></p>
+        <textarea readonly rows="2" style="width:100%">{{ boletoLinhaDigitavel }}</textarea>
+        <small>Pague o boleto em qualquer banco ou lotérica até a data de vencimento.</small>
+      </div>
+      <button (click)="confirmarCompra()" class="confirm-btn" [disabled]="loading">
+        <span *ngIf="!loading">Confirmar Compra</span>
+        <span *ngIf="loading"><span class="spinner"></span> Processando...</span>
+      </button>
+      <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
+      <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
     </div>
-
-    <div class="pix-info" *ngIf="metodoPagamento === 'pix'">
-      <p><strong>Copia e Cola Pix:</strong></p>
-      <textarea readonly rows="2" style="width:100%">{{ pixCopiaCola }}</textarea>
-      <small>Copie o código acima e pague no seu app bancário.</small>
-    </div>
-
-    <button (click)="confirmarCompra()" class="confirm-btn" [disabled]="loading">
-      <span *ngIf="!loading">Confirmar Compra</span>
-      <span *ngIf="loading"><span class="spinner"></span> Processando...</span>
-    </button>
-    <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
-    <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
   </div>
 </div>

@@ -58,8 +58,10 @@ export class InventoryService {
   }
 
   // Purchase an item
-  purchase(skinId: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/buy`, { skinId }).pipe(
+  purchase(skinId: string, compradorId?: string): Observable<any> {
+    const body: any = { skinId };
+    if (compradorId) body.compradorId = compradorId;
+    return this.http.post<any>(`${this.apiUrl}/buy`, body).pipe(
       tap(response => {
         if (response && response.user) {
           const currentUser = this.authService.currentUserValue;

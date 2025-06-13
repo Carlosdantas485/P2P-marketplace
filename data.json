@@ -6,7 +6,7 @@
       "email": "carlosdantas485@gmail.com",
       "password": "$2a$10$LWsPL.Ex61taRP68tmMYOuxuz1ul6scmIXzHnky5bMRSynZNyC/zC",
       "foto": "https://i.pinimg.com/474x/4b/2e/d6/4b2ed61e4b7b0733727c7cd35892df20.jpg",
-      "saldo": 300,
+      "saldo": 1001100,
       "nivel": 1,
       "vendas": 0,
       "historicoTransferencias": [
@@ -65,6 +65,163 @@
           "price": 100,
           "buyerUsername": "Admin",
           "date": "2025-06-13T17:45:28.747Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T17:54:50.136Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750489323.8545",
+          "skinName": "car",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T17:54:55.823Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T17:56:00.965Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749837441653.51",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T17:58:24.502Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T17:58:46.762Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750489323.8545",
+          "skinName": "car",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T17:59:17.011Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T17:59:21.790Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:00:09.632Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750489323.8545",
+          "skinName": "car",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:00:33.080Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:02:24.107Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749837441653.51",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:03:01.686Z"
+        },
+        {
+          "type": "deposito",
+          "amount": 1000000,
+          "date": "2025-06-13T18:05:24.789Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "20001",
+          "skinName": "M4A4 | Howl",
+          "price": 1200,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:05:30.787Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10001",
+          "skinName": "AWP | Asiimov",
+          "price": 400,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T18:29:46.898Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10003",
+          "skinName": "Desert Eagle | Blaze",
+          "price": 600,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T18:29:46.904Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10005",
+          "skinName": "FAMAS | Commemoration",
+          "price": 500,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T18:29:51.343Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10002",
+          "skinName": "AK-47 | Redline",
+          "price": 250,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T18:29:51.909Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10004",
+          "skinName": "Glock-18 | Fade",
+          "price": 750,
+          "buyerUsername": "Admin",
+          "date": "2025-06-13T18:31:43.813Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10003",
+          "skinName": "Desert Eagle | Blaze",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:37:01.755Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10004",
+          "skinName": "Glock-18 | Fade",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:37:02.436Z"
         }
       ],
       "inventory": [],
@@ -76,7 +233,7 @@
       "email": "admin@exemplo.com",
       "password": "$2a$10$8hGr23uxAjSpLXnVEgEY2OAeDDjD67.vFAq2KgVq9Xsh.NLTG3y66",
       "foto": "https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png",
-      "saldo": 9700,
+      "saldo": 9000,
       "nivel": 1,
       "vendas": 0,
       "historicoTransferencias": [
@@ -140,6 +297,209 @@
           "price": 100,
           "sellerUsername": "Carlos Alberto Dantas Filho",
           "date": "2025-06-13T17:45:28.747Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T17:54:50.136Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750489323.8545",
+          "skinName": "car",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T17:54:55.823Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T17:56:00.965Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749837441653.51",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T17:58:24.502Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T17:58:46.762Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750489323.8545",
+          "skinName": "car",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T17:59:17.011Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T17:59:21.790Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750481187.7375",
+          "skinName": "AWP",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:00:09.632Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750489323.8545",
+          "skinName": "car",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:00:33.080Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749750497321.524",
+          "skinName": "DGLZ",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:02:24.107Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749837441653.51",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:03:01.686Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "20001",
+          "skinName": "M4A4 | Howl",
+          "price": 1200,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:05:30.787Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10001",
+          "skinName": "AWP | Asiimov",
+          "price": 400,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:29:46.898Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10003",
+          "skinName": "Desert Eagle | Blaze",
+          "price": 600,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:29:46.904Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10005",
+          "skinName": "FAMAS | Commemoration",
+          "price": 500,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:29:51.343Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10002",
+          "skinName": "AK-47 | Redline",
+          "price": 250,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:29:51.909Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10004",
+          "skinName": "Glock-18 | Fade",
+          "price": 750,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:31:43.813Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10003",
+          "skinName": "Desert Eagle | Blaze",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:37:01.755Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10004",
+          "skinName": "Glock-18 | Fade",
+          "price": 100,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "date": "2025-06-13T18:37:02.436Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "10002",
+          "skinName": "AK-47 | Redline",
+          "price": 100,
+          "buyerUsername": "smzinho",
+          "date": "2025-06-13T18:38:51.497Z"
+        }
+      ],
+      "inventory": [],
+      "wishlist": [
+        10001,
+        10002
+      ]
+    },
+    {
+      "id": "9a345fb1-32be-429f-80b8-f574e5008554",
+      "username": "smzinho",
+      "email": "dglz@email.com",
+      "password": "$2a$10$aZ/DdRUP3mLsWG..cHUpjuKwSdzyA4m5RCj2t3mqk1UJxH1mvFkMa",
+      "foto": "",
+      "saldo": 0,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [],
+      "inventory": [],
+      "wishlist": []
+    },
+    {
+      "id": "bdfc9817-17dc-4900-9379-a16c5e985cd2",
+      "username": "smzinho",
+      "email": "dglz1@email.com",
+      "password": "$2a$10$KQSg0ZGDNcCMSgwcYhsv4O9dIrYy931u2Hk1uVOjltC.fZv3QCYue",
+      "foto": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "saldo": 9900,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [
+        {
+          "type": "deposito",
+          "amount": 10000,
+          "date": "2025-06-13T18:38:46.461Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "10002",
+          "skinName": "AK-47 | Redline",
+          "price": 100,
+          "sellerUsername": "Admin",
+          "date": "2025-06-13T18:38:51.497Z"
         }
       ],
       "inventory": [],
@@ -148,40 +508,124 @@
   ],
   "skins": [
     {
-      "id": "1749750481187.7375",
+      "id": "10001",
       "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
-      "nome": "AWP",
-      "descricao": "Dragon Lore",
-      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
-      "float": 1,
-      "venda": false,
-      "preco": 100,
-      "created_at": "2025-06-12T17:48:01.187Z",
-      "updated_at": "2025-06-13T17:42:00.781Z"
-    },
-    {
-      "id": "1749750489323.8545",
-      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
-      "nome": "car",
-      "descricao": "qweqw",
+      "nome": "AWP | Asiimov",
+      "descricao": "AWP lendária com design futurista.",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
-      "float": 1,
+      "float": 0.11,
       "venda": true,
       "preco": 100,
-      "created_at": "2025-06-12T17:48:09.323Z",
-      "updated_at": "2025-06-13T17:43:42.235Z"
+      "created_at": "2025-06-13T15:00:00.000Z",
+      "updated_at": "2025-06-13T18:40:04.521Z"
     },
     {
-      "id": "1749750497321.524",
-      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
-      "nome": "DGLZ",
-      "descricao": "1231231",
-      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
-      "float": 1,
+      "id": "10002",
+      "ownerId": "bdfc9817-17dc-4900-9379-a16c5e985cd2",
+      "nome": "AK-47 | Redline",
+      "descricao": "AK-47 com acabamento esportivo.",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "float": 0.22,
       "venda": true,
       "preco": 100,
-      "created_at": "2025-06-12T17:48:17.321Z",
-      "updated_at": "2025-06-13T17:43:46.862Z"
+      "created_at": "2025-06-13T15:01:00.000Z",
+      "updated_at": "2025-06-13T18:39:48.890Z"
+    },
+    {
+      "id": "10003",
+      "ownerId": "e745e679-ef2a-4936-ae64-d95f0639108a",
+      "nome": "Desert Eagle | Blaze",
+      "descricao": "Pistola icônica com pintura de fogo.",
+      "imagem": "https://steamcdn-a.akamaihd.net/apps/730/icons/econ/default_generated/weapon_deagle_cu_deagle_blaze_light_large.7a3b2c2d3e4f5f6a7b8c9d0e1f2a3b4c.png",
+      "float": 0.05,
+      "venda": true,
+      "preco": 100,
+      "created_at": "2025-06-13T15:02:00.000Z",
+      "updated_at": "2025-06-13T18:37:11.027Z"
+    },
+    {
+      "id": "10004",
+      "ownerId": "e745e679-ef2a-4936-ae64-d95f0639108a",
+      "nome": "Glock-18 | Fade",
+      "descricao": "Pistola com acabamento degradê.",
+      "imagem": "https://steamcdn-a.akamaihd.net/apps/730/icons/econ/default_generated/weapon_glock_cu_glock_fade_light_large.8c7b6a5d4e3f2a1b0c9d8e7f6a5b4c3d.png",
+      "float": 0.04,
+      "venda": true,
+      "preco": 100,
+      "created_at": "2025-06-13T15:04:00.000Z",
+      "updated_at": "2025-06-13T18:37:07.429Z"
+    },
+    {
+      "id": "10005",
+      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
+      "nome": "FAMAS | Commemoration",
+      "descricao": "Rifle dourado comemorativo.",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "float": 0.1,
+      "venda": true,
+      "preco": 100,
+      "created_at": "2025-06-13T15:05:00.000Z",
+      "updated_at": "2025-06-13T18:40:07.382Z"
+    },
+    {
+      "id": "20001",
+      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
+      "nome": "M4A4 | Howl",
+      "descricao": "Rifle raro com arte de lobo.",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "float": 0.15,
+      "venda": true,
+      "preco": 100,
+      "created_at": "2025-06-13T15:02:30.000Z",
+      "updated_at": "2025-06-13T18:40:10.266Z"
+    },
+    {
+      "id": "20002",
+      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
+      "nome": "USP-S | Kill Confirmed",
+      "descricao": "Pistola silenciada com arte vibrante.",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "float": 0.18,
+      "venda": true,
+      "preco": 350,
+      "created_at": "2025-06-13T15:03:00.000Z",
+      "updated_at": "2025-06-13T18:40:13.737Z"
+    },
+    {
+      "id": "20003",
+      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
+      "nome": "Five-SeveN | Monkey Business",
+      "descricao": "Pistola temática de banana.",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "float": 0.12,
+      "venda": true,
+      "preco": 180,
+      "created_at": "2025-06-13T15:11:00.000Z",
+      "updated_at": "2025-06-13T18:40:17.991Z"
+    },
+    {
+      "id": "20004",
+      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
+      "nome": "P250 | See Ya Later",
+      "descricao": "Pistola com design de jacaré.",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "float": 0.08,
+      "venda": true,
+      "preco": 210,
+      "created_at": "2025-06-13T15:12:00.000Z",
+      "updated_at": "2025-06-13T18:40:20.739Z"
+    },
+    {
+      "id": "20005",
+      "ownerId": "5860c146-dcc6-4a1c-a990-43723ade6d82",
+      "nome": "MP9 | Wild Lily",
+      "descricao": "SMG com tema floral.",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "float": 0.14,
+      "venda": true,
+      "preco": 800,
+      "created_at": "2025-06-13T15:13:00.000Z",
+      "updated_at": "2025-06-13T18:40:23.532Z"
     }
   ],
   "history": [],

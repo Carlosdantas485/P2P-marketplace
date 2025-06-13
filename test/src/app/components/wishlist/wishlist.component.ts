@@ -40,7 +40,6 @@ export class WishlistComponent implements OnInit {
     const numericSkinId = Number(skinId);
     this.wishlistService.removeFromWishlist(numericSkinId).subscribe({
       next: () => {
-        alert('Item removido com sucesso!');
         this.loadWishlist(); // Refresh the list
       },
       error: (err) => {
