@@ -10,6 +10,8 @@
 
     <div class="skins-grid" *ngIf="!loading && !error">
       <div class="skin-card" *ngFor="let skin of skins">
+  <img *ngIf="ownerPhotos[skin.ownerId]" [src]="ownerPhotos[skin.ownerId]" alt="Foto dono" class="owner-avatar">
+
         <button class="wishlist-button new-wishlist-btn"
         *ngIf="!currentUser || skin.ownerId !== currentUser.id"
         (click)="toggleWishlist(skin.id)"

@@ -29,6 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   private userSubscription: Subscription | undefined;
   wishlistIds: number[] = [];
+  ownerPhotos: { [ownerId: string]: string } = {};
 
   constructor(
     private http: HttpClient,
@@ -44,6 +45,25 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.currentUser = user;
       this.loadWishlist();
       console.log('[HomeComponent] Current user data updated:', this.currentUser);
+    });
+  }
+
+  private loadOwnerPhotosForSkins(): void {
+    this.skins.forEach(skin => {
+      this.loadOwnerPhoto(skin.ownerId);
+    });
+  }
+
+  loadOwnerPhoto(ownerId: string): void {
+    if (!ownerId || this.ownerPhotos[ownerId]) return;
+    this.http.get<User>(`http://localhost:3000/users/${ownerId}`).subscribe({
+      next: (user) => {
+        this.ownerPhotos[ownerId] = user.foto;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar foto do dono:', err);
+        this.ownerPhotos[ownerId] = '';
+      }
     });
   }
 
@@ -126,6 +146,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         next: (response: Skin[]) => {
           this.skins = response;
           this.loading = false;
+          this.loadOwnerPhotosForSkins();
         },
         error: (err: any) => {
           console.error('Error loading skins:', err);
