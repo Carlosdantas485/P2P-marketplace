@@ -23,6 +23,21 @@
   <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
   <div class="skin-info">
           <h3>{{ skin.nome }}</h3>
+<div class="float-bar-container">
+  <div class="float-bar-bg">
+    <div class="float-bar-indicator" [style.left]="(skin.float * 100) + '%'">
+      <span class="float-indicator-value"></span>
+    </div>
+  </div>
+  <div class="float-bar-labels">
+    <span>0.00</span>
+    <span>0.07</span>
+    <span>0.15</span>
+    <span>0.38</span>
+    <span>0.45</span>
+    <span>1.00</span>
+  </div>
+</div>
           <p class="float">Float: {{ skin.float }}</p>
           <p class="price">${{ skin.preco }}</p>
           <button class="buy-button" (click)="buySkin(skin)" [disabled]="!skin.venda || (currentUser && skin.ownerId === currentUser.id)">Comprar</button>

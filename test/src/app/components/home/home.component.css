@@ -98,6 +98,63 @@ h1 {
   letter-spacing: 0.01em;
 }
 
+/* Barra de float estilo CS2 */
+.float-bar-container {
+  margin: 8px 0 2px 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.float-bar-bg {
+  width: 100%;
+  height: 12px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #429321 0%, #1fc7a5 15%, #ffea00 38%, #ff9800 45%, #d7263d 100%);
+  position: relative;
+  box-shadow: 0 1px 6px #0002;
+}
+.float-bar-indicator {
+  position: absolute;
+  top: -4px;
+  width: 18px;
+  height: 20px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.float-bar-indicator::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 20px;
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 6px #0005;
+}
+.float-indicator-value {
+  margin-top: 1px;
+  font-size: 0.68em;
+  color: #fff;
+  background: #22334a;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 4px #0003;
+}
+.float-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72em;
+  color: #b7eaff;
+  margin-top: 1px;
+  padding: 0 2px;
+  font-weight: 500;
+}
+
+
 .price {
   color: #007bff;
   font-size: 1.25em;
