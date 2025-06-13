@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WishlistService } from '../../services/wishlist.service';
 import { Item as Skin } from '../../services/inventory.service';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-wishlist',
@@ -15,7 +15,7 @@ export class WishlistComponent implements OnInit {
   wishlist: Skin[] = [];
   loading = true;
 
-  constructor(private wishlistService: WishlistService) { }
+  constructor(private wishlistService: WishlistService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadWishlist();
@@ -49,4 +49,16 @@ export class WishlistComponent implements OnInit {
       }
     });
   }
+
+  get total(): number {
+    return this.wishlist.reduce((sum, item) => sum + (item.preco || 0), 0);
+  }
+
+  comprarTudo() {
+    if (this.wishlist.length === 0) return;
+    this.router.navigate(['/confirm-payment'], {
+      state: { items: this.wishlist, total: this.total }
+    });
+  }
 }
+

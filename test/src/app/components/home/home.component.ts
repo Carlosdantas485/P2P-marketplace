@@ -3,6 +3,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AuthService, User } from '../../services/auth.service';
+import { Router } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
 import { InventoryService, Item as Skin } from '../../services/inventory.service';
 import { Subscription } from 'rxjs';
@@ -32,7 +33,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private wishlistService: WishlistService,
     private inventoryService: InventoryService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -76,16 +78,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.inventoryService.purchase(skin.id).subscribe({
-      next: (response) => {
-        console.log('[HomeComponent] Purchase successful response:', response);
-        alert('Compra realizada com sucesso!');
-        this.loadSkins(); // Reload skins to remove the purchased one from the list
-      },
-      error: (error) => {
-        console.error('[HomeComponent] Purchase failed:', error);
-        alert(`Falha na compra: ${error.error?.message || 'Erro desconhecido.'}`);
-      }
+    // Redirecionar para a página de confirmação de compra com o item selecionado
+    this.router.navigate(['/confirm-payment'], {
+      state: { items: [skin], total: skin.preco }
     });
   }
 

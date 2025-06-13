@@ -15,4 +15,10 @@
       </div>
     </div>
   </div>
+  <div *ngIf="!loading && wishlist.length > 0" class="wishlist-summary" style="margin-top:2rem; text-align:center;">
+    <div style="font-size:1.15rem; margin-bottom:1rem;">
+      <strong>Total a pagar:</strong> R$ {{ total | number:'1.2-2' }}
+    </div>
+    <button (click)="comprarTudo()" style="background:#28a745;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:5px;font-size:1rem;cursor:pointer;font-weight:bold;">Comprar Tudo</button>
+  </div>
 </div>

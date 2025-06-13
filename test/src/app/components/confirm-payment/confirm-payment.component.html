@@ -1,0 +1,50 @@
+<div class="confirm-payment-container">
+  <h2>Confirmação de Compra</h2>
+  <div *ngIf="items.length === 0">
+    <p>Nenhum item selecionado para compra.</p>
+  </div>
+  <div *ngIf="items.length > 0">
+    <h3>Itens da sua lista de desejos:</h3>
+    <ul>
+      <li *ngFor="let item of items">
+        <img [src]="item.imagem" [alt]="item.nome" class="item-img">
+        <span class="item-nome">{{ item.nome }}</span>
+        <span class="item-price">R$ {{ item.preco | number:'1.2-2' }}</span>
+      </li>
+    </ul>
+    <div class="total-confirm">
+      <strong>Total a pagar:</strong> <span class="total-price">R$ {{ total | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="payment-methods">
+      <label>
+        <input type="radio" name="metodoPagamento" value="saldo" [(ngModel)]="metodoPagamento"> Usar saldo
+      </label>
+      <label>
+        <input type="radio" name="metodoPagamento" value="cartao" [(ngModel)]="metodoPagamento"> Cartão de crédito
+      </label>
+      <label>
+        <input type="radio" name="metodoPagamento" value="pix" [(ngModel)]="metodoPagamento"> Pix
+      </label>
+    </div>
+
+    <div class="cartao-form" *ngIf="metodoPagamento === 'cartao'">
+      <input type="text" placeholder="Número do cartão" [(ngModel)]="cartaoInfo.numero" maxlength="19">
+      <input type="text" placeholder="Validade (MM/AA)" [(ngModel)]="cartaoInfo.validade" maxlength="5">
+      <input type="text" placeholder="CVV" [(ngModel)]="cartaoInfo.cvv" maxlength="4">
+    </div>
+
+    <div class="pix-info" *ngIf="metodoPagamento === 'pix'">
+      <p><strong>Copia e Cola Pix:</strong></p>
+      <textarea readonly rows="2" style="width:100%">{{ pixCopiaCola }}</textarea>
+      <small>Copie o código acima e pague no seu app bancário.</small>
+    </div>
+
+    <button (click)="confirmarCompra()" class="confirm-btn" [disabled]="loading">
+      <span *ngIf="!loading">Confirmar Compra</span>
+      <span *ngIf="loading"><span class="spinner"></span> Processando...</span>
+    </button>
+    <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
+    <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
+  </div>
+</div>
