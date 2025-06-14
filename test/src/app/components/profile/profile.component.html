@@ -1,7 +1,8 @@
 <div *ngIf="user$ | async as user; else loading">
   <div class="profile-container">
     <div class="profile-actions">
-      <button (click)="toggleEdit()" *ngIf="!isEditing">Editar Perfil</button>
+      <button (click)="toggleEdit()" *ngIf="!isEditing" class="btn-edit">Editar Perfil</button>
+      <button (click)="toggleChangePassword()" *ngIf="!isEditing" class="btn-change-password">Alterar Senha</button>
     </div>
 
     <!-- Viewing Mode -->
@@ -37,6 +38,58 @@
         <div class="form-actions">
           <button type="submit" [disabled]="editProfileForm.invalid">Salvar</button>
           <button type="button" (click)="toggleEdit()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Formulário de Troca de Senha -->
+    <div *ngIf="isChangingPassword" class="change-password-form">
+      <h3>Alterar Senha</h3>
+      <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
+        <div class="form-group">
+          <label for="currentPassword">Senha Atual:</label>
+          <input id="currentPassword" type="password" formControlName="currentPassword" class="form-control">
+          <div *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.errors?.['required']" class="error-message">
+            Senha atual é obrigatória
+          </div>
+          <div *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.errors?.['minlength']" class="error-message">
+            A senha atual deve ter pelo menos 6 caracteres
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="newPassword">Nova Senha:</label>
+          <input id="newPassword" type="password" formControlName="newPassword" class="form-control">
+          <div *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['required']" class="error-message">
+            Nova senha é obrigatória
+          </div>
+          <div *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['minlength']" class="error-message">
+            A senha deve ter pelo menos 6 caracteres
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirmar Nova Senha:</label>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" class="form-control">
+          <div *ngIf="changePasswordForm.get('confirmPassword')?.touched && changePasswordForm.get('confirmPassword')?.errors?.['required']" class="error-message">
+            Confirmação de senha é obrigatória
+          </div>
+          <div *ngIf="changePasswordForm.hasError('mismatch') && changePasswordForm.get('confirmPassword')?.touched" class="error-message">
+            As senhas não coincidem
+          </div>
+        </div>
+        
+        <div *ngIf="passwordError" class="alert alert-danger">
+          {{ passwordError }}
+        </div>
+        
+        <div *ngIf="passwordSuccess" class="alert alert-success">
+          {{ passwordSuccess }}
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" [disabled]="changePasswordForm.invalid" class="btn-save">Salvar Nova Senha</button>
+          <button type="button" (click)="toggleChangePassword()" class="btn-cancel">Cancelar</button>
         </div>
       </form>
     </div>

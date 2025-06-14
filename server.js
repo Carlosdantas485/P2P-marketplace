@@ -1,11 +1,24 @@
 require('dotenv').config();
 const express = require('express');
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
+
+// Configuração do Nodemailer
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+  port: process.env.EMAIL_PORT || 587,
+  secure: process.env.EMAIL_SECURE === 'true',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD
+  }
+});
 
 const app = express();
 app.use(cors());
@@ -13,14 +26,43 @@ app.use(express.json());
 
 // Middleware para autenticação
 const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    console.log('=== NOVA REQUISIÇÃO AUTENTICADA ===');
+    console.log('URL:', req.originalUrl);
+    console.log('Headers:', JSON.stringify(req.headers, null, 2));
     
-    if (!token) return res.sendStatus(401);
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    console.log('Authorization Header:', authHeader);
+    
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log('Token extraído:', token ? `${token.substring(0, 10)}...` : 'não encontrado');
+    
+    if (!token) {
+        console.log('Erro: Nenhum token fornecido');
+        return res.status(401).json({ message: 'Token não fornecido' });
+    }
 
-    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
+    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, decoded) => {
+        if (err) {
+            console.error('Erro ao verificar token:', err.message);
+            console.error('Token expirado?', err.name === 'TokenExpiredError');
+            console.error('Token inválido?', err.name === 'JsonWebTokenError');
+            return res.status(403).json({ 
+                message: 'Token inválido ou expirado',
+                error: err.message 
+            });
+        }
+        
+        console.log('Token decodificado com sucesso:', JSON.stringify(decoded, null, 2));
+        
+        if (!decoded || !decoded.id) {
+            console.error('Token não contém ID do usuário');
+            return res.status(403).json({ message: 'Token inválido - ID do usuário não encontrado' });
+        }
+        
+        // Adiciona o usuário ao request
+        req.user = { id: decoded.id };
+        console.log('Usuário autenticado:', req.user);
+        
         next();
     });
 };
@@ -46,6 +88,110 @@ const saveData = async (data) => {
         console.error("--- saveData: ERROR writing to db.json ---", error);
     }
 };
+
+// Rota para alteração de senha
+app.post('/auth/change-password', authenticateToken, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id; // Corrigido de req.user.userId para req.user.id
+        const data = readData();
+        
+        // Encontra o usuário
+        const user = data.users.find(u => u.id === userId);
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Usuário não encontrado.' 
+            });
+        }
+
+        // Verifica a senha atual
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Senha atual incorreta.' 
+            });
+        }
+
+        // Atualiza a senha
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        
+        // Salva as alterações
+        await saveData(data);
+        
+        res.json({ 
+            success: true, 
+            message: 'Senha alterada com sucesso.' 
+        });
+    } catch (error) {
+        console.error('Erro ao alterar senha:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Ocorreu um erro ao alterar a senha.' 
+        });
+    }
+});
+
+// Rota de recuperação de senha
+app.post('/auth/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const data = readData();
+        
+        // Verifica se o email existe
+        const user = data.users.find(u => u.email === email);
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Nenhuma conta encontrada com este e-mail.' 
+            });
+        }
+
+        // Gera um token de redefinição
+        const resetToken = jwt.sign(
+            { userId: user.id, email: user.email },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '1h' }
+        );
+
+        // Salva o token no usuário
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+        await saveData(data);
+
+        // URL de redefinição
+        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:4200'}/reset-password?token=${resetToken}`;
+
+        // Envia o e-mail
+        const mailOptions = {
+            from: `"${process.env.EMAIL_FROM_NAME || 'Sistema'}" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Redefinição de Senha',
+            html: `
+                <h2>Redefinição de Senha</h2>
+                <p>Você solicitou a redefinição de senha. Clique no link abaixo para criar uma nova senha:</p>
+                <p><a href="${resetUrl}">Redefinir Senha</a></p>
+                <p>Se você não solicitou esta redefinição, ignore este e-mail.</p>
+                <p>O link expirará em 1 hora.</p>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        
+        res.json({ 
+            success: true, 
+            message: 'Enviamos um e-mail com as instruções para redefinir sua senha.' 
+        });
+    } catch (error) {
+        console.error('Erro ao processar recuperação de senha:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Ocorreu um erro ao processar sua solicitação.' 
+        });
+    }
+});
 
 // Rota de registro
 app.post('/register', async (req, res) => {
@@ -88,23 +234,51 @@ app.post('/register', async (req, res) => {
 // Rota de login
 app.post('/login', async (req, res) => {
     try {
+        console.log('=== TENTATIVA DE LOGIN ===');
+        console.log('Email recebido:', req.body.email);
+        
         const { email, password } = req.body;
         const data = readData();
         
+        console.log('Usuários no banco de dados:', data.users.map(u => ({ id: u.id, email: u.email })));
+        
         const user = data.users.find(u => u.email === email);
         if (!user) {
+            console.log('Usuário não encontrado para o email:', email);
             return res.status(400).json({ message: 'Usuário não encontrado' });
         }
 
+        console.log('Usuário encontrado:', { id: user.id, email: user.email });
+        
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
+            console.log('Senha inválida para o usuário:', user.email);
             return res.status(400).json({ message: 'Senha inválida' });
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'your-secret-key');
-        res.json({ token, user: { ...user, password: undefined } });
+        const token = jwt.sign(
+            { id: user.id },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '24h' }
+        );
+        
+        console.log('Token gerado:', token);
+        
+        // Removendo a senha antes de enviar a resposta
+        const { password: _, ...userWithoutPassword } = user;
+        
+        res.json({ 
+            success: true,
+            token, 
+            user: userWithoutPassword 
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao fazer login' });
+        console.error('Erro durante o login:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Erro ao fazer login',
+            error: error.message 
+        });
     }
 });
 

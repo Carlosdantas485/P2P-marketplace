@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
 import { Observable } from 'rxjs';
 import { HistoryService } from '../../services/history.service';
@@ -15,7 +15,11 @@ import { HistoryService } from '../../services/history.service';
 export class ProfileComponent {
   user$: Observable<User | null>;
   isEditing = false;
+  isChangingPassword = false;
   editProfileForm: FormGroup;
+  changePasswordForm: FormGroup;
+  passwordError = '';
+  passwordSuccess = '';
 
   // Histórico
   history: any[] = [];
@@ -24,6 +28,8 @@ export class ProfileComponent {
   total: number = 0;
   totalCompras: number = 0;
   totalVendas: number = 0;
+
+  // Validador de confirmação de senha
 
   constructor(
     private authService: AuthService,
@@ -35,6 +41,26 @@ export class ProfileComponent {
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       foto: ['']
+    });
+
+    this.changePasswordForm = this.fb.group({
+      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]]
+    }, { validators: this.passwordMatchValidator.bind(this) });
+
+    // Logs para depuração
+    this.changePasswordForm.statusChanges.subscribe(status => {
+      console.log('Status do formulário:', status);
+      console.log('Erros do formulário:', this.changePasswordForm.errors);
+      console.log('currentPassword errors:', this.changePasswordForm.get('currentPassword')?.errors);
+      console.log('newPassword errors:', this.changePasswordForm.get('newPassword')?.errors);
+      console.log('confirmPassword errors:', this.changePasswordForm.get('confirmPassword')?.errors);
+      console.log('Formulário válido:', this.changePasswordForm.valid);
+    });
+
+    this.changePasswordForm.valueChanges.subscribe(values => {
+      console.log('Valores do formulário:', values);
     });
     // Carregar histórico ao inicializar
     this.historyService.getHistory().subscribe((data) => {
@@ -68,10 +94,21 @@ export class ProfileComponent {
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     if (this.isEditing) {
+      this.isChangingPassword = false;
       const currentUser = this.authService.currentUserValue;
       if (currentUser) {
         this.editProfileForm.patchValue(currentUser);
       }
+    }
+  }
+
+  toggleChangePassword(): void {
+    this.isChangingPassword = !this.isChangingPassword;
+    this.passwordError = '';
+    this.passwordSuccess = '';
+    if (this.isChangingPassword) {
+      this.isEditing = false;
+      this.changePasswordForm.reset();
     }
   }
 
@@ -90,5 +127,40 @@ export class ProfileComponent {
         this.isEditing = false;
       }
     });
+  }
+
+  onChangePassword(): void {
+    if (this.changePasswordForm.invalid) {
+      return;
+    }
+
+    this.passwordError = '';
+    this.passwordSuccess = '';
+
+    const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
+    const newPassword = this.changePasswordForm.get('newPassword')?.value;
+
+    this.authService.changePassword(currentPassword, newPassword).subscribe({
+      next: () => {
+        this.passwordSuccess = 'Senha alterada com sucesso!';
+        this.changePasswordForm.reset();
+        setTimeout(() => {
+          this.isChangingPassword = false;
+          this.passwordSuccess = '';
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('Erro ao alterar senha:', error);
+        this.passwordError = error.error?.message || 'Erro ao alterar a senha. Verifique a senha atual e tente novamente.';
+      }
+    });
+  }
+
+  private passwordMatchValidator(g: FormGroup) {
+    const newPassword = g.get('newPassword')?.value;
+    const confirmPassword = g.get('confirmPassword')?.value;
+    const isValid = newPassword === confirmPassword;
+    console.log('Validando senhas:', { newPassword, confirmPassword, isValid });
+    return isValid ? null : { mismatch: true };
   }
 }

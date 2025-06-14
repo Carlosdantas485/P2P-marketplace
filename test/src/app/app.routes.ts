@@ -9,12 +9,14 @@ import { WishlistComponent } from './components/wishlist/wishlist.component';
 import { authGuard } from './guards/auth.guard';
 import { ConfirmPaymentComponent } from './components/confirm-payment/confirm-payment.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password';
+import { ResetPasswordComponent } from './components/reset-password/reset-password';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'account', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'inventory', component: InventoryComponent, canActivate: [authGuard] },
