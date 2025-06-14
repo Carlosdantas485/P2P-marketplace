@@ -1,6 +1,20 @@
 <div class="confirm-container split-layout">
   <h2>Confirmação de Compra</h2>
   <div class="split-content">
+    <!-- Mensagens de sucesso e erro -->
+    <div *ngIf="resultados.length > 0">
+      <h3>Status da compra:</h3>
+      <ul>
+        <li *ngFor="let r of resultados">
+          <span [ngStyle]="{color: r.sucesso ? 'green' : 'red'}">
+            {{ r.item.nome || r.item.title || r.item.id }}:
+            <span *ngIf="r.sucesso">Compra realizada com sucesso!</span>
+            <span *ngIf="!r.sucesso">Falha: {{ r.erro }}</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
     <!-- Esquerda: itens -->
     <div class="split-left">
       <div *ngIf="items.length === 0">

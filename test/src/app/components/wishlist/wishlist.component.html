@@ -1,24 +1,54 @@
-<div class="wishlist-container">
-  <h1>Minha Lista de Desejos</h1>
-  <div *ngIf="loading" class="loading">Carregando...</div>
-  <div *ngIf="!loading && wishlist.length === 0" class="empty-wishlist">
-    <p>Sua lista de desejos está vazia.</p>
-    <a routerLink="/home">Explore o Marketplace</a>
-  </div>
-  <div class="skins-grid" *ngIf="!loading && wishlist.length > 0">
-    <div class="skin-card" *ngFor="let skin of wishlist">
-      <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
-      <div class="skin-info">
-        <h3>{{ skin.nome }}</h3>
-        <p class="price">R$ {{ skin.preco | number:'1.2-2' }}</p>
-        <button class="remove-button" (click)="removeFromWishlist(skin.id)">Remover</button>
+<div class="container">
+  <header class="wishlist-header">
+    <div class="wishlist-header-content">
+      <span class="wishlist-header-icon">&#10084;</span>
+      <div class="wishlist-header-text">
+        <h1>Minha Lista de Desejos</h1>
+        <p class="wishlist-header-subtitle">Guarde aqui seus sonhos de skins favoritos!</p>
       </div>
     </div>
-  </div>
-  <div *ngIf="!loading && wishlist.length > 0" class="wishlist-summary" style="margin-top:2rem; text-align:center;">
-    <div style="font-size:1.15rem; margin-bottom:1rem;">
-      <strong>Total a pagar:</strong> R$ {{ total | number:'1.2-2' }}
+  </header>
+  <div class="home-container">
+    <div *ngIf="loading" class="loading">Carregando...</div>
+    <div *ngIf="!loading && wishlist.length === 0" class="empty-wishlist">
+      <p>Sua lista de desejos está vazia.</p>
+      <a routerLink="/home">Explore o Marketplace</a>
     </div>
-    <button (click)="comprarTudo()" style="background:#28a745;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:5px;font-size:1rem;cursor:pointer;font-weight:bold;">Comprar Tudo</button>
+    <div class="skins-grid" *ngIf="!loading && wishlist.length > 0">
+      <div class="skin-card" *ngFor="let item of wishlist">
+  <div class="card-header">
+    <button class="wishlist-button new-wishlist-btn wishlist-active" (click)="removeFromWishlist(item.id)">
+      &#10084;
+    </button>
+  </div>
+  <img [src]="item.imagem" [alt]="item.nome" class="skin-image">
+  <div class="skin-info">
+    <h3>{{ item.nome }}</h3>
+    <div class="float-bar-container">
+      <div class="float-bar-bg">
+        <div class="float-bar-indicator" [style.left]="(item.float * 100) + '%'">
+          <span class="float-indicator-value">{{ item.float | number:'1.3-3' }}</span>
+        </div>
+      </div>
+      <div class="float-bar-labels">
+        <span>0.00</span>
+        <span>0.07</span>
+        <span>0.15</span>
+        <span>0.38</span>
+        <span>0.45</span>
+        <span>1.00</span>
+      </div>
+    </div>
+    <p class="float">Float: {{ item.float }}</p>
+    <p class="price">{{ item.preco | currency:'BRL' }}</p>
+  </div>
+</div>
+    </div>
+    <div *ngIf="!loading && wishlist.length > 0" class="wishlist-summary" style="margin-top:2rem; text-align:center;">
+      <div style="font-size:1.15rem; margin-bottom:1rem;">
+        <strong>Total a pagar:</strong> R$ {{ total | number:'1.2-2' }}
+      </div>
+      <button (click)="comprarTudo()" style="background:#28a745;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:5px;font-size:1rem;cursor:pointer;font-weight:bold;">Comprar Tudo</button>
+    </div>
   </div>
 </div>

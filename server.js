@@ -385,99 +385,206 @@ app.get('/inventory/:userId', authenticateToken, (req, res) => {
     }
 });
 
-// Rota para comprar skin (requer autenticação)
+// Rota para comprar skins (múltiplos ou único) (requer autenticação)
 app.post('/buy', authenticateToken, async (req, res) => {
-    console.log('--- BUY REQUEST (OWNERSHIP ONLY) ---');
-    const { skinId } = req.body;
+    console.log('--- BUY REQUEST (SUPPORTS MULTIPLE ITEMS) ---');
     const buyerId = req.user.id;
+    let skinIds = req.body.skinIds;
+    const singleSkinId = req.body.skinId;
+
+    // Compatibilidade: se vier skinId único, transforma em array
+    if (!skinIds && singleSkinId) {
+        skinIds = [singleSkinId];
+    }
+    if (!Array.isArray(skinIds) || skinIds.length === 0) {
+        return res.status(400).json({ message: 'skinIds deve ser um array de IDs de skins.' });
+    }
 
     try {
         const data = readData();
-
-        // --- 1. Find Entities ---
         const buyerIndex = data.users.findIndex(u => u.id === buyerId);
-        const skinIndex = data.skins.findIndex(s => s.id == skinId); // Use loose equality
-
-        // --- 2. Validation ---
         if (buyerIndex === -1) {
             return res.status(404).json({ message: 'Comprador não encontrado.' });
         }
-        if (skinIndex === -1) {
-            return res.status(404).json({ message: 'Skin não encontrada.' });
-        }
-
         const buyer = data.users[buyerIndex];
-        const skin = data.skins[skinIndex];
-        const sellerIndex = data.users.findIndex(u => u.id === skin.ownerId);
 
-        if (sellerIndex === -1) {
-            return res.status(404).json({ message: 'Vendedor da skin não foi encontrado.' });
-        }
-        if (!skin.venda) {
-            return res.status(400).json({ message: 'Esta skin não está à venda.' });
-        }
-        if (skin.ownerId === buyer.id) {
-            return res.status(400).json({ message: 'Você não pode comprar sua própria skin.' });
-        }
-        if (buyer.saldo < skin.preco) {
-            return res.status(400).json({ message: 'Saldo insuficiente para realizar a compra.' });
-        }
+        let results = [];
+        for (const skinId of skinIds) {
+            const skinIndex = data.skins.findIndex(s => s.id == skinId);
+            if (skinIndex === -1) {
+                results.push({ skinId, sucesso: false, erro: 'Skin não encontrada.' });
+                continue;
+            }
+            const skin = data.skins[skinIndex];
+            const sellerIndex = data.users.findIndex(u => u.id === skin.ownerId);
+            if (sellerIndex === -1) {
+                results.push({ skinId, sucesso: false, erro: 'Vendedor da skin não foi encontrado.' });
+                continue;
+            }
+            if (!skin.venda) {
+                results.push({ skinId, sucesso: false, erro: 'Esta skin não está à venda.' });
+                continue;
+            }
+            if (skin.ownerId === buyer.id) {
+                results.push({ skinId, sucesso: false, erro: 'Você não pode comprar sua própria skin.' });
+                continue;
+            }
+            if (buyer.saldo < skin.preco) {
+                results.push({ skinId, sucesso: false, erro: 'Saldo insuficiente para realizar a compra.' });
+                continue;
+            }
 
-        // --- 3. Execute Transaction (Balances & Ownership) ---
-        
-        // Update balances
-        data.users[buyerIndex].saldo -= skin.preco;
-        data.users[sellerIndex].saldo += skin.preco;
+            // --- 3. Execute Transaction (Balances & Ownership) ---
+            data.users[buyerIndex].saldo -= skin.preco;
+            data.users[sellerIndex].saldo += skin.preco;
+            data.skins[skinIndex].ownerId = buyer.id;
+            data.skins[skinIndex].venda = false;
 
-        // Update skin ownership and status
-        data.skins[skinIndex].ownerId = buyer.id;
-        data.skins[skinIndex].venda = false;
+            // --- 4. Record Transaction History ---
+            const seller = data.users[sellerIndex];
+            const transactionDate = new Date().toISOString();
 
-        // --- 4. Record Transaction History ---
-        const seller = data.users[sellerIndex];
-        const transactionDate = new Date().toISOString();
+            // For Buyer
+            const purchaseRecord = {
+                type: 'compra',
+                skinId: skin.id,
+                skinName: skin.nome,
+                price: skin.preco,
+                sellerUsername: seller.username,
+                date: transactionDate
+            };
+            if (!buyer.historicoTransferencias) {
+                buyer.historicoTransferencias = [];
+            }
+            buyer.historicoTransferencias.push(purchaseRecord);
 
-        // For Buyer
-        const purchaseRecord = {
-            type: 'compra',
-            skinId: skin.id,
-            skinName: skin.nome,
-            price: skin.preco,
-            sellerUsername: seller.username,
-            date: transactionDate
-        };
-        if (!buyer.historicoTransferencias) {
-            buyer.historicoTransferencias = [];
+            // For Seller
+            const saleRecord = {
+                type: 'venda',
+                skinId: skin.id,
+                skinName: skin.nome,
+                price: skin.preco,
+                buyerUsername: buyer.username,
+                date: transactionDate
+            };
+            if (!seller.historicoTransferencias) {
+                seller.historicoTransferencias = [];
+            }
+            seller.historicoTransferencias.push(saleRecord);
+
+            results.push({ skinId, sucesso: true });
         }
-        buyer.historicoTransferencias.push(purchaseRecord);
-
-        // For Seller
-        const saleRecord = {
-            type: 'venda',
-            skinId: skin.id,
-            skinName: skin.nome,
-            price: skin.preco,
-            buyerUsername: buyer.username,
-            date: transactionDate
-        };
-        if (!seller.historicoTransferencias) {
-            seller.historicoTransferencias = [];
-        }
-        seller.historicoTransferencias.push(saleRecord);
 
         // --- 5. Save and Respond ---
         await saveData(data);
-        console.log(`Purchase successful: User ${buyer.id} bought skin ${skin.id}.`);
-
-        // Return the updated buyer object to sync frontend state
+        console.log(`Purchase(s) processed: User ${buyer.id} bought skins: ${skinIds.join(', ')}.`);
         const updatedBuyer = data.users[buyerIndex];
         res.json({ 
-            message: 'Compra realizada com sucesso!',
-            user: { ...updatedBuyer, password: undefined } 
+            message: 'Processamento de compra(s) finalizado.',
+            results,
+            user: { ...updatedBuyer, password: undefined }
         });
-
     } catch (error) {
-        console.error('--- ERROR PROCESSING PURCHASE ---', error);
+        console.error('--- ERROR PROCESSING PURCHASE(S) ---', error);
+        res.status(500).json({ message: 'Ocorreu um erro interno ao processar a compra.' });
+    }
+});
+
+// --- Buy Multiple Skins Endpoint ---
+app.post('/buy-multiple', authenticateToken, async (req, res) => {
+    try {
+        const { skinIds } = req.body;
+        const userId = req.user.id;
+        const data = readData();
+
+        const buyerIndex = data.users.findIndex(u => u.id == userId);
+        if (buyerIndex === -1) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+        const buyer = data.users[buyerIndex];
+        const results = [];
+
+        for (const skinId of skinIds) {
+            const skin = data.skins.find(s => s.id == skinId && s.venda);
+            if (!skin) {
+                results.push({ skinId, sucesso: false, erro: 'Skin não encontrada ou não está à venda.' });
+                continue;
+            }
+            if (buyer.inventory.includes(skinId)) {
+                results.push({ skinId, sucesso: false, erro: 'Você já possui esta skin.' });
+                continue;
+            }
+            if (buyer.saldo < skin.preco) {
+                results.push({ skinId, sucesso: false, erro: 'Saldo insuficiente.' });
+                continue;
+            }
+
+            // Encontrar vendedor pelo ownerId da skin ou pelo inventário
+            let sellerIndex = -1;
+            if (skin.ownerId) {
+                sellerIndex = data.users.findIndex(u => u.id == skin.ownerId);
+            }
+            if (sellerIndex === -1) {
+                sellerIndex = data.users.findIndex(u => u.inventory.includes(skinId));
+            }
+            if (sellerIndex === -1) {
+                results.push({ skinId, sucesso: false, erro: 'Vendedor não encontrado.' });
+                continue;
+            }
+            const seller = data.users[sellerIndex];
+
+            // Transferir skin
+            seller.inventory = seller.inventory.filter(id => id != skinId);
+            buyer.inventory.push(skinId);
+            // Atualizar o ownerId da skin para o comprador
+            skin.ownerId = buyer.id;
+
+            // Atualizar saldos
+            buyer.saldo -= skin.preco;
+            seller.saldo += skin.preco;
+
+            // Remover da venda
+            skin.venda = false;
+
+            // Registrar transação para o vendedor
+            const transactionDate = new Date().toISOString();
+            const saleRecord = {
+                type: 'venda',
+                skinId,
+                skinName: skin.nome,
+                price: skin.preco,
+                buyerUsername: buyer.username,
+                buyerId: buyer.id,
+                date: transactionDate
+            };
+            seller.historicoTransferencias = seller.historicoTransferencias || [];
+            seller.historicoTransferencias.push(saleRecord);
+
+            // Registrar transação para o comprador
+            const buyRecord = {
+                type: 'compra',
+                skinId,
+                skinName: skin.nome,
+                price: skin.preco,
+                sellerUsername: seller.username,
+                sellerId: seller.id,
+                date: transactionDate
+            };
+            buyer.historicoTransferencias = buyer.historicoTransferencias || [];
+            buyer.historicoTransferencias.push(buyRecord);
+
+            results.push({ skinId, sucesso: true });
+        }
+
+        await saveData(data);
+        const updatedBuyer = data.users[buyerIndex];
+        res.json({
+            message: 'Processamento de compra(s) finalizado.',
+            results,
+            user: { ...updatedBuyer, password: undefined }
+        });
+    } catch (error) {
+        console.error('--- ERROR PROCESSING PURCHASE(S) ---', error);
         res.status(500).json({ message: 'Ocorreu um erro interno ao processar a compra.' });
     }
 });

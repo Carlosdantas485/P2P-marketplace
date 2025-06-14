@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./confirm-payment.component.css']
 })
 export class ConfirmPaymentComponent implements OnInit {
+  resultados: { item: any; sucesso: boolean; erro?: string }[] = [];
   items: any[] = [];
   total: number = 0;
   loading = false;
@@ -53,64 +54,111 @@ export class ConfirmPaymentComponent implements OnInit {
 
   confirmarCompra() {
     if (!this.items.length) return;
-    this.loading = true;
-    this.errorMsg = '';
-    this.successMsg = '';
+    this.setLoading(true);
+    this.clearMessages();
 
-    // Simulação de lógica de pagamento
+    const pagamentoValido = this.validarMetodoPagamento();
+    if (!pagamentoValido) return;
+
+    const compradorId = this.authService.currentUserValue?.id;
+    if (!compradorId) {
+      this.setError('Você precisa estar logado para comprar.');
+      return;
+    }
+
+    const skinIds = this.items.map(item => item.id);
+    this.inventoryService.purchaseMultiple(skinIds).subscribe({
+      next: (res) => this.processarResultadoCompra(res),
+      error: (err) => {
+        this.setLoading(false);
+        this.setError(err.error?.message || 'Erro ao processar a compra.');
+      }
+    });
+  }
+
+  private validarMetodoPagamento(): boolean {
     if (this.metodoPagamento === 'cartao') {
       if (!this.cartaoInfo.numero || !this.cartaoInfo.validade || !this.cartaoInfo.cvv) {
-        this.errorMsg = 'Preencha todos os dados do cartão.';
-        this.loading = false;
-        return;
+        this.setError('Preencha todos os dados do cartão.');
+        return false;
       }
       // Aqui você pode integrar com API real de cartão
     }
     if (this.metodoPagamento === 'pix') {
-      // Simulação: mostrar mensagem e não processar a compra até o usuário confirmar pagamento externo
-      this.successMsg = 'Copia e cole o código Pix abaixo no seu app bancário para concluir a compra. Após o pagamento, clique novamente em Confirmar Compra.';
-      this.loading = false;
-      return;
+      this.setSuccess('Copia e cole o código Pix abaixo no seu app bancário para concluir a compra. Após o pagamento, clique novamente em Confirmar Compra.');
+      return false;
     }
     if (this.metodoPagamento === 'boleto') {
-      // Simulação: mostrar mensagem e não processar a compra até o usuário pagar o boleto
-      this.successMsg = 'Use a linha digitável abaixo para pagar o boleto no seu banco. Após o pagamento, clique novamente em Confirmar Compra.';
-      this.loading = false;
-      return;
+      this.setSuccess('Use a linha digitável abaixo para pagar o boleto no seu banco. Após o pagamento, clique novamente em Confirmar Compra.');
+      return false;
     }
+    return true;
+  }
 
-    let comprasEfetuadas = 0;
-    let erroOcorrido = false;
-    const compradorId = this.authService.currentUserValue?.id;
-    if (!compradorId) {
-      this.errorMsg = 'Você precisa estar logado para comprar.';
-      this.loading = false;
-      return;
+  private processarResultadoCompra(res: any) {
+    this.resultados = this.items.map(item => {
+      const r = res.results.find((rr: { skinId: any; sucesso: boolean; erro?: string }) => rr.skinId == item.id);
+      if (r?.sucesso) {
+        this.removerDaWishlist(item.id);
+      }
+      return { item, sucesso: r?.sucesso, erro: r?.erro };
+    });
+    this.setLoading(false);
+    const comprados = this.resultados.filter(r => r.sucesso).map(r => r.item.nome || r.item.title || r.item.id);
+    const falharam = this.resultados.filter(r => !r.sucesso).map(r => `${r.item.nome || r.item.title || r.item.id}: ${r.erro}`);
+    if (comprados.length) {
+      this.setSuccess(`Compra realizada com sucesso para: ${comprados.join(', ')}.`);
     }
-    for (const item of this.items) {
-      this.inventoryService.purchase(item.id, compradorId).subscribe({
-        next: () => {
-          // Após a compra, remover da wishlist
-          this.wishlistService.removeFromWishlist(item.id).subscribe({
-            next: () => {}, // Não precisa de ação extra
-            error: (err) => {
-              // Apenas loga erro, não interrompe o fluxo de compra
-              console.error('Erro ao remover da wishlist:', err);
-            }
-          });
-          comprasEfetuadas++;
-          if (comprasEfetuadas === this.items.length && !erroOcorrido) {
-            this.successMsg = 'Compra realizada com sucesso!';
-            this.loading = false;
-            setTimeout(() => this.router.navigate(['/']), 1500);
-          }
-        },
-        error: (err) => {
-          this.errorMsg = 'Erro ao realizar a compra: ' + (err.error?.message || 'Tente novamente.');
-          this.loading = false;
-          erroOcorrido = true;
-        }
-      });
+    if (falharam.length) {
+      this.setError(`Falha ao comprar: ${falharam.join('; ')}.`);
+    }
+    if (comprados.length && !falharam.length) {
+      setTimeout(() => this.router.navigate(['/']), 1500);
+    }
+  }
+
+  private removerDaWishlist(skinId: number) {
+    this.wishlistService.removeFromWishlist(skinId).subscribe({
+      next: () => {},
+      error: (err) => {
+        console.error('Erro ao remover da wishlist:', err);
+      }
+    });
+  }
+
+  private setLoading(loading: boolean) {
+    this.loading = loading;
+  }
+
+  private setSuccess(msg: string) {
+    this.successMsg = msg;
+    this.setLoading(false);
+  }
+
+  private setError(msg: string) {
+    this.errorMsg = msg;
+    this.setLoading(false);
+  }
+
+  private clearMessages() {
+    this.successMsg = '';
+    this.errorMsg = '';
+  }
+
+  private verificarFinalizacaoCompras(resultados: { item: any; sucesso: boolean; erro?: string }[], processados: number, total: number) {
+    if (processados === total) {
+      const comprados = resultados.filter(r => r.sucesso).map(r => r.item.nome || r.item.title || r.item.id);
+      const falharam = resultados.filter(r => !r.sucesso).map(r => `${r.item.nome || r.item.title || r.item.id}: ${r.erro}`);
+      if (comprados.length) {
+        this.successMsg = `Compra realizada com sucesso para: ${comprados.join(', ')}.`;
+      }
+      if (falharam.length) {
+        this.errorMsg = `Falha ao comprar: ${falharam.join('; ')}.`;
+      }
+      this.loading = false;
+      if (comprados.length && !falharam.length) {
+        setTimeout(() => this.router.navigate(['/']), 1500);
+      }
     }
   }
 }
