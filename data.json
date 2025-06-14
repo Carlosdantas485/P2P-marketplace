@@ -324,6 +324,19 @@
       ],
       "inventory": [],
       "wishlist": []
+    },
+    {
+      "id": "c74de76c-05da-49c6-99d3-2066314535aa",
+      "username": "macaco",
+      "email": "123@email.com",
+      "password": "$2a$10$V9Um5z1kVBt9TpokWtxghut/2MXALvtWP18igjwzTv2t33c1ABPsK",
+      "foto": "",
+      "saldo": 0,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [],
+      "inventory": [],
+      "wishlist": []
     }
   ],
   "skins": [
