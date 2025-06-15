@@ -1,79 +1,115 @@
-<div class="container">
-  <div class="home-container">
-    <h1>Skin Marketplace</h1>
-    
-    <div *ngIf="loading" class="loading">Loading...</div>
-    
-    <div *ngIf="error" class="error-message">
-      <p>Error loading skins. Please try again later.</p>
+<div class="marketplace-container">
+  <!-- Header -->
+  <div class="marketplace-header">
+    <div class="header-content">
+      <h1><i class="fas fa-store"></i> Skin Marketplace</h1>
+      <p class="subtitle">Encontre as melhores skins para sua coleção</p>
     </div>
+  </div>
 
-    <!-- Filter input field -->
-    <div class="filter-bar">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Carregando itens disponíveis...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>Erro ao carregar itens. Por favor, tente novamente mais tarde.</p>
+  </div>
+
+  <!-- Filter input field -->
+  <div class="filter-bar">
+    <div class="search-container">
+      <i class="fas fa-search"></i>
       <input 
         type="text" 
-        placeholder="Filtrar por nome ou descrição" 
+        placeholder="Buscar por nome ou descrição..." 
         [(ngModel)]="filterText" 
         (input)="onFilterChange(filterText)"
         class="filter-input"
       />
     </div>
+  </div>
 
-    <!-- Skins grid -->
-    <div class="skins-grid" *ngIf="!loading && !error">
-      <div class="skin-card" *ngFor="let skin of filteredSkins" [style.--animation-order]="skin.animationOrder">
-        <div class="skin-card-inner">
-          <!-- Skin image -->
-          <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
+  <!-- Skins grid -->
+  <div *ngIf="!loading && !error" class="marketplace-items">
+    <div class="marketplace-grid">
+      <div *ngFor="let skin of filteredSkins" class="marketplace-card">
+         <!-- Owner photo -->
+         <img 
+         [src]="ownerPhotos[skin.ownerId] || 'assets/default-avatar.png'" 
+         [alt]="ownerNames[skin.ownerId] || 'Vendedor'"
+         class="owner-avatar"
+         (error)="ownerPhotos[skin.ownerId] = 'assets/default-avatar.png'"
+       >
+        <div class="card-image">
+          <img [src]="skin.imagem" [alt]="skin.nome" loading="lazy">
           
-          <!-- Owner photo -->
-          <div class="owner-photo">
-            <img 
-              [src]="ownerPhotos[skin.ownerId] || 'assets/default-avatar.png'" 
-              alt="Foto do vendedor" 
-              class="owner-avatar"
-              (error)="ownerPhotos[skin.ownerId] = 'assets/default-avatar.png'"
-            >
-          </div>
+         
           
           <!-- Wishlist button -->
           <button 
-            class="wishlist-button new-wishlist-btn" 
+            *ngIf="!currentUser || skin.ownerId !== currentUser.id"
+            class="wishlist-btn" 
             [class.wishlist-active]="isInWishlist(skin.id)" 
             (click)="toggleWishlist(skin.id)"
-            *ngIf="!currentUser || skin.ownerId !== currentUser.id">
-            ♥
+            [title]="isInWishlist(skin.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'"
+          >
+            <i class="far fa-heart"></i>
           </button>
           
-          <!-- Skin details -->
-          <div class="skin-info">
-            <h3>{{ skin.nome }}</h3>
-            <div class="float-bar-container">
-              <div class="float-bar-bg">
-                <div class="float-bar-indicator" [style.left]="(skin.float * 100) + '%'">
-                  <span class="float-indicator-value"></span>
-                </div>
-              </div>
-              <div class="float-bar-labels">
-                <span>0.00</span>
-                <span>0.07</span>
-                <span>0.15</span>
-                <span>0.38</span>
-                <span>0.45</span>
-                <span>1.00</span>
-              </div>
+          <div class="float-indicator">
+            <span>FLOAT: {{ skin.float | number:'1.3-3' }}</span>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <h3 class="item-name">{{ skin.nome }}</h3>
+          
+          <div class="price-tag">
+            {{ skin.preco | currency:'BRL' }}
+          </div>
+          
+          <div class="float-bar">
+            <div class="float-progress" [style.width]="(skin.float * 100) + '%'"></div>
+            <div class="float-markers">
+              <span>0.00</span>
+              <span>0.15</span>
+              <span>0.37</span>
+              <span>0.44</span>
+              <span>1.00</span>
             </div>
-            <p class="float">Float: {{ skin.float | number:'1.2-3' }}</p>
-            <p class="price">${{ skin.preco | number:'1.2-2' }}</p>
-            <button 
-              class="buy-button" 
-              (click)="buySkin(skin)" 
-              [disabled]="!skin.venda || (currentUser && skin.ownerId === currentUser.id)">
-              {{ (currentUser && skin.ownerId === currentUser.id) ? 'Sua skin' : 'Comprar' }}
-            </button>
+          </div>
+          
+          <div class="action-buttons-container">
+            <div class="action-buttons">
+              <button 
+                *ngIf="currentUser && skin.ownerId === currentUser.id"
+                class="edit-btn"
+                (click)="editSkin(skin)"
+              >
+                <i class="fas fa-edit"></i> Editar
+              </button>
+              <button 
+                class="buy-now-btn" 
+                (click)="buySkin(skin)" 
+                [disabled]="!skin.venda || (currentUser && skin.ownerId === currentUser.id)"
+              >
+                {{ (currentUser && skin.ownerId === currentUser.id) ? 'Sua skin' : 'Comprar Agora' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    
+    <!-- Empty search results -->
+    <div *ngIf="filteredSkins.length === 0" class="empty-search">
+      <i class="fas fa-search"></i>
+      <h3>Nenhum item encontrado</h3>
+      <p>Tente ajustar sua busca ou limpe os filtros</p>
     </div>
   </div>
 </div>

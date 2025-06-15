@@ -169,6 +169,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  editSkin(skin: Skin): void {
+    if (this.currentUser && skin.ownerId === this.currentUser.id) {
+      this.router.navigate(['/inventory'], { 
+        queryParams: { edit: skin.id }
+      });
+    }
+  }
+
   buySkin(skin: Skin): void {
     if (!this.currentUser) {
       // Store the current URL to redirect back after login

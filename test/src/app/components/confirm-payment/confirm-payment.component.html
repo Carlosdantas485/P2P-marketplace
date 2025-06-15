@@ -1,87 +1,238 @@
-<div class="confirm-container split-layout">
-  <h2>Confirmação de Compra</h2>
-  <div class="split-content">
-    <!-- Mensagens de sucesso e erro -->
-    <div *ngIf="resultados.length > 0">
-      <h3>Status da compra:</h3>
-      <ul>
-        <li *ngFor="let r of resultados">
-          <span [ngStyle]="{color: r.sucesso ? 'green' : 'red'}">
-            {{ r.item.nome || r.item.title || r.item.id }}:
-            <span *ngIf="r.sucesso">Compra realizada com sucesso!</span>
-            <span *ngIf="!r.sucesso">Falha: {{ r.erro }}</span>
-          </span>
-        </li>
-      </ul>
+<div class="checkout-container">
+  <!-- Cabeçalho -->
+  <div class="checkout-header">
+    <div class="container">
+      <h1><i class="fas fa-shopping-cart"></i> Finalizar Compra</h1>
+      <div class="checkout-steps">
+        <div class="step active">
+          <div class="step-number">1</div>
+          <div class="step-text">Carrinho</div>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step active">
+          <div class="step-number">2</div>
+          <div class="step-text">Pagamento</div>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-text">Confirmação</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container main-content">
+    <!-- Mensagens de status -->
+    <div *ngIf="resultados.length > 0" class="status-messages">
+      <div *ngFor="let r of resultados" class="alert" [ngClass]="{'success': r.sucesso, 'error': !r.sucesso}">
+        <i class="fas" [ngClass]="{'fa-check-circle': r.sucesso, 'fa-times-circle': !r.sucesso}"></i>
+        <span>{{ r.item.nome || r.item.title || r.item.id }}: 
+          <span *ngIf="r.sucesso">Compra realizada com sucesso!</span>
+          <span *ngIf="!r.sucesso">Falha: {{ r.erro }}</span>
+        </span>
+      </div>
     </div>
 
-    <!-- Esquerda: itens -->
-    <div class="split-left">
-      <div *ngIf="items.length === 0">
-        <p>Nenhum item selecionado para compra.</p>
-      </div>
-      <div *ngIf="items.length > 0">
-        <div class="item-list">
-          <div class="item" *ngFor="let item of items; let i = index" [style.--animation-order]="i">
-            <img [src]="item.imagem" [alt]="item.nome" class="item-image">
-            <div class="item-info">
-              <div><strong>{{ item.nome }}</strong></div>
-              <div>Preço: R$ {{ item.preco | number:'1.2-2' }}</div>
+    <div class="checkout-grid">
+      <!-- Coluna da esquerda - Resumo do pedido -->
+      <div class="order-summary">
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-box-open"></i> Resumo do Pedido</h3>
+          </div>
+          <div class="card-body">
+            <div *ngIf="items.length === 0" class="empty-cart">
+              <i class="fas fa-shopping-cart"></i>
+              <p>Nenhum item no carrinho</p>
+            </div>
+            
+            <div *ngIf="items.length > 0" class="items-list">
+              <div *ngFor="let item of items" class="order-item">
+                <div class="item-image">
+                  <img [src]="item.imagem || 'assets/default-skin.png'" [alt]="item.nome">
+                </div>
+                <div class="item-details">
+                  <h4 class="item-name">{{ item.nome }}</h4>
+                  <div class="item-price">R$ {{ item.preco | number:'1.2-2' }}</div>
+                  <div *ngIf="item.float" class="item-float">
+                    <span class="float-badge">{{ (item.float * 100).toFixed(2) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="order-totals">
+              <div class="total-row">
+                <span>Subtotal</span>
+                <span>R$ {{ total | number:'1.2-2' }}</span>
+              </div>
+              <div class="total-row">
+                <span>Taxa de serviço</span>
+                <span>R$ {{ total * 0.03 | number:'1.2-2' }}</span>
+              </div>
+              <div class="total-row grand-total">
+                <span>Total</span>
+                <span>R$ {{ total * 1.03 | number:'1.2-2' }}</span>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-      </div>
-    </div>
-    <!-- Direita: pagamento -->
-    <div class="split-right">
-      <div class="total-confirm">
-        <strong>Total a pagar:</strong> <span class="total-price">R$ {{ total | number:'1.2-2' }}</span>
-      </div>
+      <!-- Coluna da direita - Método de pagamento -->
       <div class="payment-methods">
-        <label>
-          <input type="radio" name="metodoPagamento" value="saldo" [checked]="metodoPagamento === 'saldo'" (change)="onMetodoPagamentoChange('saldo')"> Usar saldo
-        </label>
-        <label>
-          <input type="radio" name="metodoPagamento" value="cartao" [checked]="metodoPagamento === 'cartao'" (change)="onMetodoPagamentoChange('cartao')"> Cartão de crédito
-        </label>
-        <label>
-          <input type="radio" name="metodoPagamento" value="pix" [checked]="metodoPagamento === 'pix'" (change)="onMetodoPagamentoChange('pix')"> Pix
-        </label>
-        <label>
-          <input type="radio" name="metodoPagamento" value="boleto" [checked]="metodoPagamento === 'boleto'" (change)="onMetodoPagamentoChange('boleto')"> Boleto
-        </label>
-      </div>
-      <div class="cartao-form" *ngIf="metodoPagamento === 'cartao'">
-        <label for="numero-cartao">Número do cartão</label>
-        <input id="numero-cartao" type="text" placeholder="0000 0000 0000 0000" [(ngModel)]="cartaoInfo.numero" maxlength="19" autocomplete="cc-number">
-        <div style="display:flex; gap:10px; margin-top:8px;">
-          <div style="flex:1;">
-            <label for="validade-cartao">Validade</label>
-            <input id="validade-cartao" type="text" placeholder="MM/AA" [(ngModel)]="cartaoInfo.validade" maxlength="5" autocomplete="cc-exp">
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-credit-card"></i> Método de Pagamento</h3>
           </div>
-          <div style="flex:1;">
-            <label for="cvv-cartao">CVV</label>
-            <input id="cvv-cartao" type="text" placeholder="CVV" [(ngModel)]="cartaoInfo.cvv" maxlength="4" autocomplete="cc-csc">
+          <div class="card-body">
+            <div class="payment-options">
+              <label class="payment-option" [class.active]="metodoPagamento === 'saldo'" (click)="onMetodoPagamentoChange('saldo')">
+                <input type="radio" name="payment-method" [checked]="metodoPagamento === 'saldo'">
+                <div class="option-content">
+                  <i class="fas fa-wallet"></i>
+                  <span>Usar Saldo</span>
+                  <span class="balance-amount">Saldo disponível: R$ 1.500,00</span>
+                </div>
+              </label>
+
+              <label class="payment-option" [class.active]="metodoPagamento === 'pix'" (click)="onMetodoPagamentoChange('pix')">
+                <input type="radio" name="payment-method" [checked]="metodoPagamento === 'pix'">
+                <div class="option-content">
+                  <i class="fas fa-qrcode"></i>
+                  <span>Pix</span>
+                  <small>Pagamento instantâneo</small>
+                </div>
+              </label>
+
+              <label class="payment-option" [class.active]="metodoPagamento === 'cartao'" (click)="onMetodoPagamentoChange('cartao')">
+                <input type="radio" name="payment-method" [checked]="metodoPagamento === 'cartao'">
+                <div class="option-content">
+                  <i class="far fa-credit-card"></i>
+                  <span>Cartão de Crédito</span>
+                  <small>Até 12x sem juros</small>
+                </div>
+              </label>
+
+              <label class="payment-option" [class.active]="metodoPagamento === 'boleto'" (click)="onMetodoPagamentoChange('boleto')">
+                <input type="radio" name="payment-method" [checked]="metodoPagamento === 'boleto'">
+                <div class="option-content">
+                  <i class="fas fa-barcode"></i>
+                  <span>Boleto Bancário</span>
+                  <small>Até 3 dias úteis para confirmação</small>
+                </div>
+              </label>
+            </div>
+
+            <!-- Formulário do cartão -->
+            <div class="payment-form" *ngIf="metodoPagamento === 'cartao'">
+              <div class="form-group">
+                <label for="card-number">Número do cartão</label>
+                <div class="input-with-icon">
+                  <i class="far fa-credit-card"></i>
+                  <input id="card-number" type="text" placeholder="0000 0000 0000 0000" 
+                    [(ngModel)]="cartaoInfo.numero" maxlength="19" autocomplete="cc-number"
+                    (input)="formatCardNumber($event)">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="card-name">Nome no cartão</label>
+                <div class="input-with-icon">
+                  <i class="far fa-user"></i>
+                  <input id="card-name" type="text" placeholder="Nome impresso no cartão" 
+                    [(ngModel)]="cartaoInfo.nome" autocomplete="cc-name">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="card-expiry">Validade</label>
+                  <div class="input-with-icon">
+                    <i class="far fa-calendar-alt"></i>
+                    <input id="card-expiry" type="text" placeholder="MM/AA" 
+                      [(ngModel)]="cartaoInfo.validade" maxlength="5" 
+                      autocomplete="cc-exp" (input)="formatCardExpiry($event)">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="card-cvv">CVV</label>
+                  <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input id="card-cvv" type="text" placeholder="000" 
+                      [(ngModel)]="cartaoInfo.cvv" maxlength="4" 
+                      autocomplete="cc-csc">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Informações do PIX -->
+            <div class="payment-form" *ngIf="metodoPagamento === 'pix'">
+              <div class="pix-info">
+                <div class="pix-qr-code">
+                  <div class="qr-placeholder">
+                    <i class="fas fa-qrcode"></i>
+                    <span>QR Code PIX</span>
+                  </div>
+                </div>
+                <div class="pix-instructions">
+                  <h4>Pague com PIX</h4>
+                  <ol>
+                    <li>Abra o app do seu banco</li>
+                    <li>Escaneie o QR Code ou copie o código</li>
+                    <li>Confirme o pagamento</li>
+                  </ol>
+                </div>
+                <div class="pix-copy">
+                  <label>Código PIX (copia e cola):</label>
+                  <div class="copy-field">
+                    <input type="text" [value]="pixCopiaCola" readonly>
+                    <button class="btn-copy" (click)="copyToClipboard(pixCopiaCola)">
+                      <i class="far fa-copy"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Informações do boleto -->
+            <div class="payment-form" *ngIf="metodoPagamento === 'boleto'">
+              <div class="boleto-info">
+                <div class="boleto-icon">
+                  <i class="fas fa-barcode"></i>
+                </div>
+                <div class="boleto-details">
+                  <h4>Boleto Bancário</h4>
+                  <p>O boleto será gerado após a confirmação do pedido e poderá ser pago em qualquer banco ou lotérica.</p>
+                  <div class="boleto-instructions">
+                    <p><strong>Instruções:</strong></p>
+                    <ol>
+                      <li>Clique em "Gerar Boleto"</li>
+                      <li>Pague o boleto em até 3 dias úteis</li>
+                      <li>Seu pedido será processado após a confirmação do pagamento</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botão de confirmação -->
+            <button (click)="confirmarCompra()" class="confirm-btn" [disabled]="loading">
+              <span *ngIf="!loading">Confirmar Pagamento</span>
+              <span *ngIf="loading">
+                <i class="fas fa-spinner fa-spin"></i> Processando...
+              </span>
+            </button>
+
+            <!-- Termos e condições -->
+            <div class="terms-notice">
+              <p>Ao confirmar o pagamento, você concorda com nossos <a href="/termos" target="_blank">Termos de Serviço</a> e <a href="/privacidade" target="_blank">Política de Privacidade</a>.</p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="pix-info" *ngIf="metodoPagamento === 'pix'">
-        <p><strong>Copia e Cola Pix:</strong></p>
-        <textarea readonly rows="2" style="width:100%">{{ pixCopiaCola }}</textarea>
-        <small>Copie o código acima e pague no seu app bancário.</small>
-      </div>
-      <div class="boleto-info" *ngIf="metodoPagamento === 'boleto'">
-        <p><strong>Linha Digitável do Boleto:</strong></p>
-        <textarea readonly rows="2" style="width:100%">{{ boletoLinhaDigitavel }}</textarea>
-        <small>Pague o boleto em qualquer banco ou lotérica até a data de vencimento.</small>
-      </div>
-      <button (click)="confirmarCompra()" class="confirm-btn" [disabled]="loading">
-        <span *ngIf="!loading">Confirmar Compra</span>
-        <span *ngIf="loading"><span class="spinner"></span> Processando...</span>
-      </button>
-      <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
-      <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
     </div>
   </div>
 </div>

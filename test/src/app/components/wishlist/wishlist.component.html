@@ -1,54 +1,76 @@
-<div class="container">
-  <header class="wishlist-header">
-    <div class="wishlist-header-content">
-      <span class="wishlist-header-icon">&#10084;</span>
-      <div class="wishlist-header-text">
-        <h1>Minha Lista de Desejos</h1>
-        <p class="wishlist-header-subtitle">Guarde aqui seus sonhos de skins favoritos!</p>
-      </div>
+<div class="wishlist-container">
+  <!-- Header -->
+  <div class="wishlist-header">
+    <div class="header-content">
+      <h1><i class="fas fa-heart"></i> Lista de Desejos</h1>
+      <p class="subtitle">Seus itens favoritos em um só lugar</p>
     </div>
-  </header>
-  <div class="home-container">
-    <div *ngIf="loading" class="loading">Carregando...</div>
-    <div *ngIf="!loading && wishlist.length === 0" class="empty-wishlist">
-      <p>Sua lista de desejos está vazia.</p>
-      <a routerLink="/home">Explore o Marketplace</a>
-    </div>
-    <div class="skins-grid" *ngIf="!loading && wishlist.length > 0">
-      <div class="skin-card" *ngFor="let item of wishlist; let i = index" [style.--animation-order]="i">
-  <div class="card-header">
-    <button class="wishlist-button new-wishlist-btn wishlist-active" (click)="removeFromWishlist(item.id)">
-      &#10084;
-    </button>
   </div>
-  <img [src]="item.imagem" [alt]="item.nome" class="skin-image">
-  <div class="skin-info">
-    <h3>{{ item.nome }}</h3>
-    <div class="float-bar-container">
-      <div class="float-bar-bg">
-        <div class="float-bar-indicator" [style.left]="(item.float * 100) + '%'">
-          <span class="float-indicator-value">{{ item.float | number:'1.3-3' }}</span>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Carregando sua lista de desejos...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && wishlist.length === 0" class="empty-state">
+    <div class="empty-content">
+      <i class="far fa-heart"></i>
+      <h2>Sua lista de desejos está vazia</h2>
+      <p>Adicione itens à sua lista de desejos para vê-los aqui</p>
+      <a routerLink="/home" class="browse-btn">Explorar Itens</a>
+    </div>
+  </div>
+
+  <!-- Wishlist Items -->
+  <div *ngIf="!loading && wishlist.length > 0" class="wishlist-items">
+    <div class="wishlist-grid">
+      <div *ngFor="let item of wishlist" class="wishlist-card">
+        <div class="card-image">
+          <img [src]="item.imagem" [alt]="item.nome" loading="lazy">
+          <button class="remove-btn" (click)="removeFromWishlist(item.id)" title="Remover">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="float-indicator">
+            <span>FLOAT: {{ item.float | number:'1.3-3' }}</span>
+          </div>
+        </div>
+        <div class="card-content">
+          <h3 class="item-name">{{ item.nome }}</h3>
+          <div class="price-tag">
+            {{ item.preco | currency:'BRL' }}
+          </div>
+          <div class="float-bar">
+            <div class="float-progress" [style.width]="(item.float * 100) + '%'"></div>
+            <div class="float-markers">
+              <span>0.00</span>
+              <span>0.15</span>
+              <span>0.37</span>
+              <span>0.44</span>
+              <span>1.00</span>
+            </div>
+          </div>
+          <button class="buy-now-btn" (click)="buyItem(item)">Comprar Agora</button>
         </div>
       </div>
-      <div class="float-bar-labels">
-        <span>0.00</span>
-        <span>0.07</span>
-        <span>0.15</span>
-        <span>0.38</span>
-        <span>0.45</span>
-        <span>1.00</span>
-      </div>
     </div>
-    <p class="float">Float: {{ item.float }}</p>
-    <p class="price">{{ item.preco | currency:'BRL' }}</p>
-  </div>
-</div>
-    </div>
-    <div *ngIf="!loading && wishlist.length > 0" class="wishlist-summary" style="margin-top:2rem; text-align:center;">
-      <div style="font-size:1.15rem; margin-bottom:1rem;">
-        <strong>Total a pagar:</strong> R$ {{ total | number:'1.2-2' }}
+
+    <!-- Summary -->
+    <div class="wishlist-summary">
+      <div class="summary-content">
+        <div class="total-items">
+          <span>Itens ({{ wishlist.length }})</span>
+          <span>{{ total | currency:'BRL' }}</span>
+        </div>
+        <div class="total-price">
+          <strong>Total</strong>
+          <strong>{{ total | currency:'BRL' }}</strong>
+        </div>
+        <button class="checkout-btn" (click)="comprarTudo()">
+          <i class="fas fa-shopping-cart"></i> Finalizar Compra
+        </button>
       </div>
-      <button (click)="comprarTudo()" style="background:#28a745;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:5px;font-size:1rem;cursor:pointer;font-weight:bold;">Comprar Tudo</button>
     </div>
   </div>
 </div>

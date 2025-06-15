@@ -6,9 +6,9 @@
       "email": "carlosdantas485@gmail.com",
       "password": "$2a$10$04GeOKrRI7EYet83lJrbmOrki6wHrOQZodGuf/zPV3FY7/ZJsLUSa",
       "foto": "https://scontent.fcgh71-1.fna.fbcdn.net/v/t39.30808-6/494278575_23994566506815353_5259995541534606102_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeETQtYH-A6nHmIf6sCjFavhZQJNRjkTkL5lAk1GOROQvuLK6u0l3BE2jvvjlG_-AJhpJYoYgy5yg8xQgfhiwx-a&_nc_ohc=Z7db4h4tnxcQ7kNvwHZNqEO&_nc_oc=AdnYxvRPLQ3bF48-h11ee9TMQoyPSX9wBdgtyPYmp08vPPedApMB1YoU5qMsYqVMyQY9lox3ThcKMFTC_fCLN3IL&_nc_zt=23&_nc_ht=scontent.fcgh71-1.fna&_nc_gid=8px8Z_I4CpzgWoHpwSQVyA&oh=00_AfNoEVi6CLq-l-LwxGE56LdxcD020-tDTqum1jyCLeRqtQ&oe=6853FD07",
-      "saldo": 400,
-      "nivel": 21,
-      "vendas": 2,
+      "saldo": 9503.2,
+      "nivel": 31,
+      "vendas": 3,
       "historicoTransferencias": [
         {
           "type": "venda",
@@ -99,14 +99,50 @@
           "buyerUsername": "macaco",
           "buyerId": "dfa340a9-e091-4992-9958-e396424885e7",
           "date": "2025-06-15T02:54:47.685Z"
+        },
+        {
+          "type": "deposito",
+          "amount": 1,
+          "date": "2025-06-15T14:24:33.332Z"
+        },
+        {
+          "type": "deposito",
+          "amount": 2.2,
+          "date": "2025-06-15T14:24:44.483Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749948603068.5623",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "buyerUsername": "Sueli Caetano Dantas",
+          "buyerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "deposito",
+          "amount": 10000,
+          "date": "2025-06-15T15:25:41.175Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749998322541.333",
+          "skinName": "ze da renata",
+          "price": 1000,
+          "sellerUsername": "Sueli Caetano Dantas",
+          "sellerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+          "date": "2025-06-15T15:25:46.915Z"
         }
       ],
       "inventory": [
-        "1749948603068.5623"
+        "1749998322541.333"
       ],
       "wishlist": [
+        1749949046286.8672,
         1749949062891.1199
-      ]
+      ],
+      "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhM2Y5MGMzYS05ZGEyLTQ0MTEtYjc2Ny0yYjc2MTFlYmFmMTMiLCJlbWFpbCI6ImNhcmxvc2RhbnRhczQ4NUBnbWFpbC5jb20iLCJpYXQiOjE3NTAwMDEyNTksImV4cCI6MTc1MDAwNDg1OX0.aBJGhr76WdSPX1qIAJJ8uBsgU5ILvwkn7qYa8rQp9_o",
+      "resetPasswordExpires": 1750004859432
     },
     {
       "id": "d59276b6-fb3e-40fa-a529-b7b1f8931424",
@@ -225,9 +261,9 @@
       "email": "admin1@exemplo.com",
       "password": "$2a$10$odf7OK46UUSlZjKVDsYq/.5tHP943DnmIIjvu/kJI4bU6ilovUYn.",
       "foto": "data:image/jpeg;base64,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",
-      "saldo": 9600,
-      "nivel": 1,
-      "vendas": 0,
+      "saldo": 10000,
+      "nivel": 41,
+      "vendas": 4,
       "historicoTransferencias": [
         {
           "type": "deposito",
@@ -269,77 +305,360 @@
           "sellerUsername": "Carlos Alberto Dantas Filho",
           "sellerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
           "date": "2025-06-15T02:54:47.685Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949062891.1199",
+          "skinName": "sdvssd",
+          "price": 100,
+          "buyerUsername": "Matheus",
+          "buyerId": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+          "date": "2025-06-15T14:13:57.730Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749950546307.4314",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "Matheus",
+          "buyerId": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+          "date": "2025-06-15T14:14:03.956Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949072480.2205",
+          "skinName": "dfsdfsdf",
+          "price": 100,
+          "buyerUsername": "Matheus",
+          "buyerId": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+          "date": "2025-06-15T14:14:23.373Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949046286.8672",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "buyerUsername": "macaco",
+          "buyerId": "93cc4ae3-bedc-4bbb-acc3-9a8c8cd082f0",
+          "date": "2025-06-15T14:39:10.957Z"
+        }
+      ],
+      "inventory": [],
+      "wishlist": []
+    },
+    {
+      "id": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+      "username": "Matheus",
+      "email": "eumatheusdantas1214@gmail.com",
+      "password": "$2a$10$LiWNJrLYZPUhXMuLTqTEbOcgfcKKsruEMGJEMBdLQpSDI8l.dv7kO",
+      "foto": "https://wallpapers.com/images/hd/ugly-dog-pictures-2uq7f4mcm4kn8gww.jpg",
+      "saldo": 1000000010510.61,
+      "nivel": 41,
+      "vendas": 4,
+      "historicoTransferencias": [
+        {
+          "type": "deposito",
+          "amount": 1000000000000,
+          "date": "2025-06-15T14:11:54.821Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949062891.1199",
+          "skinName": "sdvssd",
+          "price": 100,
+          "sellerUsername": "macaco",
+          "sellerId": "dfa340a9-e091-4992-9958-e396424885e7",
+          "date": "2025-06-15T14:13:57.730Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749950546307.4314",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "macaco",
+          "sellerId": "dfa340a9-e091-4992-9958-e396424885e7",
+          "date": "2025-06-15T14:14:03.956Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949072480.2205",
+          "skinName": "dfsdfsdf",
+          "price": 100,
+          "sellerUsername": "macaco",
+          "sellerId": "dfa340a9-e091-4992-9958-e396424885e7",
+          "date": "2025-06-15T14:14:23.373Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949062891.1199",
+          "skinName": "sdvssd",
+          "price": 653.51,
+          "buyerUsername": "Sueli Caetano Dantas",
+          "buyerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949072480.2205",
+          "skinName": "dfsdfsdf",
+          "price": 57.1,
+          "buyerUsername": "Sueli Caetano Dantas",
+          "buyerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749950546307.4314",
+          "skinName": "Dragon lore",
+          "price": 10000,
+          "buyerUsername": "Sueli Caetano Dantas",
+          "buyerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749996795147.2424",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "Sueli Caetano Dantas",
+          "buyerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+          "date": "2025-06-15T15:24:49.557Z"
+        }
+      ],
+      "inventory": [],
+      "wishlist": [],
+      "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZTJhYzBhNi1jNjU1LTQxNWMtYWZjNS0zZTAyMmJhMDU1MjkiLCJlbWFpbCI6ImV1bWF0aGV1c2RhbnRhczEyMTRAZ21haWwuY29tIiwiaWF0IjoxNzQ5OTk2OTY3LCJleHAiOjE3NTAwMDA1Njd9.tSb4dn7IjRbNPARceW18j-0dzK72OOICirRr2wgnRKg",
+      "resetPasswordExpires": 1750000567668
+    },
+    {
+      "id": "93cc4ae3-bedc-4bbb-acc3-9a8c8cd082f0",
+      "username": "macaco",
+      "email": "dantas@exemplo.com.br",
+      "password": "$2a$10$yFmxTNoWA6tTgOFWNfyeG.k.cuYgS7YIohcurntD2ikZpgHFfEPoi",
+      "foto": "https://www.petz.com.br/blog/wp-content/uploads/2019/03/cachorro-mini-pet-1280x720.jpg",
+      "saldo": 12456,
+      "nivel": 11,
+      "vendas": 1,
+      "historicoTransferencias": [
+        {
+          "type": "deposito",
+          "amount": 10100,
+          "date": "2025-06-15T14:38:08.569Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949046286.8672",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "sellerUsername": "macaco",
+          "sellerId": "dfa340a9-e091-4992-9958-e396424885e7",
+          "date": "2025-06-15T14:39:10.957Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749998322541.333",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 2456,
+          "buyerUsername": "Sueli Caetano Dantas",
+          "buyerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+          "date": "2025-06-15T15:22:26.433Z"
         }
       ],
       "inventory": [
-        "1749949046286.8672",
-        "1749949062891.1199",
-        "1749949072480.2205",
-        "1749950546307.4314"
+        "1749949046286.8672"
       ],
       "wishlist": []
+    },
+    {
+      "id": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+      "username": "Sueli Caetano Dantas",
+      "email": "sueli@email.com",
+      "password": "$2a$10$e9f5SqXdp84iY0Uxz4t4OuwSpFqeSZeAke4QabqfEbMiZJ5NNzthO",
+      "foto": "https://scontent.fcgh71-1.fna.fbcdn.net/v/t39.30808-6/406394462_7076974049026473_7421558428796105204_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGGC70u4fuhYB-RdtSAEBsuvzEFaI57Nby_MQVojns1vId-T_nQo6uZbI_UtDyazBm9WYkc4HX5fNNiujzJ01vc&_nc_ohc=gcMqrCZBlrkQ7kNvwE5sxjr&_nc_oc=Adn7F6huAjiMcXPWDV5gIfKgMHhOcyAN773RDpUNZNRzxsnT8OOSwz5d4ip9gzAELjj1FP0fXVmB47--9dbKjcrO&_nc_zt=23&_nc_ht=scontent.fcgh71-1.fna&_nc_gid=E20Kk119wITBwp_9DASBMg&oh=00_AfNGSpMZpX8ic1LZZEukEg1_7PhSgHvClBzg50YjLanqGA&oe=6854A930",
+      "saldo": 7633.390000000003,
+      "nivel": 11,
+      "vendas": 1,
+      "historicoTransferencias": [
+        {
+          "type": "deposito",
+          "amount": 20000,
+          "date": "2025-06-15T15:21:03.577Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749998322541.333",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 2456,
+          "sellerUsername": "macaco",
+          "sellerId": "93cc4ae3-bedc-4bbb-acc3-9a8c8cd082f0",
+          "date": "2025-06-15T15:22:26.433Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749948603068.5623",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "sellerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949062891.1199",
+          "skinName": "sdvssd",
+          "price": 653.51,
+          "sellerUsername": "Matheus",
+          "sellerId": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949072480.2205",
+          "skinName": "dfsdfsdf",
+          "price": 57.1,
+          "sellerUsername": "Matheus",
+          "sellerId": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749950546307.4314",
+          "skinName": "Dragon lore",
+          "price": 10000,
+          "sellerUsername": "Matheus",
+          "sellerId": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749996795147.2424",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "Matheus",
+          "sellerId": "be2ac0a6-c655-415c-afc5-3e022ba05529",
+          "date": "2025-06-15T15:24:49.557Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749998322541.333",
+          "skinName": "ze da renata",
+          "price": 1000,
+          "buyerUsername": "Carlos Alberto Dantas Filho",
+          "buyerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+          "date": "2025-06-15T15:25:46.915Z"
+        }
+      ],
+      "inventory": [
+        "1749948603068.5623",
+        "1749949062891.1199",
+        "1749949072480.2205",
+        "1749950546307.4314",
+        "1749996795147.2424"
+      ],
+      "wishlist": [
+        1749949062891.1199,
+        1749949072480.2205,
+        1749950546307.4314,
+        1749996795147.2424
+      ]
     }
   ],
   "skins": [
     {
       "id": "1749948603068.5623",
-      "ownerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+      "ownerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
       "nome": "CARLOS ALBERTO DANTAS FILHO",
       "descricao": "qweqw",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf0ebcZThQ6tCvq4GGqPD1PrbQqW9e-NV9j_v-5YT0m1HmlB81NDG3OtSSclVqaVDQq1O8l-7n1pHt6ZzAynU16XJ3sHuIlxHl1B0ZPOc8gvCACQLJzTe1G8U",
       "float": 0.221654,
-      "venda": true,
+      "venda": false,
       "preco": 100,
       "created_at": "2025-06-15T00:50:03.068Z",
-      "updated_at": "2025-06-15T01:58:42.636Z"
+      "updated_at": "2025-06-15T04:58:27.456Z"
     },
     {
       "id": "1749949046286.8672",
-      "ownerId": "dfa340a9-e091-4992-9958-e396424885e7",
+      "ownerId": "93cc4ae3-bedc-4bbb-acc3-9a8c8cd082f0",
       "nome": "CARLOS ALBERTO DANTAS FILHO",
       "descricao": "5465465",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/1812831098",
       "float": 1,
-      "venda": true,
+      "venda": false,
       "preco": 100,
       "created_at": "2025-06-15T00:57:26.286Z",
       "updated_at": "2025-06-15T02:55:03.432Z"
     },
     {
       "id": "1749949062891.1199",
-      "ownerId": "dfa340a9-e091-4992-9958-e396424885e7",
+      "ownerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
       "nome": "sdvssd",
       "descricao": "sfsdfsdfsdf",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
       "float": 1,
-      "venda": true,
-      "preco": 100,
+      "venda": false,
+      "preco": 653.51,
       "created_at": "2025-06-15T00:57:42.891Z",
-      "updated_at": "2025-06-15T02:54:59.997Z"
+      "updated_at": "2025-06-15T14:15:33.130Z"
     },
     {
       "id": "1749949072480.2205",
-      "ownerId": "dfa340a9-e091-4992-9958-e396424885e7",
+      "ownerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
       "nome": "dfsdfsdf",
       "descricao": "sdfsdfsdf",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
       "float": 1,
-      "venda": true,
-      "preco": 100,
+      "venda": false,
+      "preco": 57.1,
       "created_at": "2025-06-15T00:57:52.480Z",
-      "updated_at": "2025-06-15T02:55:06.342Z"
+      "updated_at": "2025-06-15T14:14:48.616Z"
     },
     {
       "id": "1749950546307.4314",
-      "ownerId": "dfa340a9-e091-4992-9958-e396424885e7",
+      "ownerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
       "nome": "Dragon lore",
       "descricao": "awp",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/1812831098",
       "float": 1,
-      "venda": true,
-      "preco": 100,
+      "venda": false,
+      "preco": 10000,
       "created_at": "2025-06-15T01:22:26.307Z",
-      "updated_at": "2025-06-15T02:54:57.146Z"
+      "updated_at": "2025-06-15T14:14:33.846Z"
+    },
+    {
+      "id": "1749996795147.2424",
+      "ownerId": "ccd736c2-66e3-40b8-ac9d-277b7d620c40",
+      "nome": "Dragon lore",
+      "descricao": "muito foda",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf0ebcZThQ6tCvq4GGqPD1PrbQqW9e-NV9j_v-5YT0m1HmlB81NDG3OtSSclVqaVDQq1O8l-7n1pHt6ZzAynU16XJ3sHuIlxHl1B0ZPOc8gvCACQLJzTe1G8U",
+      "float": 1,
+      "venda": false,
+      "preco": 100,
+      "created_at": "2025-06-15T14:13:15.147Z",
+      "updated_at": "2025-06-15T14:13:26.813Z"
+    },
+    {
+      "id": "1749998322541.333",
+      "ownerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+      "nome": "ze da renata",
+      "descricao": "jyhgyrdcfh",
+      "imagem": "https://www.petz.com.br/blog/wp-content/uploads/2019/03/cachorro-mini-pet-1280x720.jpg",
+      "float": 1,
+      "venda": true,
+      "preco": 1000,
+      "created_at": "2025-06-15T14:38:42.541Z",
+      "updated_at": "2025-06-15T15:26:21.553Z"
+    },
+    {
+      "id": "1750003617011.7095",
+      "ownerId": "dfa340a9-e091-4992-9958-e396424885e7",
+      "nome": "Dragon lore",
+      "descricao": "23423423",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf0ebcZThQ6tCvq4GGqPD1PrbQqW9e-NV9j_v-5YT0m1HmlB81NDG3OtSSclVqaVDQq1O8l-7n1pHt6ZzAynU16XJ3sHuIlxHl1B0ZPOc8gvCACQLJzTe1G8U",
+      "float": 0.34589,
+      "venda": true,
+      "preco": 1000,
+      "created_at": "2025-06-15T16:06:57.011Z",
+      "updated_at": "2025-06-15T16:07:56.991Z"
     }
   ],
   "history": [],

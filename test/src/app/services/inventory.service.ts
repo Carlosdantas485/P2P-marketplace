@@ -79,9 +79,11 @@ export class InventoryService {
   }
 
   // Purchase multiple items
-  purchaseMultiple(skinIds: string[], compradorId?: string): Observable<any> {
+  purchaseMultiple(skinIds: string[], dadosPagamento?: any, compradorId?: string): Observable<any> {
     const body: any = { skinIds };
+    if (dadosPagamento) body.dadosPagamento = dadosPagamento;
     if (compradorId) body.compradorId = compradorId;
+    
     return this.http.post<any>(`${this.apiUrl}/buy-multiple`, body).pipe(
       tap(response => {
         if (response && response.user) {
