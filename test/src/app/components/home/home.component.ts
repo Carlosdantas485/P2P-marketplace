@@ -121,10 +121,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  isInWishlist(skinId: number): boolean {
-    // debug
-    // console.log('wishlistIds:', this.wishlistIds, 'skinId:', skinId);
-    return this.wishlistIds.some(id => Number(id) === Number(skinId));
+  isInWishlist(skinId: string | number): boolean {
+    if (skinId === null || skinId === undefined) return false;
+    const searchId = typeof skinId === 'string' ? skinId.trim() : skinId.toString();
+    return this.wishlistIds.some(id => id.toString() === searchId);
   }
 
   ngOnDestroy(): void {

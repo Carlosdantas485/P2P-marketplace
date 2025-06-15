@@ -55,9 +55,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   }
 
   verifyToken(): void {
-    // Aqui você faria uma chamada para verificar se o token é válido
-    // Por enquanto, apenas simulamos uma verificação bem-sucedida
-    this.showCaptcha = true;
+    // Implement token verification with backend
+    this.loading = true;
+    // Simulate API call
+    setTimeout(() => {
+      this.loading = false;
+      this.showCaptcha = true; // Show captcha only after token is verified
+    }, 1000);
   }
 
   onPasswordChange(): void {
@@ -96,7 +100,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCaptchaResolved(captchaResponse: string): void {
+  onCaptchaResolved(captchaResponse: string | null): void {
     this.captchaResolved = !!captchaResponse;
   }
 

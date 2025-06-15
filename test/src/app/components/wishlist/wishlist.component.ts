@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WishlistService } from '../../services/wishlist.service';
-import { Item as Skin } from '../../services/inventory.service';
+import { Item } from '../../services/inventory.service';
 import { RouterModule, Router } from '@angular/router';
 
 @Component({
@@ -12,7 +12,7 @@ import { RouterModule, Router } from '@angular/router';
   styleUrls: ['./wishlist.component.css']
 })
 export class WishlistComponent implements OnInit {
-  wishlist: Skin[] = [];
+  wishlist: Item[] = [];
   loading = true;
 
   constructor(private wishlistService: WishlistService, private router: Router) { }
@@ -46,6 +46,13 @@ export class WishlistComponent implements OnInit {
         console.error('Failed to remove item from wishlist', err);
         alert('Não foi possível remover o item.');
       }
+    });
+  }
+
+  buyItem(item: Item): void {
+    // Navigate to the payment page with the item
+    this.router.navigate(['/payment'], { 
+      state: { items: [item] }
     });
   }
 

@@ -8,10 +8,12 @@ import { WishlistService } from '../../services/wishlist.service';
 import { AuthService } from '../../services/auth.service';
 
 interface ItemCompra {
-  id: number;
+  id: number | string;
   nome?: string;
   title?: string;
   preco: number;
+  imagem?: string;
+  float?: number;
 }
 
 interface ResultadoCompra {
@@ -155,7 +157,7 @@ export class ConfirmPaymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private confirmarCompra(): void {
+  public confirmarCompra(): void {
     if (!this.items || this.items.length === 0) {
       this.setError('Nenhum item selecionado para compra.');
       return;
@@ -344,8 +346,10 @@ export class ConfirmPaymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  private removerDaWishlist(skinId: number): void {
-    const sub = this.wishlistService.removeFromWishlist(skinId).subscribe({
+  private removerDaWishlist(skinId: number | string): void {
+    // Convert to number if it's a string
+    const numericId = typeof skinId === 'string' ? parseInt(skinId, 10) : skinId;
+    const sub = this.wishlistService.removeFromWishlist(numericId).subscribe({
       next: () => {
         console.log('Item removido da wishlist com sucesso');
       },
@@ -361,8 +365,8 @@ export class ConfirmPaymentComponent implements OnInit, OnDestroy {
       // Verifica se a resposta contém resultados individuais
       if (res.results && Array.isArray(res.results)) {
         this.resultados = this.items.map(item => {
-          const r = res.results.find((rr: { skinId: number; sucesso: boolean; erro?: string }) => 
-            rr.skinId === item.id
+          const r = res.results.find((rr: { skinId: number | string; sucesso: boolean; erro?: string }) => 
+            rr.skinId == item.id // Use loose equality to handle string/number comparison
           );
           if (r?.sucesso) {
             this.removerDaWishlist(item.id);

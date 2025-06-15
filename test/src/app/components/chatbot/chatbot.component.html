@@ -1,0 +1,126 @@
+<!-- Botão Flutuante do Chatbot -->
+<button class="chatbot-button" (click)="toggleChat($event)" [class.active]="isOpen" aria-label="Abrir chat">
+  <span class="chatbot-button-icon">
+    <i class="fas fa-comment-dots"></i>
+  </span>
+  <span class="unread-badge" *ngIf="unreadMessages > 0">{{ unreadMessages }}</span>
+  <span class="pulse-animation"></span>
+</button>
+
+<!-- Container Principal do Chat -->
+<div class="chatbot-wrapper" [class.visible]="isOpen">
+  <div class="chatbot-container">
+    <!-- Cabeçalho do Chat -->
+    <div class="chatbot-header">
+      <div class="header-content">
+        <div class="chatbot-avatar">
+          <div class="avatar-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="status-indicator"></div>
+        </div>
+        <div class="chatbot-info">
+          <h3>Assistente Virtual</h3>
+          <p>Online</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="header-button" title="Minimizar">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button class="header-button close-button" (click)="toggleChat()" aria-label="Fechar chat" title="Fechar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Área de Mensagens -->
+    <div class="chatbot-messages" #messagesContainer>
+      <!-- Mensagem de Boas-vindas -->
+      <div class="welcome-message" *ngIf="messages.length === 0">
+        <div class="welcome-content">
+          <div class="welcome-avatar">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="welcome-text">
+            <h4>Olá! 👋</h4>
+            <p>Como posso ajudar você hoje?</p>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="quick-action-btn" (click)="quickAction('Ajuda com compras')">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Compras</span>
+          </button>
+          <button class="quick-action-btn" (click)="quickAction('Dúvidas sobre pagamento')">
+            <i class="fas fa-credit-card"></i>
+            <span>Pagamentos</span>
+          </button>
+          <button class="quick-action-btn" (click)="quickAction('Problemas com minha conta')">
+            <i class="fas fa-user-circle"></i>
+            <span>Minha Conta</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Histórico de Mensagens -->
+      <div *ngFor="let message of messages" class="message" [class.user]="message.isUser" [class.bot]="!message.isUser">
+        <div class="message-avatar" *ngIf="!message.isUser">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="message-content">
+          <div class="message-text">
+            <ng-container *ngIf="message.text">
+              {{ message.text }}
+            </ng-container>
+          </div>
+          <div class="message-meta">
+            <span class="message-time">{{ message.timestamp | date:'HH:mm' }}</span>
+            <span class="message-status" *ngIf="message.isUser">
+              <i class="fas fa-check-double"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Indicador de Digitação -->
+      <div *ngIf="isLoading" class="typing-indicator">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="typing-text">Digitando...</span>
+      </div>
+    </div>
+
+    <!-- Área de Entrada de Mensagem -->
+    <form class="chatbot-input" (submit)="sendMessage($event)">
+      <div class="input-wrapper">
+        <button type="button" class="attach-button" title="Anexar arquivo">
+          <i class="fas fa-paperclip"></i>
+        </button>
+        <input 
+          type="text" 
+          [(ngModel)]="userInput" 
+          name="userInput"
+          placeholder="Digite sua mensagem..."
+          autocomplete="off"
+          [disabled]="isLoading"
+          (keydown.enter)="sendMessage($event)"
+          #messageInput>
+        <div class="input-actions">
+          <button type="button" class="emoji-button" title="Emojis">
+            <i class="far fa-smile"></i>
+          </button>
+          <button type="submit" [disabled]="!userInput.trim() || isLoading" class="send-button" title="Enviar">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+      <div class="input-hint">
+        <small>Pressione Enter para enviar, Shift+Enter para nova linha</small>
+      </div>
+    </form>
+  </div>
+</div>

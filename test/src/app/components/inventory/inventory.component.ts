@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap, catchError, tap } from 'rxjs/operators';
+import { switchMap, catchError, tap, finalize } from 'rxjs/operators';
 import { InventoryService, Item } from '../../services/inventory.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -20,6 +20,11 @@ export class InventoryComponent implements OnInit {
 
   inventory$: Observable<Item[]>;
   private inventorySubject = new BehaviorSubject<void>(undefined);
+  loading$ = new BehaviorSubject<boolean>(false);
+  error: string | null = null;
+  isSubmitting = false;
+  showDeleteConfirm = false;
+  itemToDelete: string | null = null;
 
   showForm = false;
   isEditing = false;
@@ -128,16 +133,38 @@ export class InventoryComponent implements OnInit {
     }
   }
 
-  deleteItem(itemId: string): void {
-    if (confirm('Tem certeza que deseja deletar este item?')) {
-      this.inventoryService.deleteItem(itemId).pipe(
-        tap(() => this.loadInventory()),
-        catchError(err => {
-          console.error('Error deleting item:', err);
-          return of(null);
-        })
-      ).subscribe();
-    }
+  trackByItemId(index: number, item: Item): string {
+    return item.id;
+  }
+
+  confirmDelete(item: Item): void {
+    this.itemToDelete = item.id;
+    this.showDeleteConfirm = true;
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm = false;
+    this.itemToDelete = null;
+  }
+
+  deleteItem(): void {
+    if (!this.itemToDelete) return;
+    
+    this.isSubmitting = true;
+    this.inventoryService.deleteItem(this.itemToDelete).pipe(
+      tap(() => {
+        this.loadInventory();
+        this.showDeleteConfirm = false;
+        this.itemToDelete = null;
+        this.error = null;
+      }),
+      catchError(err => {
+        console.error('Error deleting item:', err);
+        this.error = 'Failed to delete item';
+        return of(null);
+      }),
+      finalize(() => this.isSubmitting = false)
+    ).subscribe();
   }
 
   toggleSale(item: Item): void {
@@ -147,6 +174,7 @@ export class InventoryComponent implements OnInit {
         tap(() => this.loadInventory()),
         catchError(err => {
           console.error('Error unlisting item:', err);
+          this.error = 'Failed to unlist item';
           return of(null);
         })
       ).subscribe();
@@ -158,6 +186,7 @@ export class InventoryComponent implements OnInit {
           tap(() => this.loadInventory()),
           catchError(err => {
             console.error('Error listing item:', err);
+            this.error = 'Failed to list item for sale';
             return of(null);
           })
         ).subscribe();
