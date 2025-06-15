@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #2be8ff;
-  --primary-hover: #1ce0e0;
-  --background-dark: #0f172a;
-  --background-light: #1e293b;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent-color: #4fd1c5;
-  --danger-color: #ef4444;
-  --success-color: #10b981;
-  --border-radius: 8px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --primary-color: #66c0f4;
+  --primary-hover: #4fb3f4;
+  --background-dark: #1B2838;
+  --background-light: #2a3f5a;
+  --text-primary: #e6e6e6;
+  --text-secondary: #8f98a0;
+  --accent-color: #5c7cff;
+  --danger-color: #e74c3c;
+  --success-color: #2ecc71;
+  --border-radius: 6px;
+  --transition: all 0.2s ease;
 }
 
 * {

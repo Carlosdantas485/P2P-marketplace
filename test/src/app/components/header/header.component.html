@@ -1,26 +1,58 @@
 <nav class="navbar">
-  <div class="logo">
-    <a routerLink="/home" class="logo-link">Skin Market</a>
-  </div>
-  <div class="nav-links">
-    <a routerLink="/home" routerLinkActive="active">Home</a>
-    <a routerLink="/inventory" routerLinkActive="active">Inventário</a>
-    <a routerLink="/wishlist" routerLinkActive="active">Lista de Desejos</a>
-    <a routerLink="/account" routerLinkActive="active" *ngIf="currentUser">Conta</a>
-  </div>
-  <div class="user-actions">
-    <ng-container *ngIf="!currentUser">
-            <a routerLink="/login">Login</a>
-      <a routerLink="/register">Registrar</a>
-    </ng-container>
-    <div *ngIf="currentUser" class="user-info">
-      <a routerLink="/account" class="user-profile">
-        <img [src]="currentUser.foto || 'assets/default-avatar.png'" alt="Perfil" class="profile-image">
-        <span class="username">{{ currentUser.username }}</span>
-        <span class="balance">{{ currentUser.saldo | currency:'BRL':'symbol':'1.2-2' }}</span>
-      </a>
-            <a routerLink="/deposit" class="deposit-button">Depositar</a>
-      <button class="logout-button" (click)="logout()">Sair</button>
+  <div class="nav-header">
+    <div class="logo">
+      <a routerLink="/home" class="logo-link">Skin Market</a>
     </div>
+    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen">
+      <span class="menu-icon" [class.active]="isMobileMenuOpen">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+  
+  <div class="nav-links" [class.active]="isMobileMenuOpen">
+    <a routerLink="/home" routerLinkActive="active" (click)="closeMenuIfMobile()">
+      <i class="fas fa-home"></i> Home
+    </a>
+    <a routerLink="/inventory" routerLinkActive="active" (click)="closeMenuIfMobile()">
+      <i class="fas fa-box-open"></i> Inventário
+    </a>
+    <a routerLink="/wishlist" routerLinkActive="active" (click)="closeMenuIfMobile()">
+      <i class="fas fa-heart"></i> Lista de Desejos
+    </a>
+    <a routerLink="/account" routerLinkActive="active" *ngIf="currentUser" (click)="closeMenuIfMobile()">
+      <i class="fas fa-user"></i> Conta
+    </a>
+  </div>
+  
+  <div class="user-actions" [class.active]="isMobileMenuOpen">
+    <ng-container *ngIf="!currentUser">
+      <a routerLink="/login" class="btn-login" (click)="closeMenuIfMobile()">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </a>
+      <a routerLink="/register" class="btn-register" (click)="closeMenuIfMobile()">
+        <i class="fas fa-user-plus"></i> Registrar
+      </a>
+    </ng-container>
+    
+    <ng-container *ngIf="currentUser">
+      <a routerLink="/account" class="user-profile" (click)="closeMenuIfMobile()">
+        <img [src]="currentUser.foto || 'assets/default-avatar.png'" alt="Perfil" class="profile-image">
+        <div class="user-info">
+          <span class="username">{{ currentUser.username }}</span>
+          <span class="balance">
+            <i class="fas fa-coins"></i> {{ currentUser.saldo | currency:'BRL':'symbol':'1.2-2' }}
+          </span>
+        </div>
+      </a>
+      <a routerLink="/deposit" class="deposit-button" (click)="closeMenuIfMobile()">
+        <i class="fas fa-plus-circle"></i> Depositar
+      </a>
+      <button class="logout-button" (click)="logout(); closeMenuIfMobile()">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
+    </ng-container>
   </div>
 </nav>
