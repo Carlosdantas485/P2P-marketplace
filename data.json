@@ -580,6 +580,19 @@
         1749950546307.4314,
         1749996795147.2424
       ]
+    },
+    {
+      "id": "c9854468-7527-4775-a6b5-3e3fd5dc8348",
+      "username": "macaco",
+      "email": "macaco@email.com",
+      "password": "$2a$10$.L/pJlbUhK2siaoaNND94ORW6BwGMvGjcZ4b/xEBo5Y2qGyRO8s36",
+      "foto": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
+      "saldo": 0,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [],
+      "inventory": [],
+      "wishlist": []
     }
   ],
   "skins": [
