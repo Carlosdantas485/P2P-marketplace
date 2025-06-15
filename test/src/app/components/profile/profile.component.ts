@@ -14,6 +14,7 @@ import { HistoryService } from '../../services/history.service';
 })
 export class ProfileComponent {
   user$: Observable<User | null>;
+  currentUser: User | null = null;
   isEditing = false;
   isChangingPassword = false;
   editProfileForm: FormGroup;
@@ -37,6 +38,9 @@ export class ProfileComponent {
     private historyService: HistoryService
   ) {
     this.user$ = this.authService.currentUser;
+    this.user$.subscribe(user => {
+      this.currentUser = user;
+    });
     this.editProfileForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -71,8 +75,13 @@ export class ProfileComponent {
   }
 
   calculateFixedTotals(): void {
-    this.totalCompras = this.history.filter(item => item.type === 'compra').reduce((sum, item) => sum + (item.price || 0), 0);
-    this.totalVendas = this.history.filter(item => item.type === 'venda').reduce((sum, item) => sum + (item.price || 0), 0);
+    this.totalCompras = this.history
+      .filter(item => item.type === 'compra')
+      .reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
+      
+    this.totalVendas = this.history
+      .filter(item => item.type === 'venda')
+      .reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
   }
 
   applyFilter(type: string): void {
@@ -165,17 +174,34 @@ export class ProfileComponent {
   }
 
   // Calculate level from XP (100 XP per level)
-  getLevelFromXp(xp: number): number {
-    return Math.floor((xp || 0) / 100) + 1;
-  }
-
   // Calculate current XP progress to next level (0-100%)
   getXpProgress(xp: number): number {
-    return (xp || 0) % 100;
+    // Retorna o progresso de XP para a barra (0-100%)
+    return Math.min(100, Math.floor((xp % 1000) / 10));
   }
 
-  // Calculate XP needed for next level
   getXpForNextLevel(xp: number): number {
-    return 100 - (this.getXpProgress(xp));
+    // Calcula o XP necessário para o próximo nível
+    return 1000 - (xp % 1000);
+  }
+
+  getLevelFromXp(xp: number): number {
+    // Calcula o nível baseado no XP (1 nível a cada 1000 XP)
+    return Math.floor(xp / 1000) + 1;
+  }
+
+  getLevelProgress(xp: number): { current: number, next: number, progress: number } {
+    const currentLevel = this.getLevelFromXp(xp);
+    const xpForCurrentLevel = (currentLevel - 1) * 1000;
+    const xpForNextLevel = currentLevel * 1000;
+    const xpInCurrentLevel = xp - xpForCurrentLevel;
+    const xpNeededForNextLevel = xpForNextLevel - xpForCurrentLevel;
+    const progress = Math.min(100, Math.floor((xpInCurrentLevel / xpNeededForNextLevel) * 100));
+    
+    return {
+      current: currentLevel,
+      next: currentLevel + 1,
+      progress: progress
+    };
   }
 }

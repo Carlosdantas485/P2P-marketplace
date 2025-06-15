@@ -1,36 +1,108 @@
-<div class="container">
+<div class="register-wrapper">
   <div class="register-container">
-    <h2>Cadastro</h2>
+    <div class="register-header">
+      <h2>Criar uma conta</h2>
+      <p>Preencha os dados para se cadastrar</p>
+    </div>
     
     <div *ngIf="error" class="error-message">
-      {{ error }}
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ error }}</span>
     </div>
 
-    <form (ngSubmit)="onRegister()">
+    <form class="register-form" (ngSubmit)="onRegister()">
       <div class="form-group">
-        <label for="name">Nome:</label>
-        <input type="text" id="name" [(ngModel)]="name" name="name" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" [(ngModel)]="email" name="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Senha:</label>
-        <input type="password" id="password" [(ngModel)]="password" name="password" required>
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirmar Senha:</label>
-        <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input 
+            type="text" 
+            id="name" 
+            [(ngModel)]="name" 
+            name="name" 
+            placeholder="Seu nome completo"
+            required>
+        </div>
       </div>
       
-      <div *ngIf="loading" class="loading">Cadastrando...</div>
+      <div class="form-group">
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input 
+            type="email" 
+            id="email" 
+            [(ngModel)]="email" 
+            name="email" 
+            placeholder="Seu e-mail"
+            required>
+        </div>
+      </div>
       
-      <button type="submit" [disabled]="loading">Cadastrar</button>
+      <div class="form-group">
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input 
+            type="password" 
+            id="password" 
+            [(ngModel)]="password" 
+            name="password" 
+            placeholder="Crie uma senha"
+            required>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            [(ngModel)]="confirmPassword" 
+            name="confirmPassword" 
+            placeholder="Confirme sua senha"
+            required>
+        </div>
+      </div>
+      
+      <div class="form-options">
+        <label class="terms">
+          <input type="checkbox" name="terms" required>
+          <span>Concordo com os <a href="#" class="terms-link">Termos de Uso</a> e <a href="#" class="terms-link">Política de Privacidade</a></span>
+        </label>
+      </div>
+      
+      <button type="submit" class="register-button" [disabled]="loading">
+        <span *ngIf="!loading">
+          <i class="fas fa-user-plus"></i>
+          Cadastrar
+        </span>
+        <span *ngIf="loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          Cadastrando...
+        </span>
+      </button>
     </form>
 
-    <div class="already-registered">
-      Já tem uma conta? <a routerLink="/login">Faça login aqui</a>
+    <div class="divider">
+      <span>ou</span>
     </div>
+
+    <div class="social-login">
+      <button type="button" class="social-button google">
+        <i class="fab fa-google"></i>
+        Cadastrar com Google
+      </button>
+      <button type="button" class="social-button facebook">
+        <i class="fab fa-facebook-f"></i>
+        Cadastrar com Facebook
+      </button>
+    </div>
+
+    <p class="login-link">
+      Já tem uma conta? <a routerLink="/login">Faça login</a>
+    </p>
+  </div>
+  
+  <div class="register-illustration">
+    <img src="https://skin.club/community/wp-content/uploads/2025/05/1920-x-1080-9.webp" alt="Register Illustration">
   </div>
 </div>

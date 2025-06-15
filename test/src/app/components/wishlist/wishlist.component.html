@@ -15,7 +15,7 @@
       <a routerLink="/home">Explore o Marketplace</a>
     </div>
     <div class="skins-grid" *ngIf="!loading && wishlist.length > 0">
-      <div class="skin-card" *ngFor="let item of wishlist">
+      <div class="skin-card" *ngFor="let item of wishlist; let i = index" [style.--animation-order]="i">
   <div class="card-header">
     <button class="wishlist-button new-wishlist-btn wishlist-active" (click)="removeFromWishlist(item.id)">
       &#10084;

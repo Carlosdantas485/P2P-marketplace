@@ -44,7 +44,7 @@
     <div *ngIf="items.length === 0" class="no-items">
       Você ainda não possui itens no inventário.
     </div>
-    <div class="skin-card" *ngFor="let item of items">
+    <div class="skin-card" *ngFor="let item of items; let i = index" [style.--animation-order]="i">
       <div class="card-header">
         <!-- Avatar do dono não exibido no inventário -->
         <button class="wishlist-button new-wishlist-btn" style="visibility:hidden;"></button>

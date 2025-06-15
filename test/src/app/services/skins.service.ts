@@ -10,6 +10,8 @@ export interface Skin {
   description: string;
   game: string;
   rarity: string;
+  animationOrder?: number;
+  [key: string]: any; // Para permitir outras propriedades dinâmicas
 }
 
 @Injectable({

@@ -22,7 +22,7 @@
       </div>
       <div *ngIf="items.length > 0">
         <div class="item-list">
-          <div class="item" *ngFor="let item of items">
+          <div class="item" *ngFor="let item of items; let i = index" [style.--animation-order]="i">
             <img [src]="item.imagem" [alt]="item.nome" class="item-image">
             <div class="item-info">
               <div><strong>{{ item.nome }}</strong></div>

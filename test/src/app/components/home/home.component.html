@@ -21,7 +21,7 @@
 
     <!-- Skins grid -->
     <div class="skins-grid" *ngIf="!loading && !error">
-      <div class="skin-card" *ngFor="let skin of filteredSkins">
+      <div class="skin-card" *ngFor="let skin of filteredSkins" [style.--animation-order]="skin.animationOrder">
         <div class="skin-card-inner">
           <!-- Skin image -->
           <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">

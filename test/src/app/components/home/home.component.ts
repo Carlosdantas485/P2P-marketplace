@@ -200,8 +200,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.error = false;
     this.http.get<Skin[]>(this.apiUrl).subscribe({
       next: (data) => {
-        this.skins = data;
-        this.filteredSkins = [...this.skins]; // Initialize filteredSkins with all skins
+        this.skins = data.map((skin, index) => ({
+          ...skin,
+          animationOrder: index
+        }));
+        this.filteredSkins = [...this.skins];
         this.loading = false;
         this.loadOwnerPhotosForSkins();
       },

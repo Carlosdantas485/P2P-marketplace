@@ -1,11 +1,64 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .profile-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  font-family: Arial, sans-serif;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 0;
+  font-family: 'Motiva Sans', Arial, sans-serif;
+  color: #e9e9e9;
+  background-color: #1b2838;
+  min-height: 100vh;
+}
+
+.profile-header {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.1s;
+}
+
+.transaction-history {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.2s;
+}
+
+.user-stats {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.3s;
+}
+
+.user-badges {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.2s;
+}
+
+.xp-progress-container {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.25s;
+}
+
+.totals-summary {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.35s;
+}
+
+.transaction-list {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.4s;
 }
 
 .profile-header.user-card {
@@ -13,11 +66,30 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f8fafc 60%, #e3eafc 100%);
-  border-radius: 16px;
-  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
+  background: linear-gradient(180deg, #2a3f5a 0%, #1b2838 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   padding: 2.5rem 1.5rem 2rem 1.5rem;
-  margin-bottom: 32px;
+  margin: 0 20px 30px;
+  transition: all 0.3s ease;
+}
+
+.profile-header.user-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid #2d4a6e;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-header.user-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #1e90ff 0%, #00bfff 50%, #1e90ff 100%);
 }
 
 .avatar-wrapper {
@@ -28,13 +100,19 @@
 }
 
 .profile-picture.big-avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
+  width: 140px;
+  height: 140px;
+  border-radius: 4px;
   object-fit: cover;
-  border: 4px solid #b3c6ff;
-  box-shadow: 0 2px 10px 0 rgba(80,120,255,0.08);
-  background: #fff;
+  border: 2px solid #67c1f5;
+  box-shadow: 0 0 15px rgba(103, 193, 245, 0.3);
+  background: #2d4a6e;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.profile-picture.big-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(103, 193, 245, 0.5);
 }
 
 .user-info-block {
@@ -42,16 +120,19 @@
 }
 
 .user-name {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0.5rem 0 0.2rem 0;
-  color: #223366;
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 1rem 0 0.3rem 0;
+  color: #67c1f5;
+  text-shadow: 0 0 10px rgba(103, 193, 245, 0.3);
+  letter-spacing: 0.5px;
 }
 
 .user-email {
-  font-size: 1.08rem;
-  color: #4d5a6a;
-  margin-bottom: 0.7rem;
+  font-size: 1.1rem;
+  color: #b8b6b4;
+  margin-bottom: 1rem;
+  font-weight: 300;
 }
 
 .user-badges {
@@ -63,41 +144,54 @@
 }
 
 .badge {
-  display: inline-block;
-  background: #f2f6ff;
-  color: #223366;
-  border-radius: 16px;
-  padding: 0.3rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(103, 193, 245, 0.1);
+  color: #c6d4df;
+  border-radius: 3px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  border: 1px solid rgba(103, 193, 245, 0.3);
+  transition: all 0.2s;
+}
+
+.badge i {
+  margin-right: 6px;
   font-size: 1rem;
-  font-weight: 500;
-  box-shadow: 0 1px 2px 0 rgba(120,140,220,0.04);
 }
 
 .badge.saldo {
-  background: #e3f7e7;
-  color: #2a7a3b;
+  background: rgba(114, 192, 44, 0.1);
+  color: #a4d007;
+  border-color: rgba(114, 192, 44, 0.3);
 }
 .badge.nivel {
-  background: #e3eafc;
-  color: #223366;
+  background: rgba(0, 120, 215, 0.1);
+  color: #67c1f5;
+  border-color: rgba(0, 120, 215, 0.3);
 }
 .badge.vendas {
-  background: #fff4e3;
-  color: #b47a2a;
+  background: rgba(245, 166, 35, 0.1);
+  color: #f5a623;
+  border-color: rgba(245, 166, 35, 0.3);
 }
 
 /* XP Progress Bar */
 .xp-progress-container {
   width: 100%;
-  margin-top: 1rem;
-  padding: 0 0.5rem;
+  max-width: 500px;
+  margin: 1.5rem auto 0;
+  padding: 0 1rem;
 }
 
 .xp-progress-label {
-  font-size: 0.85rem;
-  color: #4d5a6a;
-  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  color: #8f98a0;
+  margin-bottom: 0.5rem;
   text-align: center;
+  font-weight: 300;
+  letter-spacing: 0.5px;
 }
 
 .xp-progress-bar {
@@ -111,9 +205,32 @@
 
 .xp-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-  border-radius: 5px;
-  transition: width 0.3s ease-in-out;
+  background: linear-gradient(90deg, #1e90ff 0%, #00bfff 50%, #1e90ff 100%);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.xp-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.2) 50%, 
+    rgba(255,255,255,0) 100%);
+  animation: shimmer 2s infinite;
+  transform: translateX(-100%);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Formulário de Troca de Senha */
@@ -184,18 +301,127 @@
   border: 1px solid #c3e6cb;
 }
 
-.profile-details, .transaction-history {
-  margin-bottom: 20px;
+.profile-details, .section-header {
+  display: flex;
+  align-items: center;
+  margin: 30px 20px 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #2d4a6e;
 }
 
-.profile-details h3, .transaction-history h3 {
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
+.section-header i {
+  color: #67c1f5;
+  margin-right: 10px;
+  font-size: 1.2rem;
 }
 
-.profile-details p {
-  margin: 5px 0;
+.section-header h3 {
+  color: #c6d4df;
+  font-weight: 400;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.transaction-history {
+  margin: 0 20px 40px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #8f98a0;
+}
+
+.loading-spinner {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #67c1f5;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.profile-actions {
+  margin: 0 20px 20px;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.profile-actions button {
+  background: rgba(103, 193, 245, 0.1);
+  color: #67c1f5;
+  border: 1px solid rgba(103, 193, 245, 0.3);
+  border-radius: 3px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.profile-actions button:hover {
+  background: rgba(103, 193, 245, 0.2);
+  border-color: #67c1f5;
+}
+
+.profile-actions button i {
+  font-size: 0.9rem;
+}
+
+.totals-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 15px 20px 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.total-box {
+  background: rgba(42, 63, 90, 0.5);
+  border: 1px solid #2d4a6e;
+  border-radius: 4px;
+  padding: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+  color: #c6d4df;
+}
+
+.total-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border-color: #67c1f5;
+}
+
+.total-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #8f98a0;
+}
+
+.total-box .amount {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #67c1f5;
+}
+
+.total-box.saldo .amount {
+  color: #a4d007;
+}
+
+.total-box.vendas .amount {
+  color: #f5a623;
 }
 
 .filter-controls {
@@ -222,44 +448,6 @@
 
 .filter-controls button:hover:not(.active) {
   background-color: #e9ecef;
-}
-
-.totals-summary {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 2rem;
-  gap: 1rem;
-}
-
-.total-box {
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
-  flex-grow: 1;
-  border-left: 5px solid;
-}
-
-.total-box.deposits { border-color: #5bc0de; }
-.total-box.sales { border-color: #5cb85c; }
-.total-box.purchases { border-color: #d9534f; }
-
-.total-box h4 {
-  margin-top: 0;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.total-box p {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 0;
-  color: #555;
-}
-
-.negative {
-  color: #d9534f;
-  font-weight: bold;
 }
 
 .transaction-history-list {
