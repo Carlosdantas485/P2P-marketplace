@@ -26,15 +26,14 @@
           <!-- Skin image -->
           <img [src]="skin.imagem" [alt]="skin.nome" class="skin-image">
           
-          <!-- Owner info -->
-          <div class="owner-info">
+          <!-- Owner photo -->
+          <div class="owner-photo">
             <img 
               [src]="ownerPhotos[skin.ownerId] || 'assets/default-avatar.png'" 
-              [alt]="'Foto de ' + (ownerNames[skin.ownerId] || 'Usuário')" 
+              alt="Foto do vendedor" 
               class="owner-avatar"
               (error)="ownerPhotos[skin.ownerId] = 'assets/default-avatar.png'"
             >
-            <span class="owner-name">{{ ownerNames[skin.ownerId] || 'Usuário' }}</span>
           </div>
           
           <!-- Wishlist button -->

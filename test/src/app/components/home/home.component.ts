@@ -184,7 +184,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.currentUser.saldo < skin.preco) {
+    if (!this.currentUser || typeof this.currentUser.saldo === 'undefined' || this.currentUser.saldo < skin.preco) {
       alert('Saldo insuficiente para realizar esta compra.');
       return;
     }

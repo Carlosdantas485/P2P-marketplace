@@ -102,8 +102,8 @@ export class InventoryComponent implements OnInit {
     }
 
     const currentUser = this.authService.currentUserValue;
-    if (!currentUser) {
-      console.error('User not logged in');
+    if (!currentUser || !currentUser.id) {
+      console.error('User not logged in or missing user ID');
       return;
     }
 
@@ -118,7 +118,7 @@ export class InventoryComponent implements OnInit {
         })
       ).subscribe(() => this.closeForm());
     } else {
-      this.inventoryService.createItem(formValue, currentUser.id).pipe(
+      this.inventoryService.createItem(formValue, currentUser.id as string).pipe(
         tap(() => this.loadInventory()),
         catchError(err => {
           console.error('Error creating item:', err);

@@ -253,29 +253,27 @@ h1 {
   transform: none;
 }
 
-.owner-info {
+.owner-photo {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(34, 51, 74, 0.8);
-  padding: 4px 8px 4px 4px;
-  border-radius: 20px;
+  top: 10px;
+  left: 10px;
   z-index: 2;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(43, 232, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .owner-avatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background-color: #f0f0f0;
   object-fit: cover;
-  border: 2px solid #2be8ff;
-  box-shadow: 0 2px 8px rgba(43, 232, 255, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.owner-avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
 
 .owner-name {

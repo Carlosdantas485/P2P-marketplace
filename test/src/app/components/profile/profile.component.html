@@ -16,8 +16,16 @@
           <p class="user-email">{{ user.email }}</p>
           <div class="user-badges">
             <span class="badge saldo">Saldo: R$ {{ user.saldo | number:'1.2-2' }}</span>
-            <span class="badge nivel">Nível: {{ user.nivel }}</span>
+            <span class="badge nivel">Nível: {{ getLevelFromXp(user.nivel) }}</span>
             <span class="badge vendas">Vendas: {{ user.vendas }}</span>
+            <div class="xp-progress-container">
+              <div class="xp-progress-label">
+                XP: {{ getXpProgress(user.nivel) }}/100 (Próximo nível em {{ getXpForNextLevel(user.nivel) }} XP)
+              </div>
+              <div class="xp-progress-bar">
+                <div class="xp-progress-fill" [style.width.%]="getXpProgress(user.nivel)"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

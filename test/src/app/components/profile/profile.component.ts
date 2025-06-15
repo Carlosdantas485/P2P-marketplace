@@ -163,4 +163,19 @@ export class ProfileComponent {
     console.log('Validando senhas:', { newPassword, confirmPassword, isValid });
     return isValid ? null : { mismatch: true };
   }
+
+  // Calculate level from XP (100 XP per level)
+  getLevelFromXp(xp: number): number {
+    return Math.floor((xp || 0) / 100) + 1;
+  }
+
+  // Calculate current XP progress to next level (0-100%)
+  getXpProgress(xp: number): number {
+    return (xp || 0) % 100;
+  }
+
+  // Calculate XP needed for next level
+  getXpForNextLevel(xp: number): number {
+    return 100 - (this.getXpProgress(xp));
+  }
 }

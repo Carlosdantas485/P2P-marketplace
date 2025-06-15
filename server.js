@@ -646,6 +646,20 @@ app.post('/buy', authenticateToken, async (req, res) => {
             }
             seller.historicoTransferencias.push(saleRecord);
 
+            // Increment seller's level by 10 and update sales count
+            if (!seller.nivel) {
+                seller.nivel = 1; // Initialize level to 1 if it doesn't exist
+            } else {
+                seller.nivel += 10; // Increment by 10
+            }
+
+            // Increment seller's sales count
+            if (!seller.vendas) {
+                seller.vendas = 1;
+            } else {
+                seller.vendas += 1;
+            }
+
             results.push({ skinId, sucesso: true });
         }
 
@@ -733,6 +747,20 @@ app.post('/buy-multiple', authenticateToken, async (req, res) => {
             };
             seller.historicoTransferencias = seller.historicoTransferencias || [];
             seller.historicoTransferencias.push(saleRecord);
+
+            // Increment seller's level by 10 and update sales count
+            if (!seller.nivel) {
+                seller.nivel = 1; // Initialize level to 1 if it doesn't exist
+            } else {
+                seller.nivel += 10; // Increment by 10
+            }
+
+            // Increment seller's sales count
+            if (!seller.vendas) {
+                seller.vendas = 1;
+            } else {
+                seller.vendas += 1;
+            }
 
             // Registrar transação para o comprador
             const buyRecord = {
