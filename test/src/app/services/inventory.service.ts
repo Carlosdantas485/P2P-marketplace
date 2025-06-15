@@ -11,6 +11,7 @@ export interface Item {
   descricao: string;
   imagem: string;
   ownerId: string;
+  ownerName?: string;
   float: number;
   venda: boolean;
   preco?: number;

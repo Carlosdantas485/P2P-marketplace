@@ -6,12 +6,54 @@
       "email": "carlosdantas485@gmail.com",
       "password": "$2a$10$04GeOKrRI7EYet83lJrbmOrki6wHrOQZodGuf/zPV3FY7/ZJsLUSa",
       "foto": "",
-      "saldo": 0,
+      "saldo": 400,
       "nivel": 1,
       "vendas": 0,
-      "historicoTransferencias": [],
+      "historicoTransferencias": [
+        {
+          "type": "venda",
+          "skinId": "1749948603068.5623",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "buyerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+          "date": "2025-06-15T01:03:54.735Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949046286.8672",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "buyerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+          "date": "2025-06-15T01:05:22.701Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949062891.1199",
+          "skinName": "sdvssd",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "buyerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+          "date": "2025-06-15T01:05:22.701Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1749949072480.2205",
+          "skinName": "dfsdfsdf",
+          "price": 100,
+          "buyerUsername": "Admin",
+          "buyerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+          "date": "2025-06-15T01:05:22.701Z"
+        }
+      ],
       "inventory": [],
-      "wishlist": []
+      "wishlist": [
+        1749948603068.5623,
+        1749949046286.8672,
+        1749949062891.1199,
+        1749949072480.2205
+      ]
     },
     {
       "id": "d59276b6-fb3e-40fa-a529-b7b1f8931424",
@@ -25,20 +67,118 @@
       "historicoTransferencias": [],
       "inventory": [],
       "wishlist": []
+    },
+    {
+      "id": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+      "username": "Admin",
+      "email": "admin@exemplo.com",
+      "password": "$2a$10$Kk2ydGj5f31zPkuyNV6rsOYamc3Be02mzmxGEsArt.qHZ5nT/rkaq",
+      "foto": "",
+      "saldo": 9999600,
+      "nivel": 1,
+      "vendas": 0,
+      "historicoTransferencias": [
+        {
+          "type": "deposito",
+          "amount": 10000000,
+          "date": "2025-06-15T01:03:46.852Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749948603068.5623",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "sellerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+          "date": "2025-06-15T01:03:54.735Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949046286.8672",
+          "skinName": "CARLOS ALBERTO DANTAS FILHO",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "sellerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+          "date": "2025-06-15T01:05:22.701Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949062891.1199",
+          "skinName": "sdvssd",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "sellerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+          "date": "2025-06-15T01:05:22.701Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1749949072480.2205",
+          "skinName": "dfsdfsdf",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto Dantas Filho",
+          "sellerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+          "date": "2025-06-15T01:05:22.701Z"
+        }
+      ],
+      "inventory": [
+        "1749948603068.5623",
+        "1749949046286.8672",
+        "1749949062891.1199",
+        "1749949072480.2205"
+      ],
+      "wishlist": [
+        1749949072480.2205
+      ]
     }
   ],
   "skins": [
     {
       "id": "1749948603068.5623",
-      "ownerId": "a3f90c3a-9da2-4411-b767-2b7611ebaf13",
+      "ownerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
       "nome": "CARLOS ALBERTO DANTAS FILHO",
       "descricao": "qweqw",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf0ebcZThQ6tCvq4GGqPD1PrbQqW9e-NV9j_v-5YT0m1HmlB81NDG3OtSSclVqaVDQq1O8l-7n1pHt6ZzAynU16XJ3sHuIlxHl1B0ZPOc8gvCACQLJzTe1G8U",
-      "float": 1,
-      "venda": false,
-      "preco": 0,
+      "float": 0.221654,
+      "venda": true,
+      "preco": 100,
       "created_at": "2025-06-15T00:50:03.068Z",
-      "updated_at": "2025-06-15T00:50:03.068Z"
+      "updated_at": "2025-06-15T01:04:01.244Z"
+    },
+    {
+      "id": "1749949046286.8672",
+      "ownerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+      "nome": "CARLOS ALBERTO DANTAS FILHO",
+      "descricao": "5465465",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/1812831098",
+      "float": 1,
+      "venda": true,
+      "preco": 100,
+      "created_at": "2025-06-15T00:57:26.286Z",
+      "updated_at": "2025-06-15T01:05:27.679Z"
+    },
+    {
+      "id": "1749949062891.1199",
+      "ownerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+      "nome": "sdvssd",
+      "descricao": "sfsdfsdfsdf",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
+      "float": 1,
+      "venda": true,
+      "preco": 100,
+      "created_at": "2025-06-15T00:57:42.891Z",
+      "updated_at": "2025-06-15T01:05:30.273Z"
+    },
+    {
+      "id": "1749949072480.2205",
+      "ownerId": "db62e9f1-7d75-45f5-bce6-af6ffc3fe0f1",
+      "nome": "dfsdfsdf",
+      "descricao": "sdfsdfsdf",
+      "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
+      "float": 1,
+      "venda": true,
+      "preco": 100,
+      "created_at": "2025-06-15T00:57:52.480Z",
+      "updated_at": "2025-06-15T01:05:33.544Z"
     }
   ],
   "history": [],
