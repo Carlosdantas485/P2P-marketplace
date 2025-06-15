@@ -1,11 +1,24 @@
 require('dotenv').config();
 const express = require('express');
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
+
+// Configuração do Nodemailer
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+  port: process.env.EMAIL_PORT || 587,
+  secure: process.env.EMAIL_SECURE === 'true',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD
+  }
+});
 
 const app = express();
 app.use(cors());
@@ -13,14 +26,43 @@ app.use(express.json());
 
 // Middleware para autenticação
 const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    console.log('=== NOVA REQUISIÇÃO AUTENTICADA ===');
+    console.log('URL:', req.originalUrl);
+    console.log('Headers:', JSON.stringify(req.headers, null, 2));
     
-    if (!token) return res.sendStatus(401);
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    console.log('Authorization Header:', authHeader);
+    
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log('Token extraído:', token ? `${token.substring(0, 10)}...` : 'não encontrado');
+    
+    if (!token) {
+        console.log('Erro: Nenhum token fornecido');
+        return res.status(401).json({ message: 'Token não fornecido' });
+    }
 
-    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
+    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, decoded) => {
+        if (err) {
+            console.error('Erro ao verificar token:', err.message);
+            console.error('Token expirado?', err.name === 'TokenExpiredError');
+            console.error('Token inválido?', err.name === 'JsonWebTokenError');
+            return res.status(403).json({ 
+                message: 'Token inválido ou expirado',
+                error: err.message 
+            });
+        }
+        
+        console.log('Token decodificado com sucesso:', JSON.stringify(decoded, null, 2));
+        
+        if (!decoded || !decoded.id) {
+            console.error('Token não contém ID do usuário');
+            return res.status(403).json({ message: 'Token inválido - ID do usuário não encontrado' });
+        }
+        
+        // Adiciona o usuário ao request
+        req.user = { id: decoded.id };
+        console.log('Usuário autenticado:', req.user);
+        
         next();
     });
 };
@@ -46,6 +88,110 @@ const saveData = async (data) => {
         console.error("--- saveData: ERROR writing to db.json ---", error);
     }
 };
+
+// Rota para alteração de senha
+app.post('/auth/change-password', authenticateToken, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id; // Corrigido de req.user.userId para req.user.id
+        const data = readData();
+        
+        // Encontra o usuário
+        const user = data.users.find(u => u.id === userId);
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Usuário não encontrado.' 
+            });
+        }
+
+        // Verifica a senha atual
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Senha atual incorreta.' 
+            });
+        }
+
+        // Atualiza a senha
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        
+        // Salva as alterações
+        await saveData(data);
+        
+        res.json({ 
+            success: true, 
+            message: 'Senha alterada com sucesso.' 
+        });
+    } catch (error) {
+        console.error('Erro ao alterar senha:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Ocorreu um erro ao alterar a senha.' 
+        });
+    }
+});
+
+// Rota de recuperação de senha
+app.post('/auth/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const data = readData();
+        
+        // Verifica se o email existe
+        const user = data.users.find(u => u.email === email);
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Nenhuma conta encontrada com este e-mail.' 
+            });
+        }
+
+        // Gera um token de redefinição
+        const resetToken = jwt.sign(
+            { userId: user.id, email: user.email },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '1h' }
+        );
+
+        // Salva o token no usuário
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+        await saveData(data);
+
+        // URL de redefinição
+        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:4200'}/reset-password?token=${resetToken}`;
+
+        // Envia o e-mail
+        const mailOptions = {
+            from: `"${process.env.EMAIL_FROM_NAME || 'Sistema'}" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Redefinição de Senha',
+            html: `
+                <h2>Redefinição de Senha</h2>
+                <p>Você solicitou a redefinição de senha. Clique no link abaixo para criar uma nova senha:</p>
+                <p><a href="${resetUrl}">Redefinir Senha</a></p>
+                <p>Se você não solicitou esta redefinição, ignore este e-mail.</p>
+                <p>O link expirará em 1 hora.</p>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        
+        res.json({ 
+            success: true, 
+            message: 'Enviamos um e-mail com as instruções para redefinir sua senha.' 
+        });
+    } catch (error) {
+        console.error('Erro ao processar recuperação de senha:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Ocorreu um erro ao processar sua solicitação.' 
+        });
+    }
+});
 
 // Rota de registro
 app.post('/register', async (req, res) => {
@@ -88,23 +234,51 @@ app.post('/register', async (req, res) => {
 // Rota de login
 app.post('/login', async (req, res) => {
     try {
+        console.log('=== TENTATIVA DE LOGIN ===');
+        console.log('Email recebido:', req.body.email);
+        
         const { email, password } = req.body;
         const data = readData();
         
+        console.log('Usuários no banco de dados:', data.users.map(u => ({ id: u.id, email: u.email })));
+        
         const user = data.users.find(u => u.email === email);
         if (!user) {
+            console.log('Usuário não encontrado para o email:', email);
             return res.status(400).json({ message: 'Usuário não encontrado' });
         }
 
+        console.log('Usuário encontrado:', { id: user.id, email: user.email });
+        
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
+            console.log('Senha inválida para o usuário:', user.email);
             return res.status(400).json({ message: 'Senha inválida' });
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'your-secret-key');
-        res.json({ token, user: { ...user, password: undefined } });
+        const token = jwt.sign(
+            { id: user.id },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '24h' }
+        );
+        
+        console.log('Token gerado:', token);
+        
+        // Removendo a senha antes de enviar a resposta
+        const { password: _, ...userWithoutPassword } = user;
+        
+        res.json({ 
+            success: true,
+            token, 
+            user: userWithoutPassword 
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao fazer login' });
+        console.error('Erro durante o login:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Erro ao fazer login',
+            error: error.message 
+        });
     }
 });
 
@@ -385,99 +559,206 @@ app.get('/inventory/:userId', authenticateToken, (req, res) => {
     }
 });
 
-// Rota para comprar skin (requer autenticação)
+// Rota para comprar skins (múltiplos ou único) (requer autenticação)
 app.post('/buy', authenticateToken, async (req, res) => {
-    console.log('--- BUY REQUEST (OWNERSHIP ONLY) ---');
-    const { skinId } = req.body;
+    console.log('--- BUY REQUEST (SUPPORTS MULTIPLE ITEMS) ---');
     const buyerId = req.user.id;
+    let skinIds = req.body.skinIds;
+    const singleSkinId = req.body.skinId;
+
+    // Compatibilidade: se vier skinId único, transforma em array
+    if (!skinIds && singleSkinId) {
+        skinIds = [singleSkinId];
+    }
+    if (!Array.isArray(skinIds) || skinIds.length === 0) {
+        return res.status(400).json({ message: 'skinIds deve ser um array de IDs de skins.' });
+    }
 
     try {
         const data = readData();
-
-        // --- 1. Find Entities ---
         const buyerIndex = data.users.findIndex(u => u.id === buyerId);
-        const skinIndex = data.skins.findIndex(s => s.id == skinId); // Use loose equality
-
-        // --- 2. Validation ---
         if (buyerIndex === -1) {
             return res.status(404).json({ message: 'Comprador não encontrado.' });
         }
-        if (skinIndex === -1) {
-            return res.status(404).json({ message: 'Skin não encontrada.' });
-        }
-
         const buyer = data.users[buyerIndex];
-        const skin = data.skins[skinIndex];
-        const sellerIndex = data.users.findIndex(u => u.id === skin.ownerId);
 
-        if (sellerIndex === -1) {
-            return res.status(404).json({ message: 'Vendedor da skin não foi encontrado.' });
-        }
-        if (!skin.venda) {
-            return res.status(400).json({ message: 'Esta skin não está à venda.' });
-        }
-        if (skin.ownerId === buyer.id) {
-            return res.status(400).json({ message: 'Você não pode comprar sua própria skin.' });
-        }
-        if (buyer.saldo < skin.preco) {
-            return res.status(400).json({ message: 'Saldo insuficiente para realizar a compra.' });
-        }
+        let results = [];
+        for (const skinId of skinIds) {
+            const skinIndex = data.skins.findIndex(s => s.id == skinId);
+            if (skinIndex === -1) {
+                results.push({ skinId, sucesso: false, erro: 'Skin não encontrada.' });
+                continue;
+            }
+            const skin = data.skins[skinIndex];
+            const sellerIndex = data.users.findIndex(u => u.id === skin.ownerId);
+            if (sellerIndex === -1) {
+                results.push({ skinId, sucesso: false, erro: 'Vendedor da skin não foi encontrado.' });
+                continue;
+            }
+            if (!skin.venda) {
+                results.push({ skinId, sucesso: false, erro: 'Esta skin não está à venda.' });
+                continue;
+            }
+            if (skin.ownerId === buyer.id) {
+                results.push({ skinId, sucesso: false, erro: 'Você não pode comprar sua própria skin.' });
+                continue;
+            }
+            if (buyer.saldo < skin.preco) {
+                results.push({ skinId, sucesso: false, erro: 'Saldo insuficiente para realizar a compra.' });
+                continue;
+            }
 
-        // --- 3. Execute Transaction (Balances & Ownership) ---
-        
-        // Update balances
-        data.users[buyerIndex].saldo -= skin.preco;
-        data.users[sellerIndex].saldo += skin.preco;
+            // --- 3. Execute Transaction (Balances & Ownership) ---
+            data.users[buyerIndex].saldo -= skin.preco;
+            data.users[sellerIndex].saldo += skin.preco;
+            data.skins[skinIndex].ownerId = buyer.id;
+            data.skins[skinIndex].venda = false;
 
-        // Update skin ownership and status
-        data.skins[skinIndex].ownerId = buyer.id;
-        data.skins[skinIndex].venda = false;
+            // --- 4. Record Transaction History ---
+            const seller = data.users[sellerIndex];
+            const transactionDate = new Date().toISOString();
 
-        // --- 4. Record Transaction History ---
-        const seller = data.users[sellerIndex];
-        const transactionDate = new Date().toISOString();
+            // For Buyer
+            const purchaseRecord = {
+                type: 'compra',
+                skinId: skin.id,
+                skinName: skin.nome,
+                price: skin.preco,
+                sellerUsername: seller.username,
+                date: transactionDate
+            };
+            if (!buyer.historicoTransferencias) {
+                buyer.historicoTransferencias = [];
+            }
+            buyer.historicoTransferencias.push(purchaseRecord);
 
-        // For Buyer
-        const purchaseRecord = {
-            type: 'compra',
-            skinId: skin.id,
-            skinName: skin.nome,
-            price: skin.preco,
-            sellerUsername: seller.username,
-            date: transactionDate
-        };
-        if (!buyer.historicoTransferencias) {
-            buyer.historicoTransferencias = [];
+            // For Seller
+            const saleRecord = {
+                type: 'venda',
+                skinId: skin.id,
+                skinName: skin.nome,
+                price: skin.preco,
+                buyerUsername: buyer.username,
+                date: transactionDate
+            };
+            if (!seller.historicoTransferencias) {
+                seller.historicoTransferencias = [];
+            }
+            seller.historicoTransferencias.push(saleRecord);
+
+            results.push({ skinId, sucesso: true });
         }
-        buyer.historicoTransferencias.push(purchaseRecord);
-
-        // For Seller
-        const saleRecord = {
-            type: 'venda',
-            skinId: skin.id,
-            skinName: skin.nome,
-            price: skin.preco,
-            buyerUsername: buyer.username,
-            date: transactionDate
-        };
-        if (!seller.historicoTransferencias) {
-            seller.historicoTransferencias = [];
-        }
-        seller.historicoTransferencias.push(saleRecord);
 
         // --- 5. Save and Respond ---
         await saveData(data);
-        console.log(`Purchase successful: User ${buyer.id} bought skin ${skin.id}.`);
-
-        // Return the updated buyer object to sync frontend state
+        console.log(`Purchase(s) processed: User ${buyer.id} bought skins: ${skinIds.join(', ')}.`);
         const updatedBuyer = data.users[buyerIndex];
         res.json({ 
-            message: 'Compra realizada com sucesso!',
-            user: { ...updatedBuyer, password: undefined } 
+            message: 'Processamento de compra(s) finalizado.',
+            results,
+            user: { ...updatedBuyer, password: undefined }
         });
-
     } catch (error) {
-        console.error('--- ERROR PROCESSING PURCHASE ---', error);
+        console.error('--- ERROR PROCESSING PURCHASE(S) ---', error);
+        res.status(500).json({ message: 'Ocorreu um erro interno ao processar a compra.' });
+    }
+});
+
+// --- Buy Multiple Skins Endpoint ---
+app.post('/buy-multiple', authenticateToken, async (req, res) => {
+    try {
+        const { skinIds } = req.body;
+        const userId = req.user.id;
+        const data = readData();
+
+        const buyerIndex = data.users.findIndex(u => u.id == userId);
+        if (buyerIndex === -1) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+        const buyer = data.users[buyerIndex];
+        const results = [];
+
+        for (const skinId of skinIds) {
+            const skin = data.skins.find(s => s.id == skinId && s.venda);
+            if (!skin) {
+                results.push({ skinId, sucesso: false, erro: 'Skin não encontrada ou não está à venda.' });
+                continue;
+            }
+            if (buyer.inventory.includes(skinId)) {
+                results.push({ skinId, sucesso: false, erro: 'Você já possui esta skin.' });
+                continue;
+            }
+            if (buyer.saldo < skin.preco) {
+                results.push({ skinId, sucesso: false, erro: 'Saldo insuficiente.' });
+                continue;
+            }
+
+            // Encontrar vendedor pelo ownerId da skin ou pelo inventário
+            let sellerIndex = -1;
+            if (skin.ownerId) {
+                sellerIndex = data.users.findIndex(u => u.id == skin.ownerId);
+            }
+            if (sellerIndex === -1) {
+                sellerIndex = data.users.findIndex(u => u.inventory.includes(skinId));
+            }
+            if (sellerIndex === -1) {
+                results.push({ skinId, sucesso: false, erro: 'Vendedor não encontrado.' });
+                continue;
+            }
+            const seller = data.users[sellerIndex];
+
+            // Transferir skin
+            seller.inventory = seller.inventory.filter(id => id != skinId);
+            buyer.inventory.push(skinId);
+            // Atualizar o ownerId da skin para o comprador
+            skin.ownerId = buyer.id;
+
+            // Atualizar saldos
+            buyer.saldo -= skin.preco;
+            seller.saldo += skin.preco;
+
+            // Remover da venda
+            skin.venda = false;
+
+            // Registrar transação para o vendedor
+            const transactionDate = new Date().toISOString();
+            const saleRecord = {
+                type: 'venda',
+                skinId,
+                skinName: skin.nome,
+                price: skin.preco,
+                buyerUsername: buyer.username,
+                buyerId: buyer.id,
+                date: transactionDate
+            };
+            seller.historicoTransferencias = seller.historicoTransferencias || [];
+            seller.historicoTransferencias.push(saleRecord);
+
+            // Registrar transação para o comprador
+            const buyRecord = {
+                type: 'compra',
+                skinId,
+                skinName: skin.nome,
+                price: skin.preco,
+                sellerUsername: seller.username,
+                sellerId: seller.id,
+                date: transactionDate
+            };
+            buyer.historicoTransferencias = buyer.historicoTransferencias || [];
+            buyer.historicoTransferencias.push(buyRecord);
+
+            results.push({ skinId, sucesso: true });
+        }
+
+        await saveData(data);
+        const updatedBuyer = data.users[buyerIndex];
+        res.json({
+            message: 'Processamento de compra(s) finalizado.',
+            results,
+            user: { ...updatedBuyer, password: undefined }
+        });
+    } catch (error) {
+        console.error('--- ERROR PROCESSING PURCHASE(S) ---', error);
         res.status(500).json({ message: 'Ocorreu um erro interno ao processar a compra.' });
     }
 });

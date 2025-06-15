@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -82,20 +82,112 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<{ token: string, user: User }> {
-    return this.http.post<{ token: string, user: User }>(`${this.apiUrl}/login`, { email, password })
-      .pipe(
-        map((response: { token: string, user: User }) => {
-          const userWithToken = { ...response.user, token: response.token };
-          this.setToken(response.token);
-          localStorage.setItem('user', JSON.stringify(userWithToken));
-          this.updateCurrentUser(userWithToken);
-          return response;
+    console.log('Iniciando processo de login para:', email);
+    
+    return this.http.post<{ success: boolean, token: string, user: User }>(
+      `${this.apiUrl}/login`, 
+      { email, password }
+    ).pipe(
+      tap(response => {
+        console.log('Resposta do servidor:', response);
+        
+        if (!response.success || !response.token) {
+          throw new Error('Resposta de login inválida');
+        }
+        
+        // Armazena o token
+        this.setToken(response.token);
+        
+        // Atualiza o usuário atual
+        const userWithToken = { ...response.user, token: response.token };
+        localStorage.setItem('user', JSON.stringify(userWithToken));
+        this.currentUserSubject.next(userWithToken);
+        
+        console.log('Login bem-sucedido para o usuário:', response.user.email);
+      }),
+      map(response => ({
+        token: response.token,
+        user: response.user
+      })),
+      catchError((error: any) => {
+        console.error('Erro durante o login:', {
+          status: error.status,
+          message: error.message,
+          error: error.error
+        });
+        
+        let errorMessage = 'Email ou senha inválidos';
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  forgotPassword(email: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/auth/forgot-password`,
+      { email }
+    ).pipe(
+      catchError((error) => {
+        console.error('Erro ao solicitar recuperação de senha:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  private getAuthHeaders() {
+    const token = this.getToken();
+    console.log('Token recuperado para a requisição:', token ? `${token.substring(0, 10)}...` : 'não encontrado');
+    
+    if (!token) {
+      console.error('Nenhum token JWT encontrado no localStorage');
+      throw new Error('Usuário não autenticado');
+    }
+
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<{ success: boolean; message: string }> {
+    try {
+      const headers = this.getAuthHeaders();
+      console.log('Enviando requisição para alterar senha...');
+      
+      return this.http.post<{ success: boolean; message: string }>(
+        `${this.apiUrl}/auth/change-password`,
+        { currentPassword, newPassword },
+        { headers }
+      ).pipe(
+        tap(response => {
+          console.log('Resposta do servidor:', response);
         }),
-        catchError((error: any) => {
-          console.error('Login error:', error);
-          return throwError(() => new Error('Email ou senha inválidos'));
+        catchError((error) => {
+          console.error('Erro ao alterar senha:', {
+            status: error.status,
+            message: error.message,
+            error: error.error,
+            headers: error.headers
+          });
+          return throwError(() => ({
+            status: error.status,
+            message: error.error?.message || 'Erro ao alterar senha',
+            error: error.error
+          }));
         })
       );
+    } catch (error: any) {
+      console.error('Erro ao preparar requisição de alteração de senha:', error);
+      return throwError(() => ({
+        status: 0,
+        message: 'Erro ao preparar a requisição',
+        error: error?.message || 'Erro desconhecido'
+      }));
+    }
   }
 
   deleteAccount(): Observable<{ success: boolean, message?: string }> {

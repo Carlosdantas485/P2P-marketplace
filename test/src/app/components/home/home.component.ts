@@ -3,6 +3,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AuthService, User } from '../../services/auth.service';
+import { Router } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
 import { InventoryService, Item as Skin } from '../../services/inventory.service';
 import { Subscription } from 'rxjs';
@@ -38,20 +39,66 @@ export class HomeComponent implements OnInit, OnDestroy {
   private apiUrl = 'http://localhost:3000/skins';
   currentUser: User | null = null;
   private userSubscription: Subscription | undefined;
+  wishlistIds: number[] = [];
+  ownerPhotos: { [ownerId: string]: string } = {};
 
   constructor(
     private http: HttpClient,
     private wishlistService: WishlistService,
     private inventoryService: InventoryService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.loadSkins();
     this.userSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
+      this.loadWishlist();
       console.log('[HomeComponent] Current user data updated:', this.currentUser);
     });
+  }
+
+  private loadOwnerPhotosForSkins(): void {
+    this.skins.forEach(skin => {
+      this.loadOwnerPhoto(skin.ownerId);
+    });
+  }
+
+  loadOwnerPhoto(ownerId: string): void {
+    if (!ownerId || this.ownerPhotos[ownerId]) return;
+    this.http.get<User>(`http://localhost:3000/users/${ownerId}`).subscribe({
+      next: (user) => {
+        this.ownerPhotos[ownerId] = user.foto;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar foto do dono:', err);
+        this.ownerPhotos[ownerId] = '';
+      }
+    });
+  }
+
+  loadWishlist(): void {
+    if (!this.currentUser) {
+      this.wishlistIds = [];
+      return;
+    }
+    this.wishlistService.getWishlist().subscribe({
+      next: (items) => {
+        // O backend retorna um array de objetos Skin, cada um com campo id
+        this.wishlistIds = Array.isArray(items) ? items.map(item => Number(item.id)) : [];
+        // console.log('Wishlist carregada:', this.wishlistIds, items);
+      },
+      error: () => {
+        this.wishlistIds = [];
+      }
+    });
+  }
+
+  isInWishlist(skinId: number): boolean {
+    // debug
+    // console.log('wishlistIds:', this.wishlistIds, 'skinId:', skinId);
+    return this.wishlistIds.some(id => Number(id) === Number(skinId));
   }
 
   ngOnDestroy(): void {
@@ -60,12 +107,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  addToWishlist(skinId: any): void {
+  toggleWishlist(skinId: any): void {
     const numericSkinId = Number(skinId);
-    this.wishlistService.addToWishlist(numericSkinId).subscribe({
-      next: () => alert('Item adicionado à sua lista de desejos!'),
-      error: (err: any) => alert(`Erro: ${err.error?.message || 'Ocorreu um erro.'}`)
-    });
+    if (this.isInWishlist(numericSkinId)) {
+      this.wishlistService.removeFromWishlist(numericSkinId).subscribe({
+        next: () => {
+          this.loadWishlist();
+        },
+        error: (err: any) => alert(`Erro ao remover: ${err.error?.message || 'Ocorreu um erro.'}`)
+      });
+    } else {
+      this.wishlistService.addToWishlist(numericSkinId).subscribe({
+        next: () => {
+          this.loadWishlist();
+        },
+        error: (err: any) => alert(`Erro ao adicionar: ${err.error?.message || 'Ocorreu um erro.'}`)
+      });
+    }
   }
 
   buySkin(skin: Skin): void {
@@ -87,16 +145,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.inventoryService.purchase(skin.id).subscribe({
-      next: (response) => {
-        console.log('[HomeComponent] Purchase successful response:', response);
-        alert('Compra realizada com sucesso!');
-        this.loadSkins(); // Reload skins to remove the purchased one from the list
-      },
-      error: (error) => {
-        console.error('[HomeComponent] Purchase failed:', error);
-        alert(`Falha na compra: ${error.error?.message || 'Erro desconhecido.'}`);
-      }
+    // Redirecionar para a página de confirmação de compra com o item selecionado
+    this.router.navigate(['/confirm-payment'], {
+      state: { items: [skin], total: skin.preco }
     });
   }
 
@@ -106,6 +157,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         next: (response: Skin[]) => {
           this.skins = response;
           this.loading = false;
+          this.loadOwnerPhotosForSkins();
         },
         error: (err: any) => {
           console.error('Error loading skins:', err);

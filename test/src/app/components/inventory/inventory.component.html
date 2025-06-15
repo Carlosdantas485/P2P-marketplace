@@ -1,4 +1,4 @@
-<div class="inventory-container">
+<div class="container">
   <div class="toolbar">
     <button class="add-button" (click)="openAddForm()">Adicionar Novo Item</button>
   </div>
@@ -22,11 +22,13 @@
         </div>
         <div class="form-group">
           <label for="float">Float</label>
-          <input id="float" type="number" formControlName="float" required>
+          <input id="float" type="number" formControlName="float" step="0.0001" min="0" max="1" required>
         </div>
         <div class="form-actions">
-          <button type="button" (click)="closeForm()">Cancelar</button>
-          <button type="submit" [disabled]="itemForm.invalid">{{ isEditing ? 'Salvar Alterações' : 'Adicionar' }}</button>
+          <button type="button" class="cancel-btn" (click)="closeForm()">Cancelar</button>
+          <button type="submit" class="submit-btn" [disabled]="itemForm.invalid">
+            {{ isEditing ? 'Salvar Alterações' : 'Adicionar' }}
+          </button>
         </div>
       </form>
     </div>
@@ -38,22 +40,34 @@
   </div>
 
   <!-- Grid de Itens do Inventário -->
-  <div class="items-grid" *ngIf="inventory$ | async as items; else loading">
+  <div class="skins-grid" *ngIf="inventory$ | async as items; else loading">
     <div *ngIf="items.length === 0" class="no-items">
       Você ainda não possui itens no inventário.
     </div>
-
-    <div class="item-card" *ngFor="let item of items">
-      <img [src]="item.imagem" alt="{{ item.nome }}" class="item-image">
-      <div class="item-details">
-        <h3 class="item-name">{{ item.nome }}</h3>
-        <p class="item-description">{{ item.descricao }}</p>
-        <p class="item-float">Float: {{ item.float | number:'1.4-4' }}</p>
-        
-        <div *ngIf="item.venda" class="item-status for-sale">
-          À Venda: {{ item.preco | currency:'BRL' }}
+    <div class="skin-card" *ngFor="let item of items">
+      <div class="card-header">
+        <!-- Avatar do dono não exibido no inventário -->
+        <button class="wishlist-button new-wishlist-btn" style="visibility:hidden;"></button>
+      </div>
+      <img [src]="item.imagem" [alt]="item.nome" class="skin-image">
+      <div class="skin-info">
+        <h3>{{ item.nome }}</h3>
+        <div class="float-bar-container">
+          <div class="float-bar-bg">
+            <div class="float-bar-indicator" [style.left]="(item.float * 100) + '%'">
+              <span class="float-indicator-value"></span>
+            </div>
+          </div>
+          <div class="float-bar-labels">
+            <span>0.00</span>
+            <span>0.07</span>
+            <span>0.15</span>
+            <span>0.38</span>
+            <span>0.45</span>
+            <span>1.00</span>
+          </div>
         </div>
-
+        <p class="price">{{ item.venda ? (item.preco | currency:'BRL') : 'Não à venda' }}</p>
         <div class="item-actions">
           <button class="edit-btn" (click)="openEditForm(item)">Editar</button>
           <button class="sell-btn" (click)="toggleSale(item)">
@@ -69,4 +83,3 @@
     <div class="loading">Carregando inventário...</div>
   </ng-template>
 </div>
-

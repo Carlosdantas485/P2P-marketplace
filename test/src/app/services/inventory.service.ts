@@ -58,8 +58,11 @@ export class InventoryService {
   }
 
   // Purchase an item
-  purchase(skinId: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/buy`, { skinId }).pipe(
+  purchase(skinId: string, compradorId?: string): Observable<any> {
+    // método antigo mantido para compatibilidade
+    const body: any = { skinId };
+    if (compradorId) body.compradorId = compradorId;
+    return this.http.post<any>(`${this.apiUrl}/buy`, body).pipe(
       tap(response => {
         if (response && response.user) {
           const currentUser = this.authService.currentUserValue;
@@ -69,6 +72,25 @@ export class InventoryService {
           }
           this.authService.updateCurrentUser(updatedUser);
           console.log('[InventoryService] User data updated after purchase.', updatedUser);
+        }
+      })
+    );
+  }
+
+  // Purchase multiple items
+  purchaseMultiple(skinIds: string[], compradorId?: string): Observable<any> {
+    const body: any = { skinIds };
+    if (compradorId) body.compradorId = compradorId;
+    return this.http.post<any>(`${this.apiUrl}/buy-multiple`, body).pipe(
+      tap(response => {
+        if (response && response.user) {
+          const currentUser = this.authService.currentUserValue;
+          const updatedUser = { ...currentUser, ...response.user };
+          if (currentUser && currentUser.token) {
+            updatedUser.token = currentUser.token;
+          }
+          this.authService.updateCurrentUser(updatedUser);
+          console.log('[InventoryService] User data updated after multiple purchase.', updatedUser);
         }
       })
     );
