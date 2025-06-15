@@ -9,6 +9,12 @@
 
 <!-- Container Principal do Chat -->
 <div class="chatbot-wrapper" [class.visible]="isOpen">
+  <!-- Status Bar -->
+  <div class="chatbot-status-bar" [class.offline]="!isServerAvailable">
+    <i class="fas" [class.fa-check-circle]="isServerAvailable" [class.fa-exclamation-circle]="!isServerAvailable"></i>
+    {{ isServerAvailable ? 'Conectado ao servidor' : 'Modo offline - algumas funcionalidades estão limitadas' }}
+  </div>
+  
   <div class="chatbot-container">
     <!-- Cabeçalho do Chat -->
     <div class="chatbot-header">
@@ -21,7 +27,10 @@
         </div>
         <div class="chatbot-info">
           <h3>Assistente Virtual</h3>
-          <p>Online</p>
+          <p>
+            <span class="status-indicator" [class.online]="isServerAvailable" [class.offline]="!isServerAvailable"></span>
+            {{ isServerAvailable ? 'Online' : 'Offline' }}
+          </p>
         </div>
       </div>
       <div class="header-actions">
@@ -44,7 +53,10 @@
           </div>
           <div class="welcome-text">
             <h4>Olá! 👋</h4>
-            <p>Como posso ajudar você hoje?</p>
+            <p *ngIf="isServerAvailable">Como posso ajudar você hoje?</p>
+            <p *ngIf="!isServerAvailable" class="warning-message">
+              <i class="fas fa-exclamation-triangle"></i> Estou com limitações no momento
+            </p>
           </div>
         </div>
         <div class="quick-actions">
@@ -96,8 +108,8 @@
 
     <!-- Área de Entrada de Mensagem -->
     <form class="chatbot-input" (submit)="sendMessage($event)">
-      <div class="input-wrapper">
-        <button type="button" class="attach-button" title="Anexar arquivo">
+      <div class="input-wrapper" [class.disabled]="!isServerAvailable" [title]="!isServerAvailable ? 'O serviço de chat está temporariamente indisponível' : ''">
+        <button type="button" class="attach-button" title="Anexar arquivo" [disabled]="!isServerAvailable">
           <i class="fas fa-paperclip"></i>
         </button>
         <input 
@@ -110,10 +122,10 @@
           (keydown.enter)="sendMessage($event)"
           #messageInput>
         <div class="input-actions">
-          <button type="button" class="emoji-button" title="Emojis">
+          <button type="button" class="emoji-button" title="Emojis" [disabled]="!isServerAvailable">
             <i class="far fa-smile"></i>
           </button>
-          <button type="submit" [disabled]="!userInput.trim() || isLoading" class="send-button" title="Enviar">
+          <button type="submit" [disabled]="!userInput.trim() || isLoading || !isServerAvailable" class="send-button" title="Enviar">
             <i class="fas fa-paper-plane"></i>
           </button>
         </div>

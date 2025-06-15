@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatbotService } from '../../services/chatbot.service';
@@ -44,12 +45,16 @@ interface Message {
 export class ChatbotComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   @ViewChild('messageInput') private messageInput!: ElementRef;
+  
   isOpen = false;
   isLoading = false;
+  isServerAvailable = false;
   messages: Message[] = [];
   userInput = '';
   unreadMessages = 0;
+  
   private clickListener: (event: MouseEvent) => void;
+  private statusSubscription: Subscription | null = null;
 
   constructor(private chatbotService: ChatbotService) {
     console.log('ChatbotComponent construído');
@@ -58,16 +63,68 @@ export class ChatbotComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnInit(): void {
     console.log('ChatbotComponent inicializado');
-    console.log('ChatbotService:', this.chatbotService);
-    // Adiciona mensagem de boas-vindas quando o componente é inicializado
-    this.addBotMessage('Olá! Eu sou o assistente virtual. Como posso ajudar você hoje?');
-    console.log('Mensagem de boas-vindas adicionada');
-    console.log('Mensagem de boas-vindas adicionada');
+    
+    // Initial welcome message (will be updated after status check)
+    this.addBotMessage('Inicializando assistente virtual...');
+    
+    // Subscribe to server status changes
+    this.statusSubscription = this.chatbotService.serverStatus$.subscribe({
+      next: (isAvailable) => {
+        const wasAvailable = this.isServerAvailable;
+        this.isServerAvailable = isAvailable;
+        
+        // Add status change message when component is already initialized
+        if (this.messages.length > 0 && wasAvailable !== isAvailable) {
+          const statusMessage = isAvailable 
+            ? '✅ Conexão restabelecida! Como posso ajudar?'
+            : '⚠️ Conexão perdida. Algumas funcionalidades podem estar limitadas.';
+          this.addBotMessage(statusMessage);
+        }
+      },
+      error: (error) => {
+        console.error('Error in status subscription:', error);
+        this.isServerAvailable = false;
+      }
+    });
+    
+    // Initial status check
+    this.checkServerStatus();
+  }
+  
+  private checkServerStatus(): void {
+    console.log('Iniciando verificação de status do servidor...');
+    this.chatbotService.checkServerStatus()
+      .then(isAvailable => {
+        console.log('Status do servidor recebido:', isAvailable ? 'online' : 'offline');
+        this.isServerAvailable = isAvailable;
+        const welcomeMessage = isAvailable
+          ? '👋 Olá! Eu sou o assistente virtual. Como posso ajudar você hoje?'
+          : '⚠️ Olá! Estou com limitações no momento. Algumas funcionalidades podem não estar disponíveis.';
+          
+        // Replace the loading message with the welcome message
+        if (this.messages.length > 0 && this.messages[0].text === 'Inicializando assistente virtual...') {
+          this.messages[0].text = welcomeMessage;
+        } else {
+          this.addBotMessage(welcomeMessage);
+        }
+      })
+      .catch(error => {
+        console.error('Error checking server status:', error);
+        this.isServerAvailable = false;
+        if (this.messages.length > 0 && this.messages[0].text === 'Inicializando assistente virtual...') {
+          this.messages[0].text = '⚠️ Não foi possível conectar ao servidor. Tentando novamente...';
+        }
+      });
   }
 
   ngOnDestroy(): void {
     // Remove o event listener ao destruir o componente
     document.removeEventListener('click', this.clickListener);
+    
+    // Clean up subscriptions
+    if (this.statusSubscription) {
+      this.statusSubscription.unsubscribe();
+    }
   }
 
   toggleChat(event?: MouseEvent): void {
@@ -178,17 +235,30 @@ export class ChatbotComponent implements OnInit, OnDestroy, AfterViewChecked {
     // Adiciona a mensagem do usuário
     this.addUserMessage(message);
     this.userInput = '';
+    
+    // Se o servidor não estiver disponível, responde com mensagem local
+    if (!this.isServerAvailable) {
+      this.addBotMessage('Desculpe, nosso serviço de chat está temporariamente indisponível. Por favor, tente novamente mais tarde.');
+      return;
+    }
+    
     this.isLoading = true;
 
     // Envia a mensagem para o serviço do chatbot
     this.chatbotService.sendMessage(message).subscribe({
-      next: (response: any) => {
-        this.addBotMessage(response.reply || response || 'Desculpe, não consegui processar sua mensagem.');
+      next: (response) => {
+        this.addBotMessage(response.reply);
         this.isLoading = false;
+        
+        // Verifica se o servidor continua disponível após a resposta
+        this.chatbotService.checkServerStatus().then(available => {
+          this.isServerAvailable = available;
+        });
       },
       error: (error) => {
         console.error('Erro ao enviar mensagem:', error);
-        this.addBotMessage('Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente mais tarde.');
+        this.isServerAvailable = false;
+        this.addBotMessage('Desculpe, estou com dificuldades técnicas. Por favor, tente novamente mais tarde.');
         this.isLoading = false;
       }
     });
