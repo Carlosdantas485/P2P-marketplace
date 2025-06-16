@@ -1,55 +1,91 @@
-<nav class="navbar">
-  <div class="nav-header">
-    <div class="logo">
-      <a routerLink="/home" class="logo-link">Skin Market</a>
+<header class="header">
+  <div class="header-container">
+    <!-- Logo -->
+    <div class="logo-container">
+      <a routerLink="/home" class="logo">
+        <i class="fas fa-gamepad logo-icon"></i>
+        <span class="logo-text">SkinMarket</span>
+      </a>
     </div>
-    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen">
-      <span class="menu-icon" [class.active]="isMobileMenuOpen">
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" (click)="toggleMobileMenu($event)" [attr.aria-expanded]="isMobileMenuOpen" aria-label="Menu">
+      <div class="hamburger" [ngClass]="{'active': isMobileMenuOpen}">
         <span></span>
         <span></span>
         <span></span>
-      </span>
+      </div>
     </button>
-  </div>
-  
-  <div class="nav-links" [class.active]="isMobileMenuOpen">
-    <a routerLink="/home" routerLinkActive="active" (click)="closeMenuIfMobile()">
-      <i class="fas fa-home"></i> Home
-    </a>
-    <a routerLink="/inventory" routerLinkActive="active" (click)="closeMenuIfMobile()">
-      <i class="fas fa-box-open"></i> Inventário
-    </a>
-    <a routerLink="/wishlist" routerLinkActive="active" (click)="closeMenuIfMobile()">
-      <i class="fas fa-heart"></i> Lista de Desejos
-    </a>
-  </div>
-  
-  <div class="user-actions" [class.active]="isMobileMenuOpen">
-    <ng-container *ngIf="!currentUser">
-      <a routerLink="/login" class="btn-login" (click)="closeMenuIfMobile()">
-        <i class="fas fa-sign-in-alt"></i> Login
-      </a>
-      <a routerLink="/register" class="btn-register" (click)="closeMenuIfMobile()">
-        <i class="fas fa-user-plus"></i> Registrar
-      </a>
-    </ng-container>
-    
-    <ng-container *ngIf="currentUser">
-      <a routerLink="/account" class="user-profile" (click)="closeMenuIfMobile()">
-        <img [src]="currentUser.foto || 'assets/images/default-profile.png'" alt="Perfil" class="profile-image">
-        <div class="user-info">
-          <span class="username">{{ currentUser.username }}</span>
-          <span class="balance">
-            <i class="fas fa-coins"></i> {{ currentUser.saldo | currency:'BRL':'symbol':'1.2-2' }}
-          </span>
+
+    <!-- Navigation -->
+    <nav class="main-nav" [class.active]="isMobileMenuOpen">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a routerLink="/home" class="nav-link" routerLinkActive="active" (click)="closeMenuIfMobile()">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/inventory" class="nav-link" routerLinkActive="active" (click)="closeMenuIfMobile()">
+            <i class="fas fa-box"></i>
+            <span>Inventário</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/wishlist" class="nav-link" routerLinkActive="active" (click)="closeMenuIfMobile()">
+            <i class="fas fa-heart"></i>
+            <span>Desejos</span>
+            <span class="badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- User Actions -->
+    <div class="user-actions" [class.active]="isMobileMenuOpen">
+      <ng-container *ngIf="!currentUser; else authenticatedUser">
+        <a routerLink="/login" class="btn btn-outline" (click)="closeMenuIfMobile($event)">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Entrar</span>
+        </a>
+        <a routerLink="/register" class="btn btn-primary" (click)="closeMenuIfMobile($event)">
+          <i class="fas fa-user-plus"></i>
+          <span>Registrar</span>
+        </a>
+      </ng-container>
+
+      <ng-template #authenticatedUser>
+        <div class="user-dropdown">
+          <button class="user-profile" (click)="toggleUserMenu($event)" [attr.aria-expanded]="isUserMenuOpen">
+            <img [src]="currentUser.foto || 'assets/images/default-profile.png'" alt="Perfil" class="user-avatar">
+            <div class="user-info">
+              <span class="username">{{ currentUser.username }}</span>
+              <span class="balance">
+                <i class="fas fa-coins"></i>
+                <span>{{ currentUser.saldo | currency:'BRL':'symbol':'1.2-2' }}</span>
+              </span>
+            </div>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
+          </button>
+          
+          <div class="dropdown-menu" [class.show]="isUserMenuOpen">
+            <a routerLink="/account" class="dropdown-item" (click)="closeMenus()">
+              <i class="fas fa-user"></i>
+              <span>Meu Perfil</span>
+            </a>
+            <a routerLink="/deposit" class="dropdown-item" (click)="closeMenus()">
+              <i class="fas fa-plus-circle"></i>
+              <span>Depositar</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout" (click)="logout($event); closeMenus()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Sair</span>
+            </button>
+          </div>
         </div>
-      </a>
-      <a routerLink="/deposit" class="deposit-button" (click)="closeMenuIfMobile()">
-        <i class="fas fa-plus-circle"></i> Depositar
-      </a>
-      <button class="logout-button" (click)="logout(); closeMenuIfMobile()">
-        <i class="fas fa-sign-out-alt"></i> Sair
-      </button>
-    </ng-container>
+      </ng-template>
+    </div>
   </div>
-</nav>
+</header>

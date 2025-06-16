@@ -1,8 +1,16 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgClass } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService, User } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Subscription, fromEvent } from 'rxjs';
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  foto?: string;
+  saldo: number;
+}
 
 @Component({
   selector: 'app-header',
@@ -12,17 +20,25 @@ import { Subscription, fromEvent } from 'rxjs';
   imports: [
     CommonModule,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    NgIf,
+    NgClass
   ]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  currentUser: User | null = null;
+  currentUser: any = null;
   isMobileMenuOpen = false;
+  isUserMenuOpen = false;
   isMobile = false;
+  wishlistCount = 0;
+  
   private userSubscription: Subscription | undefined;
   private resizeSubscription: Subscription | undefined;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.checkScreenWidth();
@@ -31,6 +47,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
       console.log('[HeaderComponent] Current user data updated:', this.currentUser);
+      
+      // Load wishlist count when user is logged in
+      if (user) {
+        this.loadWishlistCount();
+      } else {
+        this.wishlistCount = 0;
+      }
     });
   }
 
@@ -44,7 +67,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
+  onResize(event: Event): void {
     this.checkScreenWidth();
   }
 
@@ -52,6 +75,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isMobile = window.innerWidth < 768;
     if (!this.isMobile) {
       this.isMobileMenuOpen = false;
+      document.body.style.overflow = '';
     }
   }
 
@@ -61,21 +85,72 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleMobileMenu(): void {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
+  private loadWishlistCount(): void {
+    // TODO: Implement wishlist count loading
+    // Example: this.wishlistService.getCount().subscribe(count => this.wishlistCount = count);
+    this.wishlistCount = 0; // Placeholder
   }
 
-  closeMenuIfMobile(): void {
+  toggleMobileMenu(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
+    
+    // Close user menu when toggling mobile menu
+    if (this.isUserMenuOpen) {
+      this.isUserMenuOpen = false;
+    }
+  }
+
+  toggleUserMenu(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
+  closeMenuIfMobile(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     if (this.isMobile) {
       this.isMobileMenuOpen = false;
       document.body.style.overflow = '';
     }
   }
 
-  logout(): void {
+  closeMenus(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    this.isMobileMenuOpen = false;
+    this.isUserMenuOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  logout(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
     this.authService.logout();
-    this.closeMenuIfMobile();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/login']);
+    this.closeMenus();
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    // Close menus when clicking outside
+    const target = event.target as HTMLElement;
+    const isClickInside = target.closest('.user-dropdown') || 
+                         target.closest('.mobile-menu-toggle') ||
+                         target.closest('.main-nav');
+    
+    if (!isClickInside) {
+      this.closeMenus();
+    }
   }
 }
