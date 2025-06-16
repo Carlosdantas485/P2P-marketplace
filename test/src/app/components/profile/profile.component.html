@@ -1,13 +1,21 @@
 <div *ngIf="user$ | async as user; else loading">
-  <div class="profile-container">
-    <div class="profile-actions" *ngIf="!isEditing">
-      <button (click)="toggleEdit()" class="btn-edit">
-        <i class="fas fa-user-edit"></i> Editar Perfil
-      </button>
-      <button (click)="toggleChangePassword()" class="btn-change-password">
-        <i class="fas fa-key"></i> Alterar Senha
-      </button>
+  <div class="marketplace-header">
+    <div class="header-content">
+      <div class="header-title">
+        <i class="fas fa-user-circle"></i>
+        <h1>Meu Perfil</h1>
+      </div>
+      <div class="profile-actions" *ngIf="!isEditing">
+        <button (click)="toggleEdit()" class="btn-edit">
+          <i class="fas fa-user-edit"></i> Editar Perfil
+        </button>
+        <button (click)="toggleChangePassword()" class="btn-change-password">
+          <i class="fas fa-key"></i> Alterar Senha
+        </button>
+      </div>
     </div>
+  </div>
+  <div class="profile-container">
 
     <!-- Viewing Mode -->
     <div *ngIf="!isEditing">

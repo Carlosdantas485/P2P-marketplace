@@ -22,9 +22,6 @@
     <a routerLink="/wishlist" routerLinkActive="active" (click)="closeMenuIfMobile()">
       <i class="fas fa-heart"></i> Lista de Desejos
     </a>
-    <a routerLink="/account" routerLinkActive="active" *ngIf="currentUser" (click)="closeMenuIfMobile()">
-      <i class="fas fa-user"></i> Conta
-    </a>
   </div>
   
   <div class="user-actions" [class.active]="isMobileMenuOpen">
@@ -39,7 +36,7 @@
     
     <ng-container *ngIf="currentUser">
       <a routerLink="/account" class="user-profile" (click)="closeMenuIfMobile()">
-        <img [src]="currentUser.foto || 'assets/default-avatar.png'" alt="Perfil" class="profile-image">
+        <img [src]="currentUser.foto || 'assets/images/default-profile.png'" alt="Perfil" class="profile-image">
         <div class="user-info">
           <span class="username">{{ currentUser.username }}</span>
           <span class="balance">
