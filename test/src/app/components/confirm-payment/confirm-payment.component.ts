@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { InventoryService } from '../../services/inventory.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { AuthService } from '../../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface ItemCompra {
   id: number | string;
@@ -14,6 +15,7 @@ interface ItemCompra {
   preco: number;
   imagem?: string;
   float?: number;
+  fromWishlist?: boolean;
 }
 
 interface ResultadoCompra {
@@ -109,28 +111,26 @@ export class ConfirmPaymentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Tenta pegar do navigation state (navegação programática)
-    let state: { items?: ItemCompra[]; total?: number } = {};
-    const nav = this.router.getCurrentNavigation();
-
-    if (nav?.extras?.state) {
-      state = nav.extras.state as { items?: ItemCompra[]; total?: number };
-    } else if (window.history.state?.items || window.history.state?.total) {
-      // Fallback para history.state (caso de reload ou navegação direta)
-      state = window.history.state as { items?: ItemCompra[]; total?: number };
+    // Get the navigation state
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras?.state;
+    
+    if (state) {
+      console.log('Navigation state received:', state);
+      this.processItems(state);
+    } else {
+      // If no state in navigation, try to get it from history state
+      const historyState = window.history.state;
+      if (historyState && historyState.items) {
+        console.log('State from history:', historyState);
+        this.processItems(historyState);
+      } else {
+        console.warn('No items found in navigation state or history');
+        this.router.navigate(['/inventory']);
+      }
     }
-
-    this.items = state?.items || [];
-    this.total = state?.total || 0;
-
-    // Verifica se há itens no carrinho
-    if (this.items.length === 0) {
-      // Redireciona para o carrinho se não houver itens
-      this.router.navigate(['/inventory']);
-      return;
-    }
-
-    // Calcula o total se não estiver definido
+    
+    // Calculate total if not defined
     if (this.total === 0 && this.items.length > 0) {
       this.total = this.items.reduce((sum, item) => sum + (item.preco || 0), 0);
     }
@@ -139,7 +139,54 @@ export class ConfirmPaymentComponent implements OnInit, OnDestroy {
     this.onMetodoPagamentoChange('saldo');
   }
 
-  ngOnDestroy(): void {
+  private processItems(state: any): void {
+    console.log('Processing items from state:', state);
+    
+    if (state?.items && Array.isArray(state.items)) {
+      console.log('Items received in navigation state:', state.items);
+
+      // Map items to ensure all required properties are present
+      this.items = state.items.map((item: any) => ({
+        id: item.id || this.generateUniqueId(),
+        name: item.name || item.nome || 'Item sem nome',
+        nome: item.nome || item.name || 'Item sem nome',
+        price: item.price || item.preco || 0,
+        preco: item.preco || item.price || 0,
+        image: item.image || item.imagem || 'assets/placeholder-image.png',
+        imagem: item.imagem || item.image || 'assets/placeholder-image.png',
+        float: item.float || 0,
+        title: item.title || item.name || item.nome || 'Item sem nome',
+        fromWishlist: state.fromWishlist || false
+      }));
+      
+      console.log('Mapped items for template:', this.items);
+      
+      // Calculate total if not provided
+      this.total = state.total !== undefined ? 
+                 state.total : 
+                 this.items.reduce((sum, item) => sum + (item.preco || 0), 0);
+      
+      console.log('Calculated total:', this.total);
+      
+      // If we have items, don't redirect
+      if (this.items.length > 0) {
+        return;
+      }
+    } else {
+      console.warn('No valid items array found in state');
+    }
+    
+    // If we get here, either there are no items or there was an error
+    console.warn('No items found in navigation state');
+    this.router.navigate(['/inventory']);
+  }
+  
+  // Helper function to generate a unique ID if needed
+  private generateUniqueId(): string {
+    return 'item-' + Math.random().toString(36).substr(2, 9);
+  }
+
+  public ngOnDestroy(): void {
     // Cancela todos os timers ativos
     if (this.timers && this.timers.length > 0) {
       this.timers.forEach(timer => clearTimeout(timer));
@@ -342,92 +389,104 @@ export class ConfirmPaymentComponent implements OnInit, OnDestroy {
       // Feedback visual pode ser adicionado aqui
       console.log('Texto copiado para a área de transferência');
     }).catch(err => {
-      console.error('Erro ao copiar texto: ', err);
+      console.error('Erro ao copiar texto:', err);
     });
   }
 
-  private removerDaWishlist(skinId: number | string): void {
-    // Convert to number if it's a string
-    const numericId = typeof skinId === 'string' ? parseInt(skinId, 10) : skinId;
-    const sub = this.wishlistService.removeFromWishlist(numericId).subscribe({
-      next: () => {
-        console.log('Item removido da wishlist com sucesso');
-      },
-      error: (err) => {
-        console.error('Erro ao remover da wishlist:', err);
-      }
-    });
-    this.subscriptions.push(sub);
+  /**
+   * Remove um item da lista de desejos
+   * @param itemId ID do item a ser removido
+   */
+  private removerDaWishlist(itemId: number | string): void {
+    try {
+      this.wishlistService.removeItem(itemId);
+      console.log(`Item ${itemId} removido da wishlist com sucesso`);
+    } catch (error) {
+      console.error('Erro ao remover item da wishlist:', error);
+    }
   }
 
+  /**
+   * Processa o resultado da compra
+   * @param res Resposta da API de compra
+   */
   private processarResultadoCompra(res: any): void {
     try {
-      // Verifica se a resposta contém resultados individuais
+      if (!res) {
+        throw new Error('Resposta inválida do servidor');
+      }
+
+      // Processa os resultados da compra
       if (res.results && Array.isArray(res.results)) {
         this.resultados = this.items.map(item => {
-          const r = res.results.find((rr: { skinId: number | string; sucesso: boolean; erro?: string }) => 
-            rr.skinId == item.id // Use loose equality to handle string/number comparison
-          );
-          if (r?.sucesso) {
+          const resultado = res.results.find((r: any) => r.skinId == item.id);
+          
+          // Remove da wishlist se a compra foi bem-sucedida
+          if (resultado?.sucesso && item.fromWishlist) {
             this.removerDaWishlist(item.id);
           }
-          return { 
-            item, 
-            sucesso: r?.sucesso || false, 
-            erro: r?.erro 
+
+          return {
+            item: { ...item },
+            sucesso: resultado?.sucesso || false,
+            erro: resultado?.erro
           };
         });
       } else {
         // Se não houver resultados individuais, assume que todos foram processados com sucesso
         this.resultados = this.items.map(item => {
-          this.removerDaWishlist(item.id);
-          return { item, sucesso: true };
+          if (item.fromWishlist) {
+            this.removerDaWishlist(item.id);
+          }
+          return { 
+            item: { ...item },
+            sucesso: true 
+          };
         });
       }
 
-      this.setLoading(false);
-
+      // Atualiza a interface
       const comprados = this.resultados
         .filter(r => r.sucesso)
         .map(r => r.item.nome || r.item.title || String(r.item.id));
 
-      const falharam = this.resultados
+      const falhas = this.resultados
         .filter(r => !r.sucesso)
-        .map(r => `${r.item.nome || r.item.title || r.item.id}: ${r.erro || 'Erro desconhecido'}`);
+        .map(r => ({
+          id: r.item.id,
+          nome: r.item.nome || r.item.title || String(r.item.id),
+          erro: r.erro || 'Erro desconhecido'
+        }));
 
+      // Exibe mensagens de sucesso/erro
       if (comprados.length > 0) {
-        this.setSuccess(`Compra realizada com sucesso para: ${comprados.join(', ')}.`);
+        this.setSuccess(`Itens comprados com sucesso: ${comprados.join(', ')}`);
       }
 
-      if (falharam.length > 0) {
-        this.setError(`Falha ao comprar: ${falharam.join('; ')}.`);
+      if (falhas.length > 0) {
+        const erros = falhas.map(f => `${f.nome}: ${f.erro}`).join('; ');
+        this.setError(`Falha ao processar alguns itens: ${erros}`);
       }
 
-      this.verificarFinalizacaoCompras();
+      // Navega de volta para o inventário após 5 segundos
+      const timer = setTimeout(() => {
+        this.router.navigate(['/inventory']);
+      }, 5000);
+      this.timers.push(timer);
+
     } catch (error) {
       console.error('Erro ao processar resultado da compra:', error);
       this.setError('Ocorreu um erro ao processar sua compra. Por favor, tente novamente.');
+    } finally {
       this.setLoading(false);
     }
   }
 
-  private verificarFinalizacaoCompras(): void {
-    if (!this.resultados || !this.items) return;
-
-    const processados = this.resultados.filter(r => r?.sucesso).length;
-    const total = this.items.length;
-
-    if (processados === total) {
-      this.setSuccess('Todas as compras foram processadas com sucesso!');
-      const timer = setTimeout(() => {
-        this.router.navigate(['/inventory']);
-      }, 2000);
-      this.timers.push(timer);
-    } else if (processados > 0) {
-      this.setSuccess(`Processamento concluído: ${processados} de ${total} itens foram comprados com sucesso.`);
-    }
-  }
-
+  /**
+   * Formata um valor numérico para moeda brasileira (BRL)
+   * @param value Valor a ser formatado
+   * @returns String formatada como moeda
+   */
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',

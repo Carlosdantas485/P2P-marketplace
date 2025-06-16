@@ -6,9 +6,9 @@
       "email": "carlosdantas485@gmail.com",
       "password": "$2a$10$D6J/gIW7nmkUb/Pf8eZm1O..FFALW0aIMkg4HyxfPrD09pjBhOLUK",
       "foto": "https://scontent.fcgh71-1.fna.fbcdn.net/v/t39.30808-6/494278575_23994566506815353_5259995541534606102_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeETQtYH-A6nHmIf6sCjFavhZQJNRjkTkL5lAk1GOROQvuLK6u0l3BE2jvvjlG_-AJhpJYoYgy5yg8xQgfhiwx-a&_nc_ohc=cdi-VxI54toQ7kNvwGYA_fF&_nc_oc=AdleeWaj18hZvRYiw5nwVz1jdkjb7-PAqLJ67dMqfrC3irSlnoE3XHnlbIR3JbTrs2J2gQ_jXK_2YnR7R7XBQPQb&_nc_zt=23&_nc_ht=scontent.fcgh71-1.fna&_nc_gid=LXXdIyLIqH6iU_svO6t4aQ&oh=00_AfMcmIDllzhH8U0dWj03iyIcvqBgXYN2hrJKl92pxAZb2Q&oe=685586C7",
-      "saldo": 100,
-      "nivel": 11,
-      "vendas": 1,
+      "saldo": 500,
+      "nivel": 51,
+      "vendas": 5,
       "historicoTransferencias": [
         {
           "type": "venda",
@@ -18,10 +18,48 @@
           "buyerUsername": "macaco",
           "buyerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
           "date": "2025-06-16T04:59:59.511Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1750049357438.4565",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "Julio",
+          "buyerId": "7454711c-72c1-43fb-a118-54e7f75cce12",
+          "date": "2025-06-16T14:07:56.782Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1750049365643.9414",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "macaco",
+          "buyerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
+          "date": "2025-06-16T15:17:50.012Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1750049374746.5486",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "macaco",
+          "buyerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
+          "date": "2025-06-16T15:17:50.012Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1750049382794.19",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "macaco",
+          "buyerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
+          "date": "2025-06-16T15:28:09.297Z"
         }
       ],
       "inventory": [],
-      "wishlist": []
+      "wishlist": [],
+      "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmMDMyMGQxMy1kZmMxLTQ0NzgtYjYzZi1hYjI2MTExNzU4MGUiLCJlbWFpbCI6ImNhcmxvc2RhbnRhczQ4NUBnbWFpbC5jb20iLCJpYXQiOjE3NTAwODI5MTIsImV4cCI6MTc1MDA4NjUxMn0.LVEnWoTxgvjKMQrUcX7DHOSw8eMOgoljHu2AbfzUhDQ",
+      "resetPasswordExpires": 1750086512617
     },
     {
       "id": "5606cd6f-1793-4684-b508-d3a5cf683990",
@@ -29,9 +67,9 @@
       "email": "admin@exemplo.com",
       "password": "$2a$10$m9IIkpY3cFjJNOuYiA8sCOoIH0Wxui80GXWmB3jzRiL6RHh84o.B6",
       "foto": "",
-      "saldo": 999900,
-      "nivel": 1,
-      "vendas": 0,
+      "saldo": 998700,
+      "nivel": 11,
+      "vendas": 1,
       "historicoTransferencias": [
         {
           "type": "deposito",
@@ -46,17 +84,115 @@
           "sellerUsername": "Carlos Alberto",
           "sellerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
           "date": "2025-06-16T04:59:59.511Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1750049341098.6487",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "buyerUsername": "Julio",
+          "buyerId": "7454711c-72c1-43fb-a118-54e7f75cce12",
+          "date": "2025-06-16T14:04:00.284Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1750049365643.9414",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto",
+          "sellerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+          "date": "2025-06-16T15:17:50.012Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1750049341098.6487",
+          "skinName": "Dragon lore",
+          "price": 1000,
+          "sellerUsername": "Julio",
+          "sellerId": "7454711c-72c1-43fb-a118-54e7f75cce12",
+          "date": "2025-06-16T15:17:50.012Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1750049374746.5486",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto",
+          "sellerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+          "date": "2025-06-16T15:17:50.012Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1750049382794.19",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto",
+          "sellerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+          "date": "2025-06-16T15:28:09.297Z"
         }
       ],
       "inventory": [
-        "1750049341098.6487"
+        "1750049365643.9414",
+        "1750049341098.6487",
+        "1750049374746.5486",
+        "1750049382794.19"
       ],
       "wishlist": [
-        1750049341098.6487,
-        1750049357438.4565,
-        1750049365643.9414,
-        1750049374746.5486
+        1750049341098.6487
       ]
+    },
+    {
+      "id": "7454711c-72c1-43fb-a118-54e7f75cce12",
+      "username": "Julio",
+      "email": "julio@email.com",
+      "password": "$2a$10$PEpcNgQpWAgSbwYmNbgHxOHQ1M5gYChLi77SLYRweOtyET2Ew9Xde",
+      "foto": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpopamie19f0Ob3Yi5F09OgkZKflvzxDLfYkWNFpsMh3rGUo47xiwGx-hBtMDv3doPEc1dsYViFqAO7lO7mhcDttc_JzSF9-n51raaoYu4/",
+      "saldo": 10000900,
+      "nivel": 11,
+      "vendas": 1,
+      "historicoTransferencias": [
+        {
+          "type": "deposito",
+          "amount": 100,
+          "date": "2025-06-16T14:03:45.563Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1750049341098.6487",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "macaco",
+          "sellerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
+          "date": "2025-06-16T14:04:00.284Z"
+        },
+        {
+          "type": "deposito",
+          "amount": 10000000,
+          "date": "2025-06-16T14:04:47.673Z"
+        },
+        {
+          "type": "compra",
+          "skinId": "1750049357438.4565",
+          "skinName": "Dragon lore",
+          "price": 100,
+          "sellerUsername": "Carlos Alberto",
+          "sellerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+          "date": "2025-06-16T14:07:56.782Z"
+        },
+        {
+          "type": "venda",
+          "skinId": "1750049341098.6487",
+          "skinName": "Dragon lore",
+          "price": 1000,
+          "buyerUsername": "macaco",
+          "buyerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
+          "date": "2025-06-16T15:17:50.012Z"
+        }
+      ],
+      "inventory": [
+        "1750049357438.4565"
+      ],
+      "wishlist": []
     }
   ],
   "skins": [
@@ -68,57 +204,57 @@
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf0ebcZThQ6tCvq4GGqPD1PrbQqW9e-NV9j_v-5YT0m1HmlB81NDG3OtSSclVqaVDQq1O8l-7n1pHt6ZzAynU16XJ3sHuIlxHl1B0ZPOc8gvCACQLJzTe1G8U",
       "float": 1,
       "venda": false,
-      "preco": 100,
+      "preco": 1000,
       "created_at": "2025-06-16T04:49:01.098Z",
-      "updated_at": "2025-06-16T04:54:23.298Z"
+      "updated_at": "2025-06-16T14:05:53.529Z"
     },
     {
       "id": "1750049357438.4565",
-      "ownerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+      "ownerId": "7454711c-72c1-43fb-a118-54e7f75cce12",
       "nome": "Dragon lore",
       "descricao": "dfsdfsdf",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DAX1R3LjtQurWzLhRfwP_BcjZ95t2xgYGZqOD8Oq_UqWZU7Mxkh6fCoIrw2QTg8hVvZmGhJNeVcVJtaFHW81e-kr-9hpe1vMudznBks3Ui-z-DyB8J6hwt",
       "float": 1,
-      "venda": true,
+      "venda": false,
       "preco": 100,
       "created_at": "2025-06-16T04:49:17.438Z",
       "updated_at": "2025-06-16T04:50:06.632Z"
     },
     {
       "id": "1750049365643.9414",
-      "ownerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+      "ownerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
       "nome": "Dragon lore",
       "descricao": "weqasdasdas",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
       "float": 1,
-      "venda": true,
+      "venda": false,
       "preco": 100,
       "created_at": "2025-06-16T04:49:25.643Z",
       "updated_at": "2025-06-16T04:50:09.450Z"
     },
     {
       "id": "1750049374746.5486",
-      "ownerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+      "ownerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
       "nome": "Dragon lore",
       "descricao": "asfasfasf",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/520159645",
       "float": 1,
-      "venda": true,
+      "venda": false,
       "preco": 100,
       "created_at": "2025-06-16T04:49:34.746Z",
       "updated_at": "2025-06-16T04:50:11.882Z"
     },
     {
       "id": "1750049382794.19",
-      "ownerId": "f0320d13-dfc1-4478-b63f-ab261117580e",
+      "ownerId": "5606cd6f-1793-4684-b508-d3a5cf683990",
       "nome": "Dragon lore",
       "descricao": "dfgdfgdf",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fpyi_zV_IP7t1mxrxopPnegdobDegU8ZFCE_VG3wuy605C6v5nNyCBj6HZ04i2Lnkaw0x1IOLQ9m7XAHk1G_2IP",
-      "float": 1,
-      "venda": true,
+      "float": 0.1235664,
+      "venda": false,
       "preco": 100,
       "created_at": "2025-06-16T04:49:42.794Z",
-      "updated_at": "2025-06-16T04:50:14.209Z"
+      "updated_at": "2025-06-16T14:09:42.803Z"
     },
     {
       "id": "1750049391498.5327",

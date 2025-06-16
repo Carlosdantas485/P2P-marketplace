@@ -1,27 +1,66 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+// Define an interface for wishlist items for type safety
+export interface WishlistItem {
+  id: any; // Using 'any' for ID to be flexible, consider a specific type like number or string
+  name: string;
+  price: number;
+  image?: string;
+  float?: number; // Added to store item float value
+  // Add any other relevant properties for a wishlist item
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class WishlistService {
-  private apiUrl = 'http://localhost:3000/api/wishlist'; // Corrected URL
+  private wishlistKey = 'p2p_marketplace_wishlist';
+  private wishlistItemsSubject: BehaviorSubject<WishlistItem[]> = new BehaviorSubject<WishlistItem[]>(this.loadWishlistFromLocalStorage());
+  public wishlistItems$: Observable<WishlistItem[]> = this.wishlistItemsSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
-  // Get all items from the user's wishlist
-  getWishlist(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  private loadWishlistFromLocalStorage(): WishlistItem[] {
+    if (typeof localStorage !== 'undefined') {
+      const storedWishlist = localStorage.getItem(this.wishlistKey);
+      return storedWishlist ? JSON.parse(storedWishlist) : [];
+    }
+    return []; // Return empty array if localStorage is not available (e.g., SSR)
   }
 
-  // Add an item to the user's wishlist
-  addToWishlist(skinId: number): Observable<any> {
-    return this.http.post(this.apiUrl, { skinId });
+  private saveWishlistToLocalStorage(items: WishlistItem[]): void {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.wishlistKey, JSON.stringify(items));
+      this.wishlistItemsSubject.next(items);
+    }
   }
 
-  // Remove an item from the user's wishlist
-  removeFromWishlist(skinId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${skinId}`);
+  getWishlistItems(): WishlistItem[] {
+    return this.wishlistItemsSubject.getValue();
+  }
+
+  addItem(item: WishlistItem): void {
+    const currentItems = this.getWishlistItems();
+    if (!currentItems.find(i => i.id === item.id)) { // Prevent duplicates
+      const updatedItems = [...currentItems, item];
+      this.saveWishlistToLocalStorage(updatedItems);
+    } else {
+      console.warn(`Item with id ${item.id} already in wishlist.`);
+    }
+  }
+
+  removeItem(itemId: any): void {
+    const currentItems = this.getWishlistItems();
+    const updatedItems = currentItems.filter(item => item.id !== itemId);
+    this.saveWishlistToLocalStorage(updatedItems);
+  }
+
+  clearWishlist(): void {
+    this.saveWishlistToLocalStorage([]);
+  }
+
+  isInWishlist(itemId: any): boolean {
+    return !!this.getWishlistItems().find(item => item.id === itemId);
   }
 }

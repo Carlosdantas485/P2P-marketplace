@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 import { HeaderComponent } from './components/header/header.component';
 import { ChatbotComponent } from './components/chatbot/chatbot.component';
+import { WishlistSidebarComponent } from './components/shared/wishlist-sidebar/wishlist-sidebar';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +15,17 @@ import { ChatbotComponent } from './components/chatbot/chatbot.component';
     RouterOutlet,
     FormsModule,
     HeaderComponent,
-    ChatbotComponent
+    ChatbotComponent,
+    WishlistSidebarComponent
   ],
   template: `
     <app-header></app-header>
-    <router-outlet></router-outlet>
+    <div class="main-layout">
+      <main class="content-area">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+    <app-wishlist-sidebar></app-wishlist-sidebar>
     <app-chatbot></app-chatbot>
   `,
   styleUrls: ['./app.component.css']

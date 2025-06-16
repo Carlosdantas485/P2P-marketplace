@@ -1,0 +1,205 @@
+// Using the color palette from memory
+// .color1 { #260d33 } (Darkest)
+// .color2 { #003f69 } (Dark Blue)
+// .color3 { #106b87 } (Medium Blue)
+// .color4 { #157a8c } (Teal/Cyan)
+// .color5 { #b3aca4 } (Light Gray/Beige)
+
+// Overlay for when the sidebar is open
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 998; // Just below the sidebar
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+// Sidebar container styles
+.wishlist-sidebar-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px; // A bit wider for better content display
+  max-width: 90vw;
+  height: 100%;
+  background-color: var(--theme-color1, #260d33);
+  color: var(--theme-color5, #b3aca4);
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%); // Start off-screen
+  transition: transform 0.3s ease-in-out;
+
+  // When the .is-open class is added
+  &.is-open {
+    transform: translateX(0);
+  }
+}
+
+// The overlay becomes visible when the sidebar is open.
+// We select it based on it being an adjacent sibling of the open sidebar.
+.wishlist-sidebar-container.is-open + .sidebar-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.wishlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--theme-color2, #003f69);
+  flex-shrink: 0;
+
+  h3 {
+    margin: 0;
+    font-size: 1.4em;
+    color: var(--theme-color4, #157a8c);
+  }
+
+  .close-sidebar-button {
+    color: var(--theme-color5, #b3aca4);
+  }
+}
+
+// Styles for loading and empty states
+.loading-wishlist-message,
+.empty-wishlist-message {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+
+  .loading-icon,
+  .empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--theme-color4, #157a8c);
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin: 5px 0;
+    font-size: 0.95em;
+  }
+}
+
+// List of items
+.wishlist-items-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  flex-grow: 1;
+  overflow-y: auto; // Make the list scrollable
+
+  .wishlist-item-card {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px dashed var(--theme-color2, #003f69);
+    transition: background-color 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba(179, 172, 164, 0.05); // Using RGB of color5
+    }
+
+    .item-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 4px;
+      margin-right: 1rem;
+      border: 1px solid var(--theme-color2, #003f69);
+      object-fit: cover;
+    }
+
+    .item-details {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+
+      .item-name {
+        font-weight: bold;
+        color: var(--theme-color4, #157a8c);
+        font-size: 1em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .item-price {
+        color: var(--theme-color3, #106b87);
+        font-size: 0.9em;
+      }
+    }
+
+    .remove-item-button {
+      color: var(--theme-color5, #b3aca4);
+      opacity: 0.7;
+      &:hover {
+        opacity: 1;
+        color: #f44336; // Material warn color
+      }
+    }
+  }
+}
+
+// Footer section
+.wishlist-sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--theme-color2, #003f69);
+  background-color: rgba(38, 13, 51, 0.5); // Using RGB of color1
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .total-price-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+    color: var(--theme-color5, #b3aca4);
+
+    .total-amount {
+      font-weight: bold;
+      color: var(--theme-color3, #106b87);
+    }
+  }
+
+  .buy-all-button {
+    width: 100%;
+    // Assuming mat-primary is themed correctly
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+// Custom scrollbar for the list
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--theme-color2, #003f69);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-color3, #106b87);
+}

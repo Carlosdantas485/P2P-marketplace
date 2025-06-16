@@ -28,7 +28,7 @@
     <div class="wishlist-grid">
       <div *ngFor="let item of wishlist" class="wishlist-card">
         <div class="card-image">
-          <img [src]="item.imagem" [alt]="item.nome" loading="lazy">
+          <img [src]="item.image" [alt]="item.name" loading="lazy">
           <button class="remove-btn" (click)="removeFromWishlist(item.id)" title="Remover">
             <i class="fas fa-times"></i>
           </button>
@@ -37,12 +37,12 @@
           </div>
         </div>
         <div class="card-content">
-          <h3 class="item-name">{{ item.nome }}</h3>
+          <h3 class="item-name">{{ item.name }}</h3>
           <div class="price-tag">
-            {{ item.preco | currency:'BRL' }}
+            {{ item.price | currency:'BRL' }}
           </div>
           <div class="float-bar">
-            <div class="float-progress" [style.width]="(item.float * 100) + '%'"></div>
+            <div class="float-progress" [ngStyle]="{'width': (item.float || 0) * 100 + '%'}"></div>
             <div class="float-markers">
               <span>0.00</span>
               <span>0.15</span>

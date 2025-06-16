@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { CommonModule, NgIf, NgClass } from '@angular/common';
+import { CommonModule, AsyncPipe } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { Subscription, fromEvent } from 'rxjs';
+import { WishlistItem, WishlistService } from '../../services/wishlist.service';
+import { UiService } from '../../services/ui.service';
+import { map } from 'rxjs/operators';
+import { Subscription, fromEvent, Observable } from 'rxjs';
 
 interface User {
   id: string;
@@ -21,8 +24,7 @@ interface User {
     CommonModule,
     RouterLink,
     RouterLinkActive,
-    NgIf,
-    NgClass
+    AsyncPipe
   ]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -30,15 +32,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
   isMobile = false;
-  wishlistCount = 0;
+  wishlistCount$: Observable<number>;
   
-  private userSubscription: Subscription | undefined;
+    private userSubscription: Subscription | undefined;
+  private wishlistSubscription: Subscription | undefined;
   private resizeSubscription: Subscription | undefined;
 
-  constructor(
+    constructor(
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private wishlistService: WishlistService,
+    private uiService: UiService
+  ) {
+        this.wishlistCount$ = this.wishlistService.wishlistItems$.pipe(map((items: WishlistItem[]) => items.length));
+  }
 
   ngOnInit(): void {
     this.checkScreenWidth();
@@ -49,11 +56,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       console.log('[HeaderComponent] Current user data updated:', this.currentUser);
       
       // Load wishlist count when user is logged in
-      if (user) {
-        this.loadWishlistCount();
-      } else {
-        this.wishlistCount = 0;
-      }
+            // Wishlist count is now handled by the wishlistCount$ observable directly.
+      // The service itself initializes the wishlist from localStorage, so it's independent of login status.
     });
   }
 
@@ -61,8 +65,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-    if (this.resizeSubscription) {
+        if (this.resizeSubscription) {
       this.resizeSubscription.unsubscribe();
+    }
+    if (this.wishlistSubscription) {
+      this.wishlistSubscription.unsubscribe();
     }
   }
 
@@ -85,10 +92,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadWishlistCount(): void {
-    // TODO: Implement wishlist count loading
-    // Example: this.wishlistService.getCount().subscribe(count => this.wishlistCount = count);
-    this.wishlistCount = 0; // Placeholder
+    toggleWishlistSidebar(): void {
+    this.uiService.toggleSidebar();
   }
 
   toggleMobileMenu(event: Event): void {

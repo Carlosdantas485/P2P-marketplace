@@ -32,7 +32,8 @@
   /* Posicionamento */
   position: fixed;
   bottom: 0;
-  right: 0;
+  left: 0;
+  right: auto;
   z-index: 1050;
   
   /* Tipografia */
@@ -89,7 +90,7 @@
 .chatbot-button {
   position: fixed;
   bottom: 32px;
-  right: 32px;
+  left: 32px;
   width: 64px;
   height: 64px;
   border-radius: 50%;
@@ -166,29 +167,32 @@
 /* ===== CONTAINER PRINCIPAL ===== */
 .chatbot-wrapper {
   position: fixed;
-  bottom: 100px;
-  right: 30px;
+  bottom: 0;
+  left: 0;
   width: 380px;
-  max-width: calc(100% - 60px);
   height: 70vh;
   max-height: 700px;
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  z-index: 999;
+  background: var(--bg-color);
+  border-radius: 0 var(--border-radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transform: translateY(20px);
+  transform: translateY(100%);
+  transition: var(--transition);
+  z-index: 1049;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .chatbot-wrapper.visible {
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   opacity: 1;
   visibility: visible;
+  left: 32px;
+  bottom: 100px;
+  border-radius: 16px;
 }
 
 /* Status bar */

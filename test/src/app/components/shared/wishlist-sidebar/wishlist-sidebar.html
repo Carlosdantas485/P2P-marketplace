@@ -1,0 +1,68 @@
+<!-- Overlay to darken the rest of the page when the sidebar is open -->
+<div class="sidebar-overlay" (click)="closeSidebar()" *ngIf="isOpen$ | async"></div>
+
+<!-- The sidebar container itself, which slides in and out -->
+<div class="wishlist-sidebar-container" [class.is-open]="isOpen$ | async">
+
+  <!-- Main content of the sidebar -->
+  <ng-container *ngIf="wishlistItems$ | async as items; else loadingState">
+    <div class="wishlist-header">
+      <h3>My Wishlist</h3>
+      <!-- Close button for the sidebar -->
+      <button mat-icon-button (click)="closeSidebar()" class="close-sidebar-button" aria-label="Close wishlist sidebar">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <ng-container *ngIf="items && items.length > 0; else emptyState">
+      <!-- List of items -->
+      <ul class="wishlist-items-list" cdkScrollable>
+        <li *ngFor="let item of items" class="wishlist-item-card">
+          <img [src]="item.image || 'assets/placeholder-image.png'" [alt]="item.name" class="item-image">
+          <div class="item-details">
+            <span class="item-name">{{ item.name }}</span>
+            <span class="item-price">{{ item.price | currency:'BRL':'symbol':'1.2-2' }}</span>
+          </div>
+          <button (click)="removeItem(item.id)" mat-icon-button class="remove-item-button" title="Remove item" [attr.aria-label]="'Remove ' + item.name + ' from wishlist'">
+            <mat-icon>close</mat-icon>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Footer with total and buy button -->
+      <div class="wishlist-sidebar-footer">
+        <div class="total-price-summary">
+          <span>Total:</span>
+          <span class="total-amount">{{ (totalPrice$ | async) | currency:'BRL':'symbol':'1.2-2' }}</span>
+        </div>
+        <button mat-flat-button color="primary" class="buy-all-button" (click)="buyAllItems()" [disabled]="!items || items.length === 0">
+          <mat-icon>shopping_cart</mat-icon>
+          Buy All
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Template for when the wishlist is empty -->
+    <ng-template #emptyState>
+      <div class="empty-wishlist-message">
+        <mat-icon class="empty-icon">favorite_border</mat-icon>
+        <p>Your wishlist is currently empty.</p>
+        <p>Start adding items you love!</p>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <!-- Template for when the wishlist is loading -->
+  <ng-template #loadingState>
+    <div class="wishlist-header">
+      <h3>My Wishlist</h3>
+      <button mat-icon-button (click)="closeSidebar()" class="close-sidebar-button" aria-label="Close wishlist sidebar">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="loading-wishlist-message">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+      <p>Loading wishlist...</p>
+    </div>
+  </ng-template>
+</div>

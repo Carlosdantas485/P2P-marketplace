@@ -157,15 +157,15 @@ nav {
 /* Main Content */
 main {
   flex: 1;
-  min-height: calc(100vh - 72px);
+  min-height: calc(100vh - 72px); /* Assuming header is approx 72px */
   padding: 2rem;
   background: linear-gradient(to bottom, #0f172a, #1e293b);
-  max-width: 1400px;
-  margin: 0 auto;
+  /* max-width: 1400px; /* This will be handled by .main-layout or .content-area */
+  /* margin: 0 auto; /* This will be handled by .main-layout */
   width: 100%;
 }
 
-/* Responsive Adjustments */
+/* Responsive Adjustments for existing main content */
 @media (max-width: 768px) {
   nav {
     flex-direction: column;
@@ -185,5 +185,64 @@ main {
   
   main {
     padding: 1rem;
+  }
+}
+
+/* Layout for main content and wishlist sidebar */
+.main-layout {
+  display: flex;
+  max-width: calc(1400px + 300px + 1rem); /* Max-width of main content + sidebar width + gap */
+  margin: 0 auto;
+  padding: 0 1rem; /* Consistent padding */
+  gap: 1rem; /* Space between content and sidebar */
+  width: 100%;
+  align-items: flex-start; /* Align items to the top */
+}
+
+/* Adjust existing main (now .content-area) styles */
+main.content-area { /* More specific selector from app.component.ts template */
+  flex: 1; /* Takes up remaining space */
+  min-width: 0; /* Allows shrinking if necessary */
+  max-width: 1400px; /* Restore original max-width for content area itself */
+  margin: 0; /* Override previous auto margins from 'main' */
+  /* padding: 2rem; /* Already defined in 'main', check if duplication is intended or if one should be removed/adjusted */
+  /* background: linear-gradient(to bottom, #0f172a, #1e293b); /* Already defined in 'main' */
+}
+
+app-wishlist-sidebar {
+  /* Sidebar width is defined in its own component's SCSS (300px) */
+  position: sticky; /* Make sidebar sticky */
+  top: 88px; /* Adjust based on header height (e.g., 72px + 1rem padding/gap from .main-layout) */
+  height: calc(100vh - 88px); /* Full height minus header and top offset */
+  /* Ensure it doesn't exceed viewport height if content is shorter */
+  max-height: calc(100vh - 88px);
+  overflow-y: auto; /* If sidebar content itself is too long */
+}
+
+/* Responsive adjustments for main layout with sidebar */
+@media (max-width: 991px) { /* Breakpoint where sidebar stacks */
+  .main-layout {
+    flex-direction: column;
+    align-items: center; /* Center items when stacked */
+    padding: 0 0.5rem; /* Adjust padding for smaller screens */
+  }
+
+  main.content-area {
+    width: 100%; /* Full width when stacked */
+    /* max-width: 1400px; /* Already set */
+    margin-bottom: 1rem; /* Space below content before sidebar */
+    padding: 1rem; /* Adjust padding for content area on smaller screens */
+  }
+
+  app-wishlist-sidebar {
+    width: 100%;
+    max-width: 600px; /* Or a suitable max-width for stacked sidebar */
+    position: static; /* Non-sticky when stacked */
+    height: auto; /* Adjust height as needed */
+    max-height: none; /* Remove max-height when stacked */
+    border-left: none; /* Remove left border if it looks odd when stacked */
+    border-top: 1px solid var(--theme-color2, #003f69); /* Optional top border */
+    margin-top: 1rem;
+    padding: 1rem; /* Add padding to sidebar when stacked */
   }
 }

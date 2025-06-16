@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AuthService, User } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { WishlistService } from '../../services/wishlist.service';
+import { WishlistService, WishlistItem } from '../../services/wishlist.service'; // Added WishlistItem
 import { InventoryService, Item as Skin } from '../../services/inventory.service';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -45,7 +45,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private apiUrl = 'http://localhost:3000/skins';
   currentUser: User | null = null;
   private userSubscription: Subscription | undefined;
-  wishlistIds: number[] = [];
+  private wishlistSubscription: Subscription | undefined; // Initialized to undefined
+  wishlistIds: string[] = []; // Changed to string[] to match Skin.id type, or use 'any[]'
   ownerPhotos: { [ownerId: string]: string } = {};
   ownerNames: { [ownerId: string]: string } = {};
 
@@ -69,7 +70,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadSkins();
     this.userSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
-      this.loadWishlist();
+      // Subscribe to wishlist changes if user is logged in
+      if (this.currentUser) {
+        if (this.wishlistSubscription) {
+          this.wishlistSubscription.unsubscribe(); // Unsubscribe from previous if any
+        }
+        this.wishlistSubscription = this.wishlistService.wishlistItems$.subscribe({
+          next: (items: WishlistItem[]) => {
+            this.wishlistIds = items.map(item => String(item.id)); // Store IDs for isInWishlist
+          },
+          error: (err: any) => {
+            console.error('Erro ao carregar wishlist:', err);
+            this.wishlistIds = [];
+          }
+        });
+      } else {
+        this.wishlistIds = []; // Clear wishlist if no user
+        if (this.wishlistSubscription) {
+          this.wishlistSubscription.unsubscribe(); // Unsubscribe if user logs out
+        }
+      }
       console.log('[HomeComponent] Current user data updated:', this.currentUser);
     });
   }
@@ -91,13 +111,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (user) => {
         this.ownerPhotos[ownerId] = user.foto || 'assets/default-avatar.png';
         this.ownerNames[ownerId] = user.username || 'Usuário';
-        // Update the skin with owner name
         const skin = this.skins.find(s => s.ownerId === ownerId);
         if (skin) {
           skin.ownerName = this.ownerNames[ownerId];
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erro ao carregar dados do dono:', err);
         this.ownerPhotos[ownerId] = 'assets/default-avatar.png';
         this.ownerNames[ownerId] = 'Usuário';
@@ -105,26 +124,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadWishlist(): void {
-    if (!this.currentUser) {
-      this.wishlistIds = [];
-      return;
-    }
-    this.wishlistService.getWishlist().subscribe({
-      next: (items) => {
-        this.wishlistIds = Array.isArray(items) ? items.map(item => Number(item.id)) : [];
-      },
-      error: (err) => {
-        console.error('Erro ao carregar wishlist:', err);
-        this.wishlistIds = [];
-      }
-    });
-  }
+  // loadWishlist() method is removed as its logic is now in ngOnInit's subscription
 
   isInWishlist(skinId: string | number): boolean {
     if (skinId === null || skinId === undefined) return false;
-    const searchId = typeof skinId === 'string' ? skinId.trim() : skinId.toString();
-    return this.wishlistIds.some(id => id.toString() === searchId);
+    const searchId = String(skinId).trim();
+    return this.wishlistIds.includes(searchId);
   }
 
   ngOnDestroy(): void {
@@ -134,38 +139,45 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
     }
+    if (this.wishlistSubscription) { // Unsubscribe from wishlist
+      this.wishlistSubscription.unsubscribe();
+    }
   }
 
   toggleWishlist(skinId: any): void {
     if (!this.currentUser) {
-      // Store the current URL to redirect back after login
       this.router.navigate(['/login'], { 
         queryParams: { returnUrl: this.router.routerState.snapshot.url }
       });
       return;
     }
     
-    const numericSkinId = Number(skinId);
-    if (this.isInWishlist(numericSkinId)) {
-      this.wishlistService.removeFromWishlist(numericSkinId).subscribe({
-        next: () => {
-          this.loadWishlist();
-        },
-        error: (err: any) => {
-          console.error('Erro ao remover da wishlist:', err);
-          alert(`Erro ao remover: ${err.error?.message || 'Ocorreu um erro.'}`);
-        }
-      });
+    const currentSkinId = String(skinId); // Ensure skinId is a string for comparison and use
+
+    if (this.isInWishlist(currentSkinId)) {
+      this.wishlistService.removeItem(currentSkinId);
+      // console.log(`Item ${currentSkinId} removed from wishlist.`);
     } else {
-      this.wishlistService.addToWishlist(numericSkinId).subscribe({
-        next: () => {
-          this.loadWishlist();
-        },
-        error: (err: any) => {
-          console.error('Erro ao adicionar à wishlist:', err);
-          alert(`Erro ao adicionar: ${err.error?.message || 'Ocorreu um erro.'}`);
+      const skinToAdd = this.skins.find(s => s.id === currentSkinId) || this.filteredSkins.find(s => s.id === currentSkinId);
+      if (skinToAdd) {
+        if (typeof skinToAdd.preco === 'undefined') {
+          console.error('Cannot add item to wishlist: price is undefined.', skinToAdd);
+          alert('Este item não pode ser adicionado à lista de desejos pois não tem um preço definido.');
+          return;
         }
-      });
+        const wishlistItem: WishlistItem = {
+          id: skinToAdd.id,
+          name: skinToAdd.nome,
+          price: skinToAdd.preco,
+          image: skinToAdd.imagem,
+          float: skinToAdd.float // Added float value
+        };
+        this.wishlistService.addItem(wishlistItem);
+        // console.log(`Item ${currentSkinId} added to wishlist.`);
+      } else {
+        console.error(`Skin with id ${currentSkinId} not found to add to wishlist.`);
+        alert('Erro: Skin não encontrada para adicionar à lista de desejos.');
+      }
     }
   }
 
@@ -179,7 +191,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   buySkin(skin: Skin): void {
     if (!this.currentUser) {
-      // Store the current URL to redirect back after login
       this.router.navigate(['/login'], { 
         queryParams: { returnUrl: this.router.routerState.snapshot.url }
       });
@@ -197,7 +208,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Redirecionar para a página de confirmação de compra com o item selecionado
     this.router.navigate(['/confirm-payment'], {
       state: { items: [skin], total: skin.preco }
     });
@@ -216,7 +226,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.loadOwnerPhotosForSkins();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading skins:', err);
         this.error = true;
         this.loading = false;

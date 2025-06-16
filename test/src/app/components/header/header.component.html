@@ -26,19 +26,13 @@
             <span>Início</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="currentUser">
           <a routerLink="/inventory" class="nav-link" routerLinkActive="active" (click)="closeMenuIfMobile()">
             <i class="fas fa-box"></i>
             <span>Inventário</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a routerLink="/wishlist" class="nav-link" routerLinkActive="active" (click)="closeMenuIfMobile()">
-            <i class="fas fa-heart"></i>
-            <span>Desejos</span>
-            <span class="badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
-          </a>
-        </li>
+
       </ul>
     </nav>
 
@@ -56,6 +50,13 @@
       </ng-container>
 
       <ng-template #authenticatedUser>
+        <button class="btn btn-icon wishlist-toggle" (click)="toggleWishlistSidebar()" aria-label="Toggle Wishlist">
+          <i class="fas fa-heart"></i>
+          <ng-container *ngIf="wishlistCount$ | async as count">
+            <span class="badge" *ngIf="count > 0">{{ count }}</span>
+          </ng-container>
+        </button>
+
         <div class="user-dropdown">
           <button class="user-profile" (click)="toggleUserMenu($event)" [attr.aria-expanded]="isUserMenuOpen">
             <img [src]="currentUser.foto || 'assets/images/default-profile.png'" alt="Perfil" class="user-avatar">
