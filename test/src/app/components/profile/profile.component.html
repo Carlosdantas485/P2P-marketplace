@@ -125,70 +125,112 @@
 
     <div class="transaction-history">
       <div class="section-header">
-        <i class="fas fa-history"></i>
-        <h3>Histórico de Transações</h3>
+        <div class="header-content">
+          <i class="fas fa-exchange-alt"></i>
+          <h3>Histórico de Transações</h3>
+        </div>
+        <div class="filter-controls">
+          <button (click)="applyFilter('all')" [class.active]="filterType === 'all'" class="filter-btn">
+            <i class="fas fa-list"></i> Todos
+          </button>
+          <button (click)="applyFilter('compra')" [class.active]="filterType === 'compra'" class="filter-btn">
+            <i class="fas fa-shopping-cart"></i> Compras
+          </button>
+          <button (click)="applyFilter('venda')" [class.active]="filterType === 'venda'" class="filter-btn">
+            <i class="fas fa-tag"></i> Vendas
+          </button>
+        </div>
       </div>
 
       <div class="totals-summary">
-        <div class="total-box saldo">
-          <h4>Saldo Atual</h4>
-          <p>R$ {{ user.saldo | number:'1.2-2' }}</p>
+        <div class="total-card">
+          <div class="total-icon">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <div class="total-info">
+            <span class="total-label">Saldo Atual</span>
+            <span class="total-amount">R$ {{ user.saldo | number:'1.2-2' }}</span>
+          </div>
         </div>
-        <div class="total-box sales">
-          <h4>Total Vendas</h4>
-          <p>R$ {{ totalVendas | number:'1.2-2' }}</p>
+        
+        <div class="total-card">
+          <div class="total-icon income">
+            <i class="fas fa-arrow-down"></i>
+          </div>
+          <div class="total-info">
+            <span class="total-label">Total de Vendas</span>
+            <span class="total-amount positive">+ R$ {{ totalVendas | number:'1.2-2' }}</span>
+          </div>
         </div>
-        <div class="total-box purchases">
-          <h4>Total Compras</h4>
-          <p>-R$ {{ totalCompras | number:'1.2-2' }}</p>
+        
+        <div class="total-card">
+          <div class="total-icon expense">
+            <i class="fas fa-arrow-up"></i>
+          </div>
+          <div class="total-info">
+            <span class="total-label">Total de Compras</span>
+            <span class="total-amount negative">- R$ {{ totalCompras | number:'1.2-2' }}</span>
+          </div>
         </div>
       </div>
 
-      <div class="filter-controls">
-        <button (click)="applyFilter('all')" [class.active]="filterType === 'all'">Todos</button>
-        <button (click)="applyFilter('compra')" [class.active]="filterType === 'compra'">Compras</button>
-        <button (click)="applyFilter('venda')" [class.active]="filterType === 'venda'">Vendas</button>
-      </div>
-
-
-      <div *ngIf="filteredHistory.length > 0; else noHistory">
+      <div class="history-container" *ngIf="filteredHistory.length > 0; else noHistory">
         <div class="history-list">
           <div *ngFor="let item of filteredHistory" class="history-item" [ngClass]="{
             'purchase': item.type === 'compra',
             'sale': item.type === 'venda'
           }">
-            <div class="history-type">
-              <span *ngIf="item.type === 'compra'" class="icon">🛒</span>
-              <span *ngIf="item.type === 'venda'" class="icon">💰</span>
-              <span class="label">
-                <ng-container [ngSwitch]="item.type">
-                  <span *ngSwitchCase="'compra'">Compra</span>
-                  <span *ngSwitchCase="'venda'">Venda</span>
-                </ng-container>
-              </span>
+            <div class="transaction-icon">
+              <i *ngIf="item.type === 'compra'" class="fas fa-cart-arrow-down"></i>
+              <i *ngIf="item.type === 'venda'" class="fas fa-tag"></i>
             </div>
-            <div class="history-main">
-              <div *ngIf="item.skinName"><b>Skin:</b> {{ item.skinName }}</div>
-              <div *ngIf="item.type === 'compra'"><b>De:</b> {{ item.sellerUsername }}</div>
-              <div *ngIf="item.type === 'venda'"><b>Para:</b> {{ item.buyerUsername }}</div>
-            </div>
-            <div class="history-value" [ngClass]="{
-              'negative': item.type === 'compra',
-              'positive': item.type === 'venda'
-            }">
-              <ng-container [ngSwitch]="item.type">
-                <span *ngSwitchCase="'compra'">-R$ {{ item.price | number:'1.2-2' }}</span>
-                <span *ngSwitchCase="'venda'">R$ {{ item.price | number:'1.2-2' }}</span>
-              </ng-container>
-            </div>
-            <div class="history-date">
-              <b>Data:</b> {{ item.date | date:'dd/MM/yyyy HH:mm' }}
+            
+            <div class="transaction-details">
+              <div class="transaction-header">
+                <span class="transaction-type" [ngClass]="{
+                  'type-purchase': item.type === 'compra',
+                  'type-sale': item.type === 'venda'
+                }">
+                  {{ item.type === 'compra' ? 'Compra' : 'Venda' }}
+                </span>
+                <span class="transaction-date">
+                  <i class="far fa-calendar-alt"></i> {{ item.date | date:'dd/MM/yyyy' }}
+                </span>
+              </div>
+              
+              <div class="transaction-info">
+                <div class="info-row">
+                  <span class="info-label">Item:</span>
+                  <span class="info-value">{{ item.skinName || 'Item não especificado' }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">{{ item.type === 'compra' ? 'Vendedor' : 'Comprador' }}:</span>
+                  <span class="info-value">{{ item.type === 'compra' ? (item.sellerUsername || 'Anônimo') : (item.buyerUsername || 'Anônimo') }}</span>
+                </div>
+              </div>
+              
+              <div class="transaction-footer">
+                <span class="transaction-time">
+                  <i class="far fa-clock"></i> {{ item.date | date:'HH:mm' }}
+                </span>
+                <span class="transaction-amount" [ngClass]="{
+                  'amount-negative': item.type === 'compra',
+                  'amount-positive': item.type === 'venda'
+                }">
+                  {{ item.type === 'compra' ? '-' : '+' }} R$ {{ item.price | number:'1.2-2' }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      
       <ng-template #noHistory>
-        <p>Nenhuma transação encontrada.</p>
+        <div class="no-transactions">
+          <i class="fas fa-exchange-alt"></i>
+          <p>Nenhuma transação encontrada</p>
+          <small>Suas transações aparecerão aqui</small>
+        </div>
       </ng-template>
     </div>
   </div>
