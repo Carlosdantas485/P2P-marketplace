@@ -281,11 +281,15 @@ input::placeholder {
   .login-illustration {
     display: block;
     flex: 0 1 600px;
+    background: linear-gradient(135deg,#3A56D4);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   }
   
   .login-illustration img {
     width: 100%;
     height: auto;
+    border-radius: 12px;
     max-width: 100%;
   }
 }

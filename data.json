@@ -286,11 +286,11 @@
       "nome": "Dragon lore",
       "descricao": "sdsdfsdfs",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DfVlxgLQFFibKkJQN3wfLYYgJK7dKyg5KKh8j4NrrFnm5D8fp3i-vT_I_KilihriwvOCyveMX6L1NqOB2N5FS6we_qhce-6JjMnHpn7Cl35Xjfnxa3ghpEbOxn1KaaHAnKAKMaGamcRi2HqvyoA00",
-      "float": 1,
+      "float": 0.12354,
       "venda": true,
       "preco": 100,
       "created_at": "2025-06-16T04:50:38.969Z",
-      "updated_at": "2025-06-16T04:51:24.256Z"
+      "updated_at": "2025-06-17T12:08:40.812Z"
     },
     {
       "id": "1750049447286.0173",
@@ -322,11 +322,11 @@
       "nome": "Dragon lore",
       "descricao": "fgdfgdfg",
       "imagem": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DAX1R3LjtQurWzLhRfwP_BcjZ95t2xgYGZqOD8Oq_UqWZU7Mxkh6fCoIrw2QTg8hVvZmGhJNeVcVJtaFHW81e-kr-9hpe1vMudznBks3Ui-z-DyB8J6hwt",
-      "float": 1,
+      "float": 0.00021564,
       "venda": true,
       "preco": 100,
       "created_at": "2025-06-16T04:51:11.139Z",
-      "updated_at": "2025-06-16T04:51:31.228Z"
+      "updated_at": "2025-06-17T12:08:48.660Z"
     }
   ]
 }

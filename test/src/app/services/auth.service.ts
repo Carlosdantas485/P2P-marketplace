@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { WishlistService } from './wishlist.service';
 
 export interface User {
   id: string;
@@ -31,7 +32,10 @@ export class AuthService {
   public currentUser: Observable<User | null>;
   private token: string | null = null;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private wishlistService: WishlistService
+  ) {
     try {
       const userString = localStorage.getItem('user');
       const user = userString ? JSON.parse(userString) : null;
@@ -76,6 +80,10 @@ export class AuthService {
   }
 
   logout() {
+    // Limpa a wishlist ao deslogar
+    this.wishlistService.clearWishlist();
+    
+    // Limpa os dados de autenticação
     this.clearToken();
     localStorage.removeItem('user');
     this.currentUserSubject.next(null);
