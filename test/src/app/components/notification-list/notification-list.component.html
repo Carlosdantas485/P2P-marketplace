@@ -1,0 +1,24 @@
+<div class="notification-list-container">
+  <div class="notification-header">
+    <h3>Notificações</h3>
+    <button class="mark-all-read-btn" (click)="markAllAsRead()">Marcar todas como lidas</button>
+  </div>
+  <div class="notification-items">
+    <div *ngIf="notifications.length === 0" class="no-notifications">
+      Nenhuma notificação nova.
+    </div>
+    <div *ngFor="let notification of notifications" class="notification-item" [class.read]="notification.read">
+      <div class="notification-icon">
+        <i class="fas" [ngClass]="{
+          'fa-arrow-circle-down': notification.type === 'purchase',
+          'fa-arrow-circle-up': notification.type === 'sale'
+        }"></i>
+      </div>
+      <div class="notification-content">
+        <div class="notification-message">{{ notification.message }}</div>
+        <div class="notification-timestamp">{{ notification.timestamp | date:'short' }}</div>
+      </div>
+      <button *ngIf="!notification.read" class="mark-read-btn" (click)="markAsRead(notification.id)">Marcar como lida</button>
+    </div>
+  </div>
+</div>

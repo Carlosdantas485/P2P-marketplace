@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NotificationListComponent } from '../notification-list/notification-list.component';
 import { WishlistItem, WishlistService } from '../../services/wishlist.service';
 import { UiService } from '../../services/ui.service';
+import { Notification, NotificationService } from '../../services/notification.service';
 import { map } from 'rxjs/operators';
-import { Subscription, fromEvent, Observable } from 'rxjs';
+import { Subscription, fromEvent, Observable, BehaviorSubject } from 'rxjs';
 
 interface User {
   id: string;
@@ -24,7 +26,8 @@ interface User {
     CommonModule,
     RouterLink,
     RouterLinkActive,
-    AsyncPipe
+    AsyncPipe,
+    NotificationListComponent
   ]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -33,8 +36,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isUserMenuOpen = false;
   isMobile = false;
   wishlistCount$: Observable<number>;
-  
-    private userSubscription: Subscription | undefined;
+  totalNotificationCount$: Observable<number>;
+  showNotificationsSidebar = false;
+  notifications$!: Observable<Notification[]>;
+
+  private userSubscription: Subscription | undefined;
   private wishlistSubscription: Subscription | undefined;
   private resizeSubscription: Subscription | undefined;
 
@@ -42,9 +48,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private wishlistService: WishlistService,
-    private uiService: UiService
+    private uiService: UiService,
+    private notificationService: NotificationService
   ) {
         this.wishlistCount$ = this.wishlistService.wishlistItems$.pipe(map((items: WishlistItem[]) => items.length));
+    this.totalNotificationCount$ = this.notificationService.totalNotificationCount$;
+    this.notifications$ = this.notificationService.notifications$;
   }
 
   ngOnInit(): void {
@@ -94,6 +103,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     toggleWishlistSidebar(): void {
     this.uiService.toggleSidebar();
+  }
+
+  toggleNotifications(): void {
+    this.showNotificationsSidebar = !this.showNotificationsSidebar;
+    if (this.showNotificationsSidebar) {
+      this.closeMenus(); // Close other menus when opening notifications
+    }
   }
 
   toggleMobileMenu(event: Event): void {

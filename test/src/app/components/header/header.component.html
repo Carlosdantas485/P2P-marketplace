@@ -50,9 +50,9 @@
       </ng-container>
 
       <ng-template #authenticatedUser>
-        <button class="btn btn-icon wishlist-toggle" (click)="toggleWishlistSidebar()" aria-label="Toggle Wishlist">
-          <i class="fas fa-heart"></i>
-          <ng-container *ngIf="wishlistCount$ | async as count">
+        <button class="btn btn-icon notifications-toggle" (click)="toggleNotifications()" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <ng-container *ngIf="totalNotificationCount$ | async as count">
             <span class="badge" *ngIf="count > 0">{{ count }}</span>
           </ng-container>
         </button>
@@ -86,6 +86,7 @@
             </button>
           </div>
         </div>
+        <app-notification-list *ngIf="showNotificationsSidebar" [notifications$]="notifications$"></app-notification-list>
       </ng-template>
     </div>
   </div>
